@@ -34,7 +34,7 @@
     if (value != places) {
         [places release];
         places = [value copy];
-        self.placePrivate = [places mutableCopy];
+        placePrivate = [places mutableCopy];
     }
 }
 

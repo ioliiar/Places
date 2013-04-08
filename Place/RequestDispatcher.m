@@ -68,14 +68,14 @@
     NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
     [str release];
     if (connection) {
-        self.data = [[NSMutableData alloc] init];
+        data = [[NSMutableData alloc] init];
     } else {
         NSLog(@"Failed to create conncetion");
     }
 }
 
 - (void)requestPlacemarkNamed:(NSString*)name {
-    CLGeocoder *geocoder = [[CLGeocoder alloc] init];
+    CLGeocoder *geocoder = [[[CLGeocoder alloc] init] autorelease];
     [geocoder geocodeAddressString:name completionHandler:^(NSArray *placemarks, NSError *error) {
         if ([placemarks count] > 0 && error == nil){
             CLPlacemark *firstPlacemark = [placemarks objectAtIndex:0];
@@ -139,7 +139,7 @@
     endLocation.longitude = [(NSString *)[steps valueForKeyPath: @"end_location.lng"] doubleValue];
     
     [connection release];
-    [self.data release];
+    [data release];
     
 //    NSString *responseString=[[NSString alloc]initWithData:responseData encoding:NSUTF8StringEncoding];
 //    NSMutableDictionary *data1 = [responseData objectFromJSONData];
