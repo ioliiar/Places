@@ -125,7 +125,7 @@
 }
 
 - (BOOL)insertPlace:(PlaceEntity*)place {
-    const char* sql = "INSERT INTO Place (Name,Comment,Photo,Visited,Latitude,Longtitude,Category) Values (?,?,?,?,?,?,?)";
+    const char* sql = "INSERT INTO Place (Name,Comment,Photo,Visited,Latitude,Longtitude,Category) Values (?,?,?,?,?,?,?)";//read about this
     sqlite3_stmt *statement;
     int sqlResult = sqlite3_prepare_v2(database, sql, -1, &statement, NULL);
     
