@@ -6,6 +6,8 @@
 //  Copyright (c) 2013 Iurii Oliiar. All rights reserved.
 //
 
+//Hello Niggers
+
 #import <UIKit/UIKit.h>
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
