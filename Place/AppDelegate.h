@@ -8,6 +8,8 @@
 
 //Hello Niggers 123
 // work for food
+//Hello Niggers 123
+
 #import <UIKit/UIKit.h>
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
