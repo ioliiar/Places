@@ -7,7 +7,7 @@
 //
 
 //Hello Niggers 123
-// 123
+// work for food
 #import <UIKit/UIKit.h>
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
