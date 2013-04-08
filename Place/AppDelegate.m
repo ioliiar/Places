@@ -4,7 +4,7 @@
 //
 //  Created by Iurii Oliiar on 3/28/13.
 //  Copyright (c) 2013 Iurii Oliiar. All rights reserved.
-//
+// FUCKKKK
 
 #import "AppDelegate.h"
 
