@@ -25,7 +25,7 @@
 		2506356A170489C700DBA7BA /* RequestDispatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 25063569170489C700DBA7BA /* RequestDispatcher.m */; };
 		2506356D17048E9000DBA7BA /* DBHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 2506356C17048E9000DBA7BA /* DBHandler.m */; };
 		2506356F17048EAA00DBA7BA /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2506356E17048EAA00DBA7BA /* libsqlite3.dylib */; };
-		253CBFB61712CDBE00C3DA3B /* Places.db in Resources */ = {isa = PBXBuildFile; fileRef = 253CBFB51712CDBE00C3DA3B /* Places.db */; };
+		253CBFB61712CDBE00C3DA3B /* Places.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 253CBFB51712CDBE00C3DA3B /* Places.sqlite */; };
 		259801201705992A0025806D /* ResourceLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 2598011F1705992A0025806D /* ResourceLoader.m */; };
 		2598012217059C210025806D /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2598012117059C210025806D /* MapKit.framework */; };
 		2598012417059C2F0025806D /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2598012317059C2F0025806D /* CoreLocation.framework */; };
@@ -76,7 +76,7 @@
 		2506356C17048E9000DBA7BA /* DBHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DBHandler.m; sourceTree = "<group>"; };
 		2506356E17048EAA00DBA7BA /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		250635701704983D00DBA7BA /* Enums.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Enums.h; sourceTree = "<group>"; };
-		253CBFB51712CDBE00C3DA3B /* Places.db */ = {isa = PBXFileReference; lastKnownFileType = file; path = Places.db; sourceTree = "<group>"; };
+		253CBFB51712CDBE00C3DA3B /* Places.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = Places.sqlite; sourceTree = "<group>"; };
 		2598011E1705992A0025806D /* ResourceLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResourceLoader.h; sourceTree = "<group>"; };
 		2598011F1705992A0025806D /* ResourceLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResourceLoader.m; sourceTree = "<group>"; };
 		2598012117059C210025806D /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -189,7 +189,7 @@
 		250635651704889200DBA7BA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				253CBFB51712CDBE00C3DA3B /* Places.db */,
+				253CBFB51712CDBE00C3DA3B /* Places.sqlite */,
 				25DA64291709BB7300F04710 /* Images */,
 				250635541704821300DBA7BA /* MasterViewController_iPhone.xib */,
 				250635571704821300DBA7BA /* MasterViewController_iPad.xib */,
@@ -340,7 +340,7 @@
 				25DA642D1709BD9B00F04710 /* question-mark~ipad.png in Resources */,
 				25DA64341709C0D700F04710 /* CommonViewController~ipad.xib in Resources */,
 				25DA64361709C0FC00F04710 /* CommonViewController~iphone.xib in Resources */,
-				253CBFB61712CDBE00C3DA3B /* Places.db in Resources */,
+				253CBFB61712CDBE00C3DA3B /* Places.sqlite in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

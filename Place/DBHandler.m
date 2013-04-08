@@ -34,7 +34,7 @@
 #pragma mark Private DB methods
 
 - (void)openDB {
-    NSString *path = [[NSBundle mainBundle] pathForResource:kDBName ofType:@"db"];
+    NSString *path = [[NSBundle mainBundle] pathForResource:kDBName ofType:@"sqlite"];
     if (sqlite3_open([path UTF8String], &database) == SQLITE_OK) {
         NSLog(@"Opening Database");
     } else {
