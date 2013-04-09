@@ -32,8 +32,6 @@ typedef enum {
 } Category;
 
 typedef enum {
-    MenuRowMyPlaces,
-    MenuRowSearch,
     MenuRowAddPlace,
     MenuRowAddRoute,
     MenuRowGoToMap,
@@ -41,9 +39,9 @@ typedef enum {
 } MenuRow;
 
 typedef enum {
-    DescriptionRowCategory,
     DescriptionRowName,
     DescriptionRowComment,
+    DescriptionRowCategory,
     DescriptionRowDateVisited,
     DescriptionRowCount
 } DescriptionRow;
@@ -60,5 +58,11 @@ typedef enum {
     ResponseCodeError,
     ResponseCodeCount
 } ResponseCode;
+
+typedef enum {
+    PlaceModeSurvey,
+    PlaceModeChoose,
+    PlaceModeCount
+} PlaceMode;
 
 #endif

@@ -8,11 +8,20 @@
 
 #import <UIKit/UIKit.h>
 #import "PlaceEntity.h"
+@class PlaceViewController;
+@protocol PlaceViewControllerDelegate <NSObject>
+
+- (void)placeVC:(PlaceViewController*)placeVC didDismissedInMode:(PlaceMode)mode;
+
+@end
+
 
 @interface PlaceViewController : UIViewController<UITableViewDelegate, UITableViewDataSource>
 
 @property (retain, nonatomic) PlaceEntity *place;
 @property (retain, nonatomic) IBOutlet UIImageView *photoImageView;
 @property (retain, nonatomic) IBOutlet UITableView *detailTableView;
+@property (assign, nonatomic) PlaceMode mode;
+@property (assign, nonatomic) id <PlaceViewControllerDelegate> delegate;
 
 @end

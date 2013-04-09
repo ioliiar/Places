@@ -7,39 +7,32 @@
 //
 
 #import "RouteViewController.h"
+#import "PlaceViewController.h"
 
 #import "RouteEntity.h"
 
-@interface RouteViewController ()
-
-@property (nonatomic, retain) NSMutableArray *placePrivate;
+@interface RouteViewController ()<PlaceViewControllerDelegate>
 
 @end
 
 @implementation RouteViewController
 
-@synthesize placePrivate;
-@synthesize places;
+@synthesize route;
 
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
-{
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        
+        self.title = LOC_ROUTE;
+        self.route = [[[RouteEntity alloc] init] autorelease];
     }
     return self;
 }
 
-- (void)setPlaces:(NSArray *)value {
-    if (value != places) {
-        [places release];
-        places = [value copy];
-        placePrivate = [places mutableCopy];
-    }
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)orientation {
+    return ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad || orientation == UIDeviceOrientationPortrait);
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
     UIBarButtonItem *bar = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                                                          target:self
@@ -52,16 +45,44 @@
     [super didReceiveMemoryWarning];
 }
 
+- (void)viewDidUnload {
+    self.tableView = nil;
+    [super viewDidUnload];
+}
+
 - (void)dealloc {
-    [placePrivate release];
-    [places release];
+    [route release];
+    [_tableView release];
     [super dealloc];
 }
 
 #pragma mark BarButton Actions
 
 - (void)addPlace:(UIBarButtonItem *)sender {
-    NSLog(@"add Place");
+    // TODO add map chooser variant
+    if ([self.route.places count] < 8) {
+        PlaceViewController *place = [[PlaceViewController alloc] init];
+        place.mode = PlaceModeChoose;
+        place.delegate = self;
+        [self.navigationController pushViewController:place animated:YES];
+        [place release];
+    }
+}
+
+- (void)placeVC:(PlaceViewController *)placeVC didDismissedInMode:(PlaceMode)mode {
+    // TODO update Map In Ipad Mode
+    [self.route.places addObject:placeVC.place];
+    [self.tableView reloadData];
+}
+
+#pragma actions implementations
+
+- (IBAction)saveAction:(UIButton *)sender {
+    NSLog(@"save");
+}
+
+- (IBAction)doneAction:(UIButton *)sender {
+    NSLog(@"done");
 }
 
 #pragma mark UITableView methods
@@ -71,7 +92,7 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return [placePrivate count];
+    return [self.route.places count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -80,12 +101,26 @@
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
     }
-    cell.textLabel.text = ((RouteEntity*)[placePrivate objectAtIndex:indexPath.row]).name;
+    cell.textLabel.text = ((PlaceEntity *)[self.route.places objectAtIndex:indexPath.row]).name;
+    cell.detailTextLabel.text = ((PlaceEntity *)[self.route.places objectAtIndex:indexPath.row]).comment;
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     NSLog(@"selected %i",indexPath.row);
+    PlaceViewController *place = [[PlaceViewController alloc] init];
+    place.mode = PlaceModeChoose;
+    place.delegate = self;
+    place.place = [self.route.places objectAtIndex:indexPath.row];
+    [self.navigationController pushViewController:place animated:YES];
+    [place release];
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        [self.route.places removeObjectAtIndex:indexPath.row];
+        [self.tableView reloadData];
+    }
 }
 
 @end

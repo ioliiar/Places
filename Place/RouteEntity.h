@@ -12,6 +12,6 @@
 
 @property (nonatomic, assign) NSInteger Id;
 @property (nonatomic, copy) NSString *name;
-@property (nonatomic, copy) NSArray *places;
+@property (nonatomic, retain) NSMutableArray *places;
 
 @end

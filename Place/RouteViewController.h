@@ -7,9 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+@class RouteEntity;
 
 @interface RouteViewController : UIViewController<UITableViewDataSource, UITableViewDelegate>
 
-@property (nonatomic, copy) NSArray *places; // route entities
+@property (retain, nonatomic) RouteEntity *route; // route entities
+@property (retain, nonatomic) IBOutlet UITableView *tableView;
+- (IBAction)saveAction:(UIButton *)sender;
+- (IBAction)doneAction:(UIButton *)sender;
 
 @end

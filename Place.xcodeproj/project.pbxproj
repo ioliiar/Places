@@ -18,10 +18,10 @@
 		2506354D1704821300DBA7BA /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2506354C1704821300DBA7BA /* Default-568h@2x.png */; };
 		250635501704821300DBA7BA /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2506354F1704821300DBA7BA /* MasterViewController.m */; };
 		250635531704821300DBA7BA /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 250635521704821300DBA7BA /* DetailViewController.m */; };
-		250635561704821300DBA7BA /* MasterViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 250635541704821300DBA7BA /* MasterViewController_iPhone.xib */; };
-		250635591704821300DBA7BA /* MasterViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 250635571704821300DBA7BA /* MasterViewController_iPad.xib */; };
-		2506355C1704821300DBA7BA /* DetailViewController_iPhone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2506355A1704821300DBA7BA /* DetailViewController_iPhone.xib */; };
-		2506355F1704821300DBA7BA /* DetailViewController_iPad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2506355D1704821300DBA7BA /* DetailViewController_iPad.xib */; };
+		250635561704821300DBA7BA /* MasterViewController~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 250635541704821300DBA7BA /* MasterViewController~iphone.xib */; };
+		250635591704821300DBA7BA /* MasterViewController~ipad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 250635571704821300DBA7BA /* MasterViewController~ipad.xib */; };
+		2506355C1704821300DBA7BA /* DetailViewController~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2506355A1704821300DBA7BA /* DetailViewController~iphone.xib */; };
+		2506355F1704821300DBA7BA /* DetailViewController~ipad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2506355D1704821300DBA7BA /* DetailViewController~ipad.xib */; };
 		2506356A170489C700DBA7BA /* RequestDispatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = 25063569170489C700DBA7BA /* RequestDispatcher.m */; };
 		2506356D17048E9000DBA7BA /* DBHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 2506356C17048E9000DBA7BA /* DBHandler.m */; };
 		2506356F17048EAA00DBA7BA /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2506356E17048EAA00DBA7BA /* libsqlite3.dylib */; };
@@ -33,18 +33,14 @@
 		2598012C1705AF160025806D /* PlaceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2598012A1705AF160025806D /* PlaceViewController.m */; };
 		2598012D1705AF160025806D /* PlaceViewController~ipad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2598012B1705AF160025806D /* PlaceViewController~ipad.xib */; };
 		259801311705AF920025806D /* PlaceViewController~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 259801301705AF920025806D /* PlaceViewController~iphone.xib */; };
-		259801351705D9130025806D /* SearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 259801331705D9130025806D /* SearchViewController.m */; };
-		259801361705D9130025806D /* SearchViewController~ipad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 259801341705D9130025806D /* SearchViewController~ipad.xib */; };
-		259801381705D93E0025806D /* SearchViewController~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 259801371705D93E0025806D /* SearchViewController~iphone.xib */; };
 		25DA641B1709AD2100F04710 /* RouteEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 25DA641A1709AD2100F04710 /* RouteEntity.m */; };
 		25DA641F1709AE3600F04710 /* RouteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25DA641D1709AE3600F04710 /* RouteViewController.m */; };
 		25DA64201709AE3600F04710 /* RouteViewController~ipad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25DA641E1709AE3600F04710 /* RouteViewController~ipad.xib */; };
 		25DA64221709AE5F00F04710 /* RouteViewController~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25DA64211709AE5F00F04710 /* RouteViewController~iphone.xib */; };
 		25DA642B1709BB8900F04710 /* question-mark.png in Resources */ = {isa = PBXBuildFile; fileRef = 25DA642A1709BB8900F04710 /* question-mark.png */; };
 		25DA642D1709BD9B00F04710 /* question-mark~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 25DA642C1709BD9B00F04710 /* question-mark~ipad.png */; };
-		25DA64331709C0D700F04710 /* CommonViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25DA64311709C0D700F04710 /* CommonViewController.m */; };
-		25DA64341709C0D700F04710 /* CommonViewController~ipad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25DA64321709C0D700F04710 /* CommonViewController~ipad.xib */; };
-		25DA64361709C0FC00F04710 /* CommonViewController~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25DA64351709C0FC00F04710 /* CommonViewController~iphone.xib */; };
+		25E8ACC9171424440096EDBC /* MenuPopController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25E8ACC7171424440096EDBC /* MenuPopController.m */; };
+		25E8ACCA171424440096EDBC /* MenuPopController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25E8ACC8171424440096EDBC /* MenuPopController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -65,10 +61,10 @@
 		2506354F1704821300DBA7BA /* MasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MasterViewController.m; sourceTree = "<group>"; };
 		250635511704821300DBA7BA /* DetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
 		250635521704821300DBA7BA /* DetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
-		250635551704821300DBA7BA /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MasterViewController_iPhone.xib; sourceTree = "<group>"; };
-		250635581704821300DBA7BA /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MasterViewController_iPad.xib; sourceTree = "<group>"; };
-		2506355B1704821300DBA7BA /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/DetailViewController_iPhone.xib; sourceTree = "<group>"; };
-		2506355E1704821300DBA7BA /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/DetailViewController_iPad.xib; sourceTree = "<group>"; };
+		250635551704821300DBA7BA /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = "en.lproj/MasterViewController~iphone.xib"; sourceTree = "<group>"; };
+		250635581704821300DBA7BA /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = "en.lproj/MasterViewController~ipad.xib"; sourceTree = "<group>"; };
+		2506355B1704821300DBA7BA /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = "en.lproj/DetailViewController~iphone.xib"; sourceTree = "<group>"; };
+		2506355E1704821300DBA7BA /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = "en.lproj/DetailViewController~ipad.xib"; sourceTree = "<group>"; };
 		25063567170488CE00DBA7BA /* Localization.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Localization.h; sourceTree = "<group>"; };
 		25063568170489C700DBA7BA /* RequestDispatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RequestDispatcher.h; sourceTree = "<group>"; };
 		25063569170489C700DBA7BA /* RequestDispatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RequestDispatcher.m; sourceTree = "<group>"; };
@@ -87,10 +83,6 @@
 		2598012A1705AF160025806D /* PlaceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaceViewController.m; sourceTree = "<group>"; };
 		2598012B1705AF160025806D /* PlaceViewController~ipad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "PlaceViewController~ipad.xib"; sourceTree = "<group>"; };
 		259801301705AF920025806D /* PlaceViewController~iphone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "PlaceViewController~iphone.xib"; sourceTree = "<group>"; };
-		259801321705D9120025806D /* SearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchViewController.h; sourceTree = "<group>"; };
-		259801331705D9130025806D /* SearchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchViewController.m; sourceTree = "<group>"; };
-		259801341705D9130025806D /* SearchViewController~ipad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "SearchViewController~ipad.xib"; sourceTree = "<group>"; };
-		259801371705D93E0025806D /* SearchViewController~iphone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "SearchViewController~iphone.xib"; sourceTree = "<group>"; };
 		25DA64191709AD2100F04710 /* RouteEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RouteEntity.h; sourceTree = "<group>"; };
 		25DA641A1709AD2100F04710 /* RouteEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RouteEntity.m; sourceTree = "<group>"; };
 		25DA641C1709AE3600F04710 /* RouteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RouteViewController.h; sourceTree = "<group>"; };
@@ -99,10 +91,9 @@
 		25DA64211709AE5F00F04710 /* RouteViewController~iphone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "RouteViewController~iphone.xib"; sourceTree = "<group>"; };
 		25DA642A1709BB8900F04710 /* question-mark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "question-mark.png"; path = "Images/question-mark.png"; sourceTree = "<group>"; };
 		25DA642C1709BD9B00F04710 /* question-mark~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "question-mark~ipad.png"; path = "Images/question-mark~ipad.png"; sourceTree = "<group>"; };
-		25DA64301709C0D700F04710 /* CommonViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonViewController.h; sourceTree = "<group>"; };
-		25DA64311709C0D700F04710 /* CommonViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommonViewController.m; sourceTree = "<group>"; };
-		25DA64321709C0D700F04710 /* CommonViewController~ipad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "CommonViewController~ipad.xib"; sourceTree = "<group>"; };
-		25DA64351709C0FC00F04710 /* CommonViewController~iphone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "CommonViewController~iphone.xib"; sourceTree = "<group>"; };
+		25E8ACC6171424430096EDBC /* MenuPopController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuPopController.h; sourceTree = "<group>"; };
+		25E8ACC7171424440096EDBC /* MenuPopController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuPopController.m; sourceTree = "<group>"; };
+		25E8ACC8171424440096EDBC /* MenuPopController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuPopController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -157,15 +148,14 @@
 			children = (
 				250635451704821200DBA7BA /* AppDelegate.h */,
 				250635461704821200DBA7BA /* AppDelegate.m */,
-				250635511704821300DBA7BA /* DetailViewController.h */,
-				250635521704821300DBA7BA /* DetailViewController.m */,
-				2506354E1704821300DBA7BA /* MasterViewController.h */,
-				2506354F1704821300DBA7BA /* MasterViewController.m */,
-				25DA642F1709C06C00F04710 /* P&R */,
+				25E8ACCC17142EDF0096EDBC /* Detail */,
+				25E8ACCB17142ECA0096EDBC /* Master */,
+				25E8ACC6171424430096EDBC /* MenuPopController.h */,
+				25E8ACC7171424440096EDBC /* MenuPopController.m */,
+				25E8ACC8171424440096EDBC /* MenuPopController.xib */,
 				259801281705A2680025806D /* Place_Model */,
 				250635651704889200DBA7BA /* Resources */,
 				25DA64181709ACEF00F04710 /* Route_Model */,
-				25DA642E1709BEEE00F04710 /* Search */,
 				2506353D1704821200DBA7BA /* Supporting Files */,
 				250635661704889F00DBA7BA /* Utility */,
 			);
@@ -191,10 +181,6 @@
 			children = (
 				253CBFB51712CDBE00C3DA3B /* Places.sqlite */,
 				25DA64291709BB7300F04710 /* Images */,
-				250635541704821300DBA7BA /* MasterViewController_iPhone.xib */,
-				250635571704821300DBA7BA /* MasterViewController_iPad.xib */,
-				2506355A1704821300DBA7BA /* DetailViewController_iPhone.xib */,
-				2506355D1704821300DBA7BA /* DetailViewController_iPad.xib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -249,26 +235,26 @@
 			name = Images;
 			sourceTree = "<group>";
 		};
-		25DA642E1709BEEE00F04710 /* Search */ = {
+		25E8ACCB17142ECA0096EDBC /* Master */ = {
 			isa = PBXGroup;
 			children = (
-				259801321705D9120025806D /* SearchViewController.h */,
-				259801331705D9130025806D /* SearchViewController.m */,
-				259801341705D9130025806D /* SearchViewController~ipad.xib */,
-				259801371705D93E0025806D /* SearchViewController~iphone.xib */,
+				2506354E1704821300DBA7BA /* MasterViewController.h */,
+				2506354F1704821300DBA7BA /* MasterViewController.m */,
+				250635541704821300DBA7BA /* MasterViewController~iphone.xib */,
+				250635571704821300DBA7BA /* MasterViewController~ipad.xib */,
 			);
-			name = Search;
+			name = Master;
 			sourceTree = "<group>";
 		};
-		25DA642F1709C06C00F04710 /* P&R */ = {
+		25E8ACCC17142EDF0096EDBC /* Detail */ = {
 			isa = PBXGroup;
 			children = (
-				25DA64301709C0D700F04710 /* CommonViewController.h */,
-				25DA64311709C0D700F04710 /* CommonViewController.m */,
-				25DA64351709C0FC00F04710 /* CommonViewController~iphone.xib */,
-				25DA64321709C0D700F04710 /* CommonViewController~ipad.xib */,
+				250635511704821300DBA7BA /* DetailViewController.h */,
+				250635521704821300DBA7BA /* DetailViewController.m */,
+				2506355A1704821300DBA7BA /* DetailViewController~iphone.xib */,
+				2506355D1704821300DBA7BA /* DetailViewController~ipad.xib */,
 			);
-			name = "P&R";
+			name = Detail;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -326,21 +312,18 @@
 				250635491704821300DBA7BA /* Default.png in Resources */,
 				2506354B1704821300DBA7BA /* Default@2x.png in Resources */,
 				2506354D1704821300DBA7BA /* Default-568h@2x.png in Resources */,
-				250635561704821300DBA7BA /* MasterViewController_iPhone.xib in Resources */,
-				250635591704821300DBA7BA /* MasterViewController_iPad.xib in Resources */,
-				2506355C1704821300DBA7BA /* DetailViewController_iPhone.xib in Resources */,
-				2506355F1704821300DBA7BA /* DetailViewController_iPad.xib in Resources */,
+				250635561704821300DBA7BA /* MasterViewController~iphone.xib in Resources */,
+				250635591704821300DBA7BA /* MasterViewController~ipad.xib in Resources */,
+				2506355C1704821300DBA7BA /* DetailViewController~iphone.xib in Resources */,
+				2506355F1704821300DBA7BA /* DetailViewController~ipad.xib in Resources */,
 				2598012D1705AF160025806D /* PlaceViewController~ipad.xib in Resources */,
 				259801311705AF920025806D /* PlaceViewController~iphone.xib in Resources */,
-				259801361705D9130025806D /* SearchViewController~ipad.xib in Resources */,
-				259801381705D93E0025806D /* SearchViewController~iphone.xib in Resources */,
 				25DA64201709AE3600F04710 /* RouteViewController~ipad.xib in Resources */,
 				25DA64221709AE5F00F04710 /* RouteViewController~iphone.xib in Resources */,
 				25DA642B1709BB8900F04710 /* question-mark.png in Resources */,
 				25DA642D1709BD9B00F04710 /* question-mark~ipad.png in Resources */,
-				25DA64341709C0D700F04710 /* CommonViewController~ipad.xib in Resources */,
-				25DA64361709C0FC00F04710 /* CommonViewController~iphone.xib in Resources */,
 				253CBFB61712CDBE00C3DA3B /* Places.sqlite in Resources */,
+				25E8ACCA171424440096EDBC /* MenuPopController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -360,10 +343,9 @@
 				259801201705992A0025806D /* ResourceLoader.m in Sources */,
 				259801271705A25D0025806D /* PlaceEntity.m in Sources */,
 				2598012C1705AF160025806D /* PlaceViewController.m in Sources */,
-				259801351705D9130025806D /* SearchViewController.m in Sources */,
 				25DA641B1709AD2100F04710 /* RouteEntity.m in Sources */,
 				25DA641F1709AE3600F04710 /* RouteViewController.m in Sources */,
-				25DA64331709C0D700F04710 /* CommonViewController.m in Sources */,
+				25E8ACC9171424440096EDBC /* MenuPopController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -378,36 +360,36 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		250635541704821300DBA7BA /* MasterViewController_iPhone.xib */ = {
+		250635541704821300DBA7BA /* MasterViewController~iphone.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				250635551704821300DBA7BA /* en */,
 			);
-			name = MasterViewController_iPhone.xib;
+			name = "MasterViewController~iphone.xib";
 			sourceTree = "<group>";
 		};
-		250635571704821300DBA7BA /* MasterViewController_iPad.xib */ = {
+		250635571704821300DBA7BA /* MasterViewController~ipad.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				250635581704821300DBA7BA /* en */,
 			);
-			name = MasterViewController_iPad.xib;
+			name = "MasterViewController~ipad.xib";
 			sourceTree = "<group>";
 		};
-		2506355A1704821300DBA7BA /* DetailViewController_iPhone.xib */ = {
+		2506355A1704821300DBA7BA /* DetailViewController~iphone.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				2506355B1704821300DBA7BA /* en */,
 			);
-			name = DetailViewController_iPhone.xib;
+			name = "DetailViewController~iphone.xib";
 			sourceTree = "<group>";
 		};
-		2506355D1704821300DBA7BA /* DetailViewController_iPad.xib */ = {
+		2506355D1704821300DBA7BA /* DetailViewController~ipad.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				2506355E1704821300DBA7BA /* en */,
 			);
-			name = DetailViewController_iPad.xib;
+			name = "DetailViewController~ipad.xib";
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

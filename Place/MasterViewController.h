@@ -13,5 +13,6 @@
 @interface MasterViewController : UITableViewController
 
 @property (strong, nonatomic) DetailViewController *detailViewController;
+@property (retain, nonatomic) IBOutlet UISearchBar *mySearchBar;
 
 @end
