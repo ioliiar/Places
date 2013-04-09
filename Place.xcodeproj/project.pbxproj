@@ -97,7 +97,6 @@
 		C5270914171332CA0050B054 /* 7.png in Resources */ = {isa = PBXBuildFile; fileRef = C52708E4171332CA0050B054 /* 7.png */; };
 		C5270915171332CA0050B054 /* 8.png in Resources */ = {isa = PBXBuildFile; fileRef = C52708E5171332CA0050B054 /* 8.png */; };
 		C5270916171332CA0050B054 /* 9.png in Resources */ = {isa = PBXBuildFile; fileRef = C52708E6171332CA0050B054 /* 9.png */; };
-		C5AAEFEF1714188F00A70464 /* PLPlace.m in Sources */ = {isa = PBXBuildFile; fileRef = C5AAEFEE1714188F00A70464 /* PLPlace.m */; };
 		C5AAEFF2171418D100A70464 /* PLPlaceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C5AAEFF1171418D100A70464 /* PLPlaceManager.m */; };
 /* End PBXBuildFile section */
 
@@ -213,8 +212,6 @@
 		C52708E4171332CA0050B054 /* 7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 7.png; sourceTree = "<group>"; };
 		C52708E5171332CA0050B054 /* 8.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 8.png; sourceTree = "<group>"; };
 		C52708E6171332CA0050B054 /* 9.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 9.png; sourceTree = "<group>"; };
-		C5AAEFED1714188F00A70464 /* PLPlace.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PLPlace.h; sourceTree = "<group>"; };
-		C5AAEFEE1714188F00A70464 /* PLPlace.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PLPlace.m; sourceTree = "<group>"; };
 		C5AAEFF0171418D100A70464 /* PLPlaceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PLPlaceManager.h; sourceTree = "<group>"; };
 		C5AAEFF1171418D100A70464 /* PLPlaceManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PLPlaceManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -275,7 +272,6 @@
 				250635521704821300DBA7BA /* DetailViewController.m */,
 				2506354E1704821300DBA7BA /* MasterViewController.h */,
 				2506354F1704821300DBA7BA /* MasterViewController.m */,
-				C5AAEFE81714179C00A70464 /* Places */,
 				C527089E17132F270050B054 /* Weather */,
 				25DA642F1709C06C00F04710 /* P&R */,
 				259801281705A2680025806D /* Place_Model */,
@@ -335,6 +331,8 @@
 		259801281705A2680025806D /* Place_Model */ = {
 			isa = PBXGroup;
 			children = (
+				C5AAEFF0171418D100A70464 /* PLPlaceManager.h */,
+				C5AAEFF1171418D100A70464 /* PLPlaceManager.m */,
 				259801251705A25D0025806D /* PlaceEntity.h */,
 				259801261705A25D0025806D /* PlaceEntity.m */,
 				259801291705AF160025806D /* PlaceViewController.h */,
@@ -456,17 +454,6 @@
 				C52708E6171332CA0050B054 /* 9.png */,
 			);
 			path = "weather icon";
-			sourceTree = "<group>";
-		};
-		C5AAEFE81714179C00A70464 /* Places */ = {
-			isa = PBXGroup;
-			children = (
-				C5AAEFED1714188F00A70464 /* PLPlace.h */,
-				C5AAEFEE1714188F00A70464 /* PLPlace.m */,
-				C5AAEFF0171418D100A70464 /* PLPlaceManager.h */,
-				C5AAEFF1171418D100A70464 /* PLPlaceManager.m */,
-			);
-			name = Places;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -614,7 +601,6 @@
 				C52708A117132F640050B054 /* WeatherParser.m in Sources */,
 				C52708A4171330100050B054 /* JSONKit.m in Sources */,
 				C52708A7171330360050B054 /* Weather.m in Sources */,
-				C5AAEFEF1714188F00A70464 /* PLPlace.m in Sources */,
 				C5AAEFF2171418D100A70464 /* PLPlaceManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
