@@ -64,7 +64,7 @@
     }
     
     NSString *defaultPath = [[[NSBundle mainBundle] resourcePath]
-                             stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.%@",kDBName,@"db"]];
+                             stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.%@",kDBName,@"sqlite"]];
     success = [fileManager copyItemAtPath:defaultPath
                                    toPath:writableDB error:&error];
     if (!success) {
@@ -96,17 +96,23 @@
         while (sqlite3_step(statement) == SQLITE_ROW) {
             PlaceEntity *place = [[PlaceEntity alloc] init];
             place.Id = sqlite3_column_int(statement, 0);
+            
             char *nm = (char *)sqlite3_column_text(statement, 1);
             place.name = (nm) ? [NSString stringWithUTF8String:nm] : @"";
-            /*place.photo
-             place.comment
-             place.dateVisited
-             place.category
-             place.latitude
-             place.longtitude
-            */
-            //TODO add another properties
             
+            char *cm = (char *)sqlite3_column_text(statement, 2);
+            place.comment = (cm) ? [NSString stringWithUTF8String:cm] : @"";
+            
+            const void *ptr = sqlite3_column_blob(statement, 3);
+            int imSize = sqlite3_column_bytes(statement, 3);
+            NSData *imData = [[NSData alloc] initWithBytes:ptr length:imSize];
+            place.photo = [UIImage imageWithData:imData];
+            
+            double since1970 = sqlite3_column_double(statement, 4);
+            place.dateVisited = [NSDate dateWithTimeIntervalSince1970:since1970];
+            place.latitude = sqlite3_column_double(statement, 5);
+            place.longtitude = sqlite3_column_double(statement, 6);
+            place.category = sqlite3_column_int(statement, 7);
             [placesArray addObject:place];
             [place release];
         }
@@ -118,10 +124,6 @@
     NSArray *result = [placesArray copy];
     [placesArray release];
     return [result autorelease];
-}
-
-- (NSArray*)getLastVisitedPlacesNamed:(NSString*)name {
-    return nil;
 }
 
 - (BOOL)insertPlace:(PlaceEntity*)place {

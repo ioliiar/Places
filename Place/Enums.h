@@ -29,7 +29,7 @@ typedef enum {
   CategoryEntertainment,
   CategoryVisited,
   CategoryCount
-} Category;
+} MyCategory;
 
 typedef enum {
     MenuRowAddPlace,

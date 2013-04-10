@@ -22,6 +22,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.contentSizeForViewInPopover = CGSizeMake(320.0, 300.0);
     UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoTapped:)];
     [self.photoImageView addGestureRecognizer:recognizer];
     [recognizer release];

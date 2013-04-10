@@ -38,8 +38,8 @@
 				<array class="NSMutableArray" key="NSSubviews">
 					<object class="IBUITableView" id="111452196">
 						<reference key="NSNextResponder" ref="766721923"/>
-						<int key="NSvFlags">274</int>
-						<string key="NSFrame">{{0, 390}, {768, 615}}</string>
+						<int key="NSvFlags">290</int>
+						<string key="NSFrame">{{0, 413}, {768, 591}}</string>
 						<reference key="NSSuperview" ref="766721923"/>
 						<reference key="NSWindow"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
@@ -157,8 +157,8 @@
 						<int key="objectID">2</int>
 						<reference key="object" ref="766721923"/>
 						<array class="NSMutableArray" key="children">
-							<reference ref="111452196"/>
 							<reference ref="521250562"/>
+							<reference ref="111452196"/>
 						</array>
 						<reference key="parent" ref="0"/>
 					</object>

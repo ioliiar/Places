@@ -22,6 +22,7 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
+        self.contentSizeForViewInPopover = CGSizeMake(320.0, 320.0);
         self.title = LOC_ROUTE;
         self.route = [[[RouteEntity alloc] init] autorelease];
     }
