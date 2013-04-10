@@ -94,7 +94,8 @@
 		25F7877B17156EA900892CB4 /* Weather.m in Sources */ = {isa = PBXBuildFile; fileRef = 25F7874417156EA900892CB4 /* Weather.m */; };
 		25F7877C17156EA900892CB4 /* WeatherManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 25F7874617156EA900892CB4 /* WeatherManager.m */; };
 		25F7877D17156EA900892CB4 /* WeatherParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 25F7874817156EA900892CB4 /* WeatherParser.m */; };
-		25F78781171574CC00892CB4 /* libobjc.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 25F78780171574CC00892CB4 /* libobjc.dylib */; };
+		25F787841715A76300892CB4 /* TextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25F787831715A76300892CB4 /* TextFieldCell.m */; };
+		25F787861715A78200892CB4 /* TextFieldCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25F787851715A78100892CB4 /* TextFieldCell.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -206,7 +207,9 @@
 		25F7874617156EA900892CB4 /* WeatherManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeatherManager.m; sourceTree = "<group>"; };
 		25F7874717156EA900892CB4 /* WeatherParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeatherParser.h; sourceTree = "<group>"; };
 		25F7874817156EA900892CB4 /* WeatherParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeatherParser.m; sourceTree = "<group>"; };
-		25F78780171574CC00892CB4 /* libobjc.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libobjc.dylib; path = usr/lib/libobjc.dylib; sourceTree = SDKROOT; };
+		25F787821715A76300892CB4 /* TextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextFieldCell.h; sourceTree = "<group>"; };
+		25F787831715A76300892CB4 /* TextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextFieldCell.m; sourceTree = "<group>"; };
+		25F787851715A78100892CB4 /* TextFieldCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextFieldCell.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -219,7 +222,6 @@
 				2506353B1704821100DBA7BA /* CoreGraphics.framework in Frameworks */,
 				2598012217059C210025806D /* MapKit.framework in Frameworks */,
 				2598012417059C2F0025806D /* CoreLocation.framework in Frameworks */,
-				25F78781171574CC00892CB4 /* libobjc.dylib in Frameworks */,
 				2506356F17048EAA00DBA7BA /* libsqlite3.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -230,9 +232,7 @@
 		2506352A1704821100DBA7BA = {
 			isa = PBXGroup;
 			children = (
-				25F78780171574CC00892CB4 /* libobjc.dylib */,
 				2506353C1704821200DBA7BA /* Place */,
-				250635351704821100DBA7BA /* Frameworks */,
 				250635341704821100DBA7BA /* Products */,
 			);
 			sourceTree = "<group>";
@@ -256,6 +256,7 @@
 				2506353A1704821100DBA7BA /* CoreGraphics.framework */,
 			);
 			name = Frameworks;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		2506353C1704821200DBA7BA /* Place */ = {
@@ -266,7 +267,6 @@
 				25E8ACCC17142EDF0096EDBC /* Detail */,
 				25E8ACCB17142ECA0096EDBC /* Master */,
 				25E8ACC6171424430096EDBC /* MenuPopController.h */,
-				25F7870D17156E4B00892CB4 /* Weather */,
 				25E8ACC7171424440096EDBC /* MenuPopController.m */,
 				25E8ACC8171424440096EDBC /* MenuPopController.xib */,
 				259801281705A2680025806D /* Place_Model */,
@@ -274,6 +274,8 @@
 				25DA64181709ACEF00F04710 /* Route_Model */,
 				2506353D1704821200DBA7BA /* Supporting Files */,
 				250635661704889F00DBA7BA /* Utility */,
+				25F7870D17156E4B00892CB4 /* Weather */,
+				250635351704821100DBA7BA /* Frameworks */,
 			);
 			path = Place;
 			sourceTree = "<group>";
@@ -321,6 +323,9 @@
 			children = (
 				259801251705A25D0025806D /* PlaceEntity.h */,
 				259801261705A25D0025806D /* PlaceEntity.m */,
+				25F787821715A76300892CB4 /* TextFieldCell.h */,
+				25F787851715A78100892CB4 /* TextFieldCell.xib */,
+				25F787831715A76300892CB4 /* TextFieldCell.m */,
 				259801291705AF160025806D /* PlaceViewController.h */,
 				2598012A1705AF160025806D /* PlaceViewController.m */,
 				2598012B1705AF160025806D /* PlaceViewController~ipad.xib */,
@@ -561,6 +566,7 @@
 				25F7877817156EA900892CB4 /* 7.png in Resources */,
 				25F7877917156EA900892CB4 /* 8.png in Resources */,
 				25F7877A17156EA900892CB4 /* 9.png in Resources */,
+				25F787861715A78200892CB4 /* TextFieldCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -588,6 +594,7 @@
 				25F7877B17156EA900892CB4 /* Weather.m in Sources */,
 				25F7877C17156EA900892CB4 /* WeatherManager.m in Sources */,
 				25F7877D17156EA900892CB4 /* WeatherParser.m in Sources */,
+				25F787841715A76300892CB4 /* TextFieldCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

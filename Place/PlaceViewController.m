@@ -7,6 +7,7 @@
 //
 
 #import "PlaceViewController.h"
+#import "TextFieldCell.h"
 
 @interface PlaceViewController ()
 
@@ -20,9 +21,14 @@
 @synthesize detailTableView;
 @synthesize photoImageView;
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    self.contentSizeForViewInPopover = CGSizeMake(320.0, 300.0);
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.contentSizeForViewInPopover = CGSizeMake(320.0, 300.0);
+   
     UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoTapped:)];
     [self.photoImageView addGestureRecognizer:recognizer];
     [recognizer release];
@@ -114,27 +120,33 @@
     return 1;
 }
 
+
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    static NSString *CellIdentifier = @"TextFieldCell";
+    TextFieldCell *cell = (TextFieldCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
-        cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        //cell = [[[TextFieldCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        NSArray *nib = [[NSBundle mainBundle] loadNibNamed:CellIdentifier owner:self options:nil];
+        cell = (TextFieldCell *)[nib objectAtIndex:0];
     }
+    
     switch (indexPath.row) {
         case DescriptionRowName:
-            cell.textLabel.text = LOC_NAME;
+            cell.whatLabel.text = LOC_NAME;
+            cell.valueTextField.text = self.place.name;
             break;
         case DescriptionRowComment:
-            cell.textLabel.text = LOC_COMMENT;
+            cell.whatLabel.text = LOC_COMMENT;
             break;
         case DescriptionRowCategory:
-            cell.textLabel.text = LOC_CATEGORY;
+            cell.whatLabel.text = LOC_CATEGORY;
             break;
         case DescriptionRowDateVisited:
             if (self.place.dateVisited == nil) {
                 self.place.dateVisited =  [NSDate date];
             }
-            cell.textLabel.text = [NSString stringWithFormat:@"%@: \t %@", LOC_DATE_VISITED,
+            cell.detailTextLabel.text = [NSString stringWithFormat:@"%@: \t %@", LOC_DATE_VISITED,
                                    [NSDateFormatter localizedStringFromDate:self.place.dateVisited
                                                                   dateStyle:NSDateFormatterMediumStyle
                                                                   timeStyle:NSDateFormatterShortStyle]];

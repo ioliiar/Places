@@ -65,7 +65,7 @@
     [formatter setDateFormat:@"EEE, dd MMM yyyy h:mm a"];
     
     resultDate = [formatter dateFromString:dateStr];
-    
+    [formatter release];
     return resultDate;
 }
 
@@ -79,7 +79,7 @@
     [formatter setDateFormat:@"d MMM yyyy"];
     
     resultDate = [formatter dateFromString:dateStr];
-    
+    [formatter release];
     return resultDate;
 }
 

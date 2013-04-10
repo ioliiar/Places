@@ -13,13 +13,17 @@
 #import "MenuPopController.h"
 
 #import "DBHandler.h"
+#import "RouteEntity.h"
+#import "PlaceEntity.h"
 
-@interface MasterViewController ()<UIActionSheetDelegate, UIPopoverControllerDelegate, MenuPopControllerDelegate>
+@interface MasterViewController ()<UIActionSheetDelegate, UIPopoverControllerDelegate, MenuPopControllerDelegate, UISearchBarDelegate>
 
 @property (nonatomic, copy) NSArray *routes;
 @property (nonatomic, copy) NSArray *places;
 @property (nonatomic, retain) DBHandler *dbHandler;
 @property (nonatomic, retain) UIPopoverController *popController;
+@property (nonatomic, retain) NSMutableArray *filteredPlaces;
+@property (nonatomic, retain) NSMutableArray *filteredRoutes;
 
 @end
 
@@ -34,11 +38,9 @@
     if (self) {
         self.title = LOC_MY_PLACES;
         self.dbHandler = [[[DBHandler alloc] init] autorelease];
-        self.places = [self.dbHandler getPlacesByName:nil];
-        self.routes = [self.dbHandler getRouteNamed:nil];
         
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-            self.clearsSelectionOnViewWillAppear = NO;
+            self.clearsSelectionOnViewWillAppear = YES;
             self.contentSizeForViewInPopover = CGSizeMake(300.0, 600.0);
         }
     }
@@ -53,6 +55,18 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    dispatch_queue_t queue = dispatch_queue_create("BaseStart", nil);
+    dispatch_async(queue, ^ {
+        self.places = [self.dbHandler getPlacesByName:nil];
+        self.routes = [self.dbHandler getRouteNamed:nil];
+        _filteredPlaces = [[self.places mutableCopy] retain];
+        _filteredRoutes = [[self.routes mutableCopy] retain];
+
+        dispatch_sync(dispatch_get_main_queue(), ^ {
+            [self.tableView reloadData];
+        });
+    });
     UIBarButtonItem *rb = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                                                                         target:self
                                                                         action:@selector(menuAction:)];
@@ -90,7 +104,7 @@
     } else {
         MenuPopController *menu = [[MenuPopController alloc] init];
         menu.delegate = self;
-        self.popController = [[UIPopoverController alloc] initWithContentViewController:menu];
+        self.popController = [[[UIPopoverController alloc] initWithContentViewController:menu] autorelease];
         [self.popController setPopoverContentSize:CGSizeMake(300, 88)];
         [self.popController presentPopoverFromBarButtonItem:self.navigationItem.rightBarButtonItem
                                    permittedArrowDirections:UIPopoverArrowDirectionAny
@@ -115,9 +129,9 @@
             [route release];
         } break;
         case MenuRowGoToMap: {
-            self.detailViewController = [[DetailViewController alloc] init];
+            self.detailViewController = nil;
+            self.detailViewController = [[[DetailViewController alloc] init] autorelease];
             [self.navigationController pushViewController:self.detailViewController animated:YES];
-            [self.detailViewController release];
         } break;
         case -1:
             NSLog(@"Cancelled");
@@ -151,9 +165,6 @@
 
 #pragma mark UITableview methods
 
-- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
-    return [[[UIView alloc] init] autorelease];
-}
 
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     UILabel *lbl = [[[UILabel alloc] init] autorelease];
@@ -181,10 +192,10 @@
     NSInteger counter;
     switch (section) {
         case CategorySectionPlace:
-            counter = [places count];
+            counter = [_filteredPlaces count];
             break;
         case CategorySectionRoute:
-            counter = [routes count];
+            counter = [_filteredRoutes count];
             break;
         default:
             counter = 0;
@@ -202,10 +213,10 @@
     }
     switch (indexPath.section) {
         case CategorySectionPlace:
-            cell.textLabel.text = [places objectAtIndex:indexPath.row];
+            cell.textLabel.text = ((PlaceEntity *)[_filteredPlaces objectAtIndex:indexPath.row]).name;
             break;
         case CategorySectionRoute:
-            cell.textLabel.text = [routes objectAtIndex:indexPath.row];
+            cell.textLabel.text = ((RouteEntity *)[_filteredRoutes objectAtIndex:indexPath.row]).name;
             break;
         default:
             NSLog(@"Unknown Place - Route");
@@ -218,13 +229,15 @@
     switch (indexPath.section) {
         case CategorySectionPlace: {
             PlaceViewController *pl = [[PlaceViewController alloc] init];
-            pl.place = [self.places objectAtIndex:indexPath.row];
+            pl.place = [self.filteredPlaces objectAtIndex:indexPath.row];
+            [self.navigationController pushViewController:pl animated:YES];
             [pl release];
         }
             break;
         case CategorySectionRoute: {
             RouteViewController *rt = [[RouteViewController alloc] init];
-            rt.route = [self.routes objectAtIndex:indexPath.row];
+            rt.route = [self.filteredRoutes objectAtIndex:indexPath.row];
+            [self.navigationController pushViewController:rt animated:YES];
             [rt release];
         }
             break;
@@ -238,17 +251,56 @@
 
 #pragma mark UISearchBar delegate methods
 
-- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {}
+- (void)filterUsingText:(NSString *)word {
+    word = [word lowercaseString];
+    if ([word isEqualToString:@""]) {
+        _filteredPlaces = [[self.places mutableCopy] retain];
+        _filteredRoutes = [[self.routes mutableCopy] retain];
+        [self.tableView reloadData];
+        return;
+    }
+    
+    [_filteredRoutes removeAllObjects];
+    for (int i = 0; i < [_filteredRoutes count]; i++) {
+        RouteEntity *route = [_filteredRoutes objectAtIndex:i];
+        if ([word rangeOfString:route.name].location != NSNotFound) {
+            [self.filteredRoutes addObject:route];
+        }
+    }
+    [_filteredPlaces removeAllObjects];
+    for (int j = 0; j < [places count]; j++) {
+        PlaceEntity *pl = [places objectAtIndex:j];
+        if ([[pl.name lowercaseString] rangeOfString:word].location != NSNotFound) {
+            [self.filteredPlaces addObject:pl];
+        }
+    }
+    [self.tableView reloadData];
+}
 
-- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar {}
 
-- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {}
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
+    searchBar.showsCancelButton = YES;
+}
 
-- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {}
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    searchBar.showsCancelButton = YES;
+    [self filterUsingText:searchText];
+}
 
-- (void)searchBarCancelButtonClicked:(UISearchBar *) searchBar {}
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    [searchBar resignFirstResponder];
+    searchBar.showsCancelButton = NO;
+    [self filterUsingText:searchBar.text];
+}
 
-- (void)searchBarResultsListButtonClicked:(UISearchBar *)searchBar {}
+- (void)searchBarCancelButtonClicked:(UISearchBar *) searchBar {
+    [searchBar resignFirstResponder];
+    searchBar.showsCancelButton = NO;
+    searchBar.text = @"";
+    _filteredPlaces = [[self.places mutableCopy] retain];
+    _filteredRoutes = [[self.routes mutableCopy] retain];
+    [self.tableView reloadData];
 
+}
 
 @end

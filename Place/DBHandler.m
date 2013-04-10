@@ -107,7 +107,7 @@
             int imSize = sqlite3_column_bytes(statement, 3);
             NSData *imData = [[NSData alloc] initWithBytes:ptr length:imSize];
             place.photo = [UIImage imageWithData:imData];
-            
+            [imData release];
             double since1970 = sqlite3_column_double(statement, 4);
             place.dateVisited = [NSDate dateWithTimeIntervalSince1970:since1970];
             place.latitude = sqlite3_column_double(statement, 5);
