@@ -43,7 +43,7 @@
 }
 
 - (void)requestWeatherForPlace:(CLLocationCoordinate2D)location {
-
+    
 }
 
 - (void)requestRoute:(NSArray *)routePoints options:(NSDictionary *)options {
