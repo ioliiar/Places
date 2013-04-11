@@ -11,7 +11,7 @@
 @class RequestDispatcher;
 @class Response;
 
-@protocol RequestDispatcherProtocol <NSObject>
+@protocol RequestDispatcherDelegate <NSObject>
 @required
 -(void)request:(RequestDispatcher*)request didFinishedWithResponse:(Response*)response;
 
@@ -29,7 +29,7 @@
 @interface RequestDispatcher : NSObject 
 
 @property (nonatomic, assign) RequestType type;
-@property (nonatomic, assign) id<RequestDispatcherProtocol> delegate;
+@property (nonatomic, assign) id<RequestDispatcherDelegate> delegate;
 
 - (void)requestWeatherForPlace:(CLLocationCoordinate2D)location;
 - (void)requestRoute:(NSArray*)routePoints options:(NSDictionary *)options;

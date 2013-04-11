@@ -41,7 +41,7 @@
         
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
             self.clearsSelectionOnViewWillAppear = YES;
-            self.contentSizeForViewInPopover = CGSizeMake(300.0, 600.0);
+            self.contentSizeForViewInPopover = CGSizeMake(320.0, 600.0);
         }
     }
     return self;
@@ -105,7 +105,7 @@
         MenuPopController *menu = [[MenuPopController alloc] init];
         menu.delegate = self;
         self.popController = [[[UIPopoverController alloc] initWithContentViewController:menu] autorelease];
-        [self.popController setPopoverContentSize:CGSizeMake(300, 88)];
+        [self.popController setPopoverContentSize:CGSizeMake(320, 88)];
         [self.popController presentPopoverFromBarButtonItem:self.navigationItem.rightBarButtonItem
                                    permittedArrowDirections:UIPopoverArrowDirectionAny
                                                    animated:YES];
@@ -172,10 +172,10 @@
     lbl.backgroundColor = [UIColor redColor];
     switch (section) {
         case CategorySectionPlace:
-            lbl.text = @"Route";
+            lbl.text = @"Place";
             break;
         case CategorySectionRoute:
-            lbl.text = @"Place";
+            lbl.text = @"Route";
             break;
         default:
             NSLog(@"Unknown header");
@@ -252,7 +252,6 @@
 #pragma mark UISearchBar delegate methods
 
 - (void)filterUsingText:(NSString *)word {
-    word = [word lowercaseString];
     if ([word isEqualToString:@""]) {
         _filteredPlaces = [[self.places mutableCopy] retain];
         _filteredRoutes = [[self.routes mutableCopy] retain];
@@ -263,14 +262,16 @@
     [_filteredRoutes removeAllObjects];
     for (int i = 0; i < [_filteredRoutes count]; i++) {
         RouteEntity *route = [_filteredRoutes objectAtIndex:i];
-        if ([word rangeOfString:route.name].location != NSNotFound) {
+        if ([word rangeOfString:route.name options:NSCaseInsensitiveSearch].location != NSNotFound) {
             [self.filteredRoutes addObject:route];
         }
     }
+    
+        
     [_filteredPlaces removeAllObjects];
     for (int j = 0; j < [places count]; j++) {
         PlaceEntity *pl = [places objectAtIndex:j];
-        if ([[pl.name lowercaseString] rangeOfString:word].location != NSNotFound) {
+        if ([pl.name  rangeOfString:word options:NSCaseInsensitiveSearch].location != NSNotFound) {
             [self.filteredPlaces addObject:pl];
         }
     }

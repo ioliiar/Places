@@ -9,6 +9,8 @@
 
 #define LOC_OK              NSLocalizedStringWithDefaultValue(@"LOC_OK",            nil, [NSBundle mainBundle], @"OK", @"OK")
 #define LOC_CANCEL          NSLocalizedStringWithDefaultValue(@"LOC_CANCEL",        nil, [NSBundle mainBundle], @"Cancel", @"Cancel")
+#define LOC_YES             NSLocalizedStringWithDefaultValue(@"LOC_YES",           nil, [NSBundle mainBundle], @"YES", @"YES")
+#define LOC_NO              NSLocalizedStringWithDefaultValue(@"LOC_NO",            nil, [NSBundle mainBundle], @"NO", @"NO")
 #define LOC_DONE            NSLocalizedStringWithDefaultValue(@"LOC_DONE",          nil, [NSBundle mainBundle], @"Done", @"Done")
 #define LOC_MENU            NSLocalizedStringWithDefaultValue(@"LOC_MENU",          nil, [NSBundle mainBundle], @"Menu", @"Menu")
 #define LOC_MAP             NSLocalizedStringWithDefaultValue(@"LOC_MAP",           nil, [NSBundle mainBundle], @"Map", @"Map")

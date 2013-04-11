@@ -10,8 +10,9 @@
 #import "PlaceViewController.h"
 
 #import "RouteEntity.h"
+#import "RequestDispatcher.h"
 
-@interface RouteViewController ()<PlaceViewControllerDelegate>
+@interface RouteViewController ()<PlaceViewControllerDelegate, UIAlertViewDelegate, RequestDispatcherDelegate>
 
 @end
 
@@ -25,6 +26,7 @@
         self.contentSizeForViewInPopover = CGSizeMake(320.0, 320.0);
         self.title = LOC_ROUTE;
         self.route = [[[RouteEntity alloc] init] autorelease];
+        self.route.places = [NSMutableArray arrayWithCapacity:8];
     }
     return self;
 }
@@ -60,13 +62,22 @@
 #pragma mark BarButton Actions
 
 - (void)addPlace:(UIBarButtonItem *)sender {
-    // TODO add map chooser variant
-    if ([self.route.places count] < 8) {
-        PlaceViewController *place = [[PlaceViewController alloc] init];
-        place.mode = PlaceModeChoose;
-        place.delegate = self;
-        [self.navigationController pushViewController:place animated:YES];
-        [place release];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        UIAlertView *sh = [[UIAlertView alloc] initWithTitle:@"Show on Map"
+                                                     message:nil
+                                                    delegate:self
+                                           cancelButtonTitle:LOC_NO
+                                           otherButtonTitles:LOC_YES, nil];
+        [sh show];
+        [sh release];
+    } else {
+        if ([self.route.places count] < 8) {
+            PlaceViewController *place = [[PlaceViewController alloc] init];
+            place.mode = PlaceModeChoose;
+            place.delegate = self;
+            [self.navigationController pushViewController:place animated:YES];
+            [place release];
+        }
     }
 }
 
@@ -74,6 +85,21 @@
     // TODO update Map In Ipad Mode
     [self.route.places addObject:placeVC.place];
     [self.tableView reloadData];
+}
+
+#pragma mark uialertview delgate method
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    // TODO handle YES variant i.e show map for choosing
+    if (buttonIndex == 0) {
+        if ([self.route.places count] < 8) {
+            PlaceViewController *place = [[PlaceViewController alloc] init];
+            place.mode = PlaceModeChoose;
+            place.delegate = self;
+            [self.navigationController pushViewController:place animated:YES];
+            [place release];
+        }
+    }
 }
 
 #pragma actions implementations
@@ -84,6 +110,19 @@
 
 - (IBAction)doneAction:(UIButton *)sender {
     NSLog(@"done");
+    if ([self.route.places count] > 1) {
+        RequestDispatcher *dispatcher = [[[RequestDispatcher alloc] init] autorelease];
+        dispatcher.delegate = self;
+        [dispatcher requestRoute:self.route.places options:nil];
+    }
+}
+- (void)request:(RequestDispatcher *)request didFinishedWithResponse:(Response *)response {
+    if(response.code == ResponseCodeError) {
+        NSError *error = [response.responseInfo objectForKey:kError];
+        NSLog(@"%@", [error localizedDescription]);
+        return;
+    }
+    //TODO handle responseCodeOK,draw on map
 }
 
 #pragma mark UITableView methods
@@ -108,7 +147,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    NSLog(@"selected %i",indexPath.row);
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
     PlaceViewController *place = [[PlaceViewController alloc] init];
     place.mode = PlaceModeChoose;
     place.delegate = self;

@@ -26,6 +26,11 @@
 		2506356D17048E9000DBA7BA /* DBHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = 2506356C17048E9000DBA7BA /* DBHandler.m */; };
 		2506356F17048EAA00DBA7BA /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 2506356E17048EAA00DBA7BA /* libsqlite3.dylib */; };
 		253CBFB61712CDBE00C3DA3B /* Places.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 253CBFB51712CDBE00C3DA3B /* Places.sqlite */; };
+		258726111716BC5800D0D15C /* TwoLabelCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 258726101716BC5800D0D15C /* TwoLabelCell.m */; };
+		258726131716BC6C00D0D15C /* TwoLabelCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 258726121716BC6C00D0D15C /* TwoLabelCell.xib */; };
+		2587261C1716C8F200D0D15C /* DatePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2587261A1716C8F100D0D15C /* DatePickerController.m */; };
+		2587261D1716C8F200D0D15C /* DatePickerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2587261B1716C8F200D0D15C /* DatePickerController.xib */; };
+		2587261F1716CF7300D0D15C /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2587261E1716CF7300D0D15C /* QuartzCore.framework */; };
 		259801201705992A0025806D /* ResourceLoader.m in Sources */ = {isa = PBXBuildFile; fileRef = 2598011F1705992A0025806D /* ResourceLoader.m */; };
 		2598012217059C210025806D /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2598012117059C210025806D /* MapKit.framework */; };
 		2598012417059C2F0025806D /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2598012317059C2F0025806D /* CoreLocation.framework */; };
@@ -128,6 +133,13 @@
 		2506356E17048EAA00DBA7BA /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		250635701704983D00DBA7BA /* Enums.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Enums.h; sourceTree = "<group>"; };
 		253CBFB51712CDBE00C3DA3B /* Places.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = Places.sqlite; sourceTree = "<group>"; };
+		2587260F1716BC5800D0D15C /* TwoLabelCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwoLabelCell.h; sourceTree = "<group>"; };
+		258726101716BC5800D0D15C /* TwoLabelCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwoLabelCell.m; sourceTree = "<group>"; };
+		258726121716BC6C00D0D15C /* TwoLabelCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TwoLabelCell.xib; sourceTree = "<group>"; };
+		258726191716C8F100D0D15C /* DatePickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatePickerController.h; sourceTree = "<group>"; };
+		2587261A1716C8F100D0D15C /* DatePickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DatePickerController.m; sourceTree = "<group>"; };
+		2587261B1716C8F200D0D15C /* DatePickerController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DatePickerController.xib; sourceTree = "<group>"; };
+		2587261E1716CF7300D0D15C /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		2598011E1705992A0025806D /* ResourceLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResourceLoader.h; sourceTree = "<group>"; };
 		2598011F1705992A0025806D /* ResourceLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResourceLoader.m; sourceTree = "<group>"; };
 		2598012117059C210025806D /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
@@ -221,6 +233,7 @@
 				250635391704821100DBA7BA /* Foundation.framework in Frameworks */,
 				2506353B1704821100DBA7BA /* CoreGraphics.framework in Frameworks */,
 				2598012217059C210025806D /* MapKit.framework in Frameworks */,
+				2587261F1716CF7300D0D15C /* QuartzCore.framework in Frameworks */,
 				2598012417059C2F0025806D /* CoreLocation.framework in Frameworks */,
 				2506356F17048EAA00DBA7BA /* libsqlite3.dylib in Frameworks */,
 			);
@@ -248,6 +261,7 @@
 		250635351704821100DBA7BA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2587261E1716CF7300D0D15C /* QuartzCore.framework */,
 				2598012317059C2F0025806D /* CoreLocation.framework */,
 				2598012117059C210025806D /* MapKit.framework */,
 				2506356E17048EAA00DBA7BA /* libsqlite3.dylib */,
@@ -323,9 +337,15 @@
 			children = (
 				259801251705A25D0025806D /* PlaceEntity.h */,
 				259801261705A25D0025806D /* PlaceEntity.m */,
+				2587260F1716BC5800D0D15C /* TwoLabelCell.h */,
+				258726101716BC5800D0D15C /* TwoLabelCell.m */,
+				258726121716BC6C00D0D15C /* TwoLabelCell.xib */,
 				25F787821715A76300892CB4 /* TextFieldCell.h */,
 				25F787851715A78100892CB4 /* TextFieldCell.xib */,
 				25F787831715A76300892CB4 /* TextFieldCell.m */,
+				258726191716C8F100D0D15C /* DatePickerController.h */,
+				2587261A1716C8F100D0D15C /* DatePickerController.m */,
+				2587261B1716C8F200D0D15C /* DatePickerController.xib */,
 				259801291705AF160025806D /* PlaceViewController.h */,
 				2598012A1705AF160025806D /* PlaceViewController.m */,
 				2598012B1705AF160025806D /* PlaceViewController~ipad.xib */,
@@ -567,6 +587,8 @@
 				25F7877917156EA900892CB4 /* 8.png in Resources */,
 				25F7877A17156EA900892CB4 /* 9.png in Resources */,
 				25F787861715A78200892CB4 /* TextFieldCell.xib in Resources */,
+				258726131716BC6C00D0D15C /* TwoLabelCell.xib in Resources */,
+				2587261D1716C8F200D0D15C /* DatePickerController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -595,6 +617,8 @@
 				25F7877C17156EA900892CB4 /* WeatherManager.m in Sources */,
 				25F7877D17156EA900892CB4 /* WeatherParser.m in Sources */,
 				25F787841715A76300892CB4 /* TextFieldCell.m in Sources */,
+				258726111716BC5800D0D15C /* TwoLabelCell.m in Sources */,
+				2587261C1716C8F200D0D15C /* DatePickerController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

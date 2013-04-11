@@ -47,23 +47,27 @@
 }
 
 - (void)requestRoute:(NSArray *)routePoints options:(NSDictionary *)options {
-    NSInteger rpCount = [routePoints count];
-    NSAssert(rpCount < 2, @"routePoints.count < 2 ");
-    NSMutableString *str = [[NSMutableString alloc] initWithString:@"http://maps.googleapis.com/maps/api/directions/json?origin="];
-    NSString *start = [NSString stringWithFormat:@"%@&destination=%@", [routePoints objectAtIndex:0], [routePoints objectAtIndex:rpCount - 1]];
-    [str appendString:start];
-    if (rpCount > 2) {
-        [str appendString:@"&waypoints="];
-        for (int j = 1; j < rpCount - 3; j++) {
-            NSString *wp = [NSString stringWithFormat:@"%@|",[routePoints objectAtIndex:j]];
-            [str appendString:wp];
-        }
-        [str appendString:[routePoints objectAtIndex:rpCount - 2]];
-    }
-    NSString *end = @"&sensor=false";
-    [str appendString:end];
+//    NSInteger rpCount = [routePoints count];
+//    NSAssert(rpCount < 2, @"routePoints.count < 2 ");
+//    NSMutableString *str = [[NSMutableString alloc] initWithString:@"http://maps.googleapis.com/maps/api/directions/json?origin="];
+//    NSString *start = [NSString stringWithFormat:@"%@&destination=%@", [routePoints objectAtIndex:0], [routePoints objectAtIndex:rpCount - 1]];
+//    [str appendString:start];
+//    if (rpCount > 2) {
+//        [str appendString:@"&waypoints="];
+//        for (int j = 1; j < rpCount - 3; j++) {
+//            NSString *wp = [NSString stringWithFormat:@"%@|",[routePoints objectAtIndex:j]];
+//            [str appendString:wp];
+//        }
+//        [str appendString:[routePoints objectAtIndex:rpCount - 2]];
+//    }
+//    NSString *end = @"&sensor=false";
+//    [str appendString:end];
     
-    NSURL *url = [NSURL URLWithString:str];
+    // there are some hardcode in this method just to check how it works
+    
+    NSString *str = @"http://maps.googleapis.com/maps/api/directions/json?origin=Chicago,IL&destination=Los+Angeles,CA&waypoints=Joplin,MO|Oklahoma+City,OK&sensor=false";
+    
+    NSURL *url = [NSURL URLWithString:[str stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
     [str release];
@@ -125,6 +129,8 @@
                                                                    options:NSJSONReadingMutableContainers
                                                                      error:&err];
     
+    NSLog(@"%@",responseObject);
+/*
     // TODO parse in cycle
     NSMutableArray *routes = [responseObject valueForKeyPath:@"routes"];
     NSMutableArray *legs = [[routes objectAtIndex:0] valueForKeyPath:@"legs"];
@@ -140,7 +146,7 @@
     
     [connection release];
     [data release];
-    
+ */   
 //    NSString *responseString=[[NSString alloc]initWithData:responseData encoding:NSUTF8StringEncoding];
 //    NSMutableDictionary *data1 = [responseData objectFromJSONData];
 //    NSMutableArray *ad = [data1 objectForKey:@"routes"];
