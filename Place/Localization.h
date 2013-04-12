@@ -14,6 +14,7 @@
 #define LOC_DONE            NSLocalizedStringWithDefaultValue(@"LOC_DONE",          nil, [NSBundle mainBundle], @"Done", @"Done")
 #define LOC_MENU            NSLocalizedStringWithDefaultValue(@"LOC_MENU",          nil, [NSBundle mainBundle], @"Menu", @"Menu")
 #define LOC_MAP             NSLocalizedStringWithDefaultValue(@"LOC_MAP",           nil, [NSBundle mainBundle], @"Map", @"Map")
+#define LOC_CLEAR           NSLocalizedStringWithDefaultValue(@"LOC_CLEAR",         nil, [NSBundle mainBundle], @"Clear", @"Clear")
 #define LOC_MY_PLACES       NSLocalizedStringWithDefaultValue(@"LOC_MY_PLACES",     nil, [NSBundle mainBundle], @"P&R", @"P&R")
 #define LOC_SEARCH          NSLocalizedStringWithDefaultValue(@"LOC_SEARCH",        nil, [NSBundle mainBundle], @"Search", @"Search")
 #define LOC_ADD_PLACE       NSLocalizedStringWithDefaultValue(@"LOC_ADD_PLACE",     nil, [NSBundle mainBundle], @"Add Place", @"Add Place")

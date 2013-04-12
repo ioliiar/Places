@@ -20,9 +20,6 @@
 @synthesize longtitude;
 
 - (void)dealloc {
-    longtitude = 0.0;
-    latitude = 0.0;
-    category = 0;
     [photo release];
     [dateVisited release];
     [comment release];

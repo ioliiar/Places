@@ -74,6 +74,12 @@
     [rb release];
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    self.detailViewController.mode = PlaceModeSurvey;
+    [self.detailViewController clearMap];
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -155,6 +161,7 @@
         case MenuRowAddRoute:{
             RouteViewController *route = [[RouteViewController alloc] init];
             [self.navigationController pushViewController:route animated:YES];
+            self.detailViewController.mode = PlaceModeChoose;
             [route release];
         } break;
         default:

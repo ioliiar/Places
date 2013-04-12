@@ -15,6 +15,11 @@
 #define kRoutePoints @"Route"
 #define kError       @"Error"
 #define kDBName      @"Places"
+#define kAnnotation  @"Annotation"
+#define kPlaceChosen @"PlaceChosen"
+#define kClearMap    @"ClearMap"
+#define kAnnToRemove @"AnnotationToRemove"
+#define kUpdateMap   @"UpdateMap"
 
 //Enums
 

@@ -8,6 +8,7 @@
 
 #import <CoreLocation/CoreLocation.h>
 #import "RequestDispatcher.h"
+#import "PlaceEntity.h"
 
 @implementation Response
 
@@ -50,6 +51,7 @@
 //    NSInteger rpCount = [routePoints count];
 //    NSAssert(rpCount < 2, @"routePoints.count < 2 ");
 //    NSMutableString *str = [[NSMutableString alloc] initWithString:@"http://maps.googleapis.com/maps/api/directions/json?origin="];
+//
 //    NSString *start = [NSString stringWithFormat:@"%@&destination=%@", [routePoints objectAtIndex:0], [routePoints objectAtIndex:rpCount - 1]];
 //    [str appendString:start];
 //    if (rpCount > 2) {
@@ -65,6 +67,8 @@
     
     // there are some hardcode in this method just to check how it works
     
+    /*NSString *googleMapsURLString = [NSString stringWithFormat:@"http://maps.google.com/?saddr=%1.6f,%1.6f&daddr=%1.6f,%1.6f",
+                                     start.latitude, start.longitude, destination.latitude, destination.longitude];*/
     NSString *str = @"http://maps.googleapis.com/maps/api/directions/json?origin=Chicago,IL&destination=Los+Angeles,CA&waypoints=Joplin,MO|Oklahoma+City,OK&sensor=false";
     
     NSURL *url = [NSURL URLWithString:[str stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]];

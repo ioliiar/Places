@@ -11,7 +11,9 @@
 
 @interface DetailViewController : UIViewController <UISplitViewControllerDelegate>
 
+@property (assign, nonatomic) PlaceMode mode;
 @property (retain, nonatomic) NSArray *detailItems;
+@property (copy,   nonatomic) NSArray *annotations;
 @property (retain, nonatomic) IBOutlet MKMapView *mapView;
 
 - (void)clearMap;

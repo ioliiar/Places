@@ -31,6 +31,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.datePicker = [[[DatePickerController alloc] init] autorelease];
+    
     UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoTapped:)];
     [self.photoImageView addGestureRecognizer:recognizer];
     [recognizer release];
@@ -79,6 +81,7 @@
 }
 
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [place release];
     [_datePicker release];
     [detailTableView release];
@@ -234,6 +237,7 @@
         case DescriptionRowComment: {
             TextFieldCell *cell = [self getTextFieldCell:tableView];
             cell.whatLabel.text = LOC_COMMENT;
+            cell.valueTextField.text = self.place.comment;
             cell.valueTextField.tag = DescriptionRowComment;
             return cell;
         }
@@ -276,8 +280,6 @@
         case DescriptionRowCategory:
             break;
         case DescriptionRowDateVisited: {
-            self.datePicker = nil;
-            self.datePicker = [[DatePickerController alloc] init];
             self.datePicker.view.frame = [self frameForDatePickerSwapAxis:NO];
             self.datePicker.delegate = self;
             datePickerVisible = YES;
@@ -289,6 +291,10 @@
             NSLog(@"Unknown description cell");
             break;
     }
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    return [[[UIView alloc] init] autorelease];
 }
 
 #pragma mark DatePickerController delegate

@@ -13,7 +13,9 @@
 
 @property (retain, nonatomic) RouteEntity *route; // route entities
 @property (retain, nonatomic) IBOutlet UITableView *tableView;
-- (IBAction)saveAction:(UIButton *)sender;
-- (IBAction)doneAction:(UIButton *)sender;
+- (IBAction)saveAction:(UIBarButtonItem *)sender;
+- (IBAction)doneAction:(UIBarButtonItem *)sender;
+@property (retain, nonatomic) IBOutlet UIBarButtonItem *saveBtn;
+@property (retain, nonatomic) IBOutlet UIBarButtonItem *doneBtn;
 
 @end

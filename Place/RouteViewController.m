@@ -8,8 +8,11 @@
 
 #import "RouteViewController.h"
 #import "PlaceViewController.h"
+#import "DetailViewController.h"
 
 #import "RouteEntity.h"
+#import <CoreLocation/CLLocation.h>
+
 #import "RequestDispatcher.h"
 
 @interface RouteViewController ()<PlaceViewControllerDelegate, UIAlertViewDelegate, RequestDispatcherDelegate>
@@ -37,11 +40,24 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    UIBarButtonItem *bar = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
-                                                                         target:self
-                                                                         action:@selector(addPlace:)];
-    self.navigationItem.rightBarButtonItem = bar;
-    [bar release];
+    self.tableView.editing = YES;
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(receivedAnnotaion:)
+                                                 name:kPlaceChosen
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(onMapClear:)
+                                                 name:kClearMap
+                                               object:nil];
+    if ([[UIDevice currentDevice] userInterfaceIdiom]  == UIUserInterfaceIdiomPhone) {
+        UIBarButtonItem *bar = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+                                                                             target:self
+                                                                             action:@selector(addPlace:)];
+        
+        self.navigationItem.rightBarButtonItem = bar;
+        [bar release];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -50,65 +66,76 @@
 
 - (void)viewDidUnload {
     self.tableView = nil;
+    [self setSaveBtn:nil];
+    [self setDoneBtn:nil];
     [super viewDidUnload];
 }
 
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [route release];
     [_tableView release];
+    [_saveBtn release];
+    [_doneBtn release];
     [super dealloc];
 }
 
 #pragma mark BarButton Actions
 
-- (void)addPlace:(UIBarButtonItem *)sender {
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
-        UIAlertView *sh = [[UIAlertView alloc] initWithTitle:@"Show on Map"
-                                                     message:nil
-                                                    delegate:self
-                                           cancelButtonTitle:LOC_NO
-                                           otherButtonTitles:LOC_YES, nil];
-        [sh show];
-        [sh release];
-    } else {
-        if ([self.route.places count] < 8) {
-            PlaceViewController *place = [[PlaceViewController alloc] init];
-            place.mode = PlaceModeChoose;
-            place.delegate = self;
-            [self.navigationController pushViewController:place animated:YES];
-            [place release];
-        }
-    }
-}
-
 - (void)placeVC:(PlaceViewController *)placeVC didDismissedInMode:(PlaceMode)mode {
-    // TODO update Map In Ipad Mode
     [self.route.places addObject:placeVC.place];
     [self.tableView reloadData];
 }
 
-#pragma mark uialertview delgate method
+#pragma mark point add methods
 
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    // TODO handle YES variant i.e show map for choosing
-    if (buttonIndex == 0) {
-        if ([self.route.places count] < 8) {
-            PlaceViewController *place = [[PlaceViewController alloc] init];
-            place.mode = PlaceModeChoose;
-            place.delegate = self;
-            [self.navigationController pushViewController:place animated:YES];
-            [place release];
-        }
+- (void)addPlace:(UIBarButtonItem *)sender {
+    if ([self.route.places count] == 8)
+        return;
+    DetailViewController *mapVC = [[DetailViewController alloc] init];
+    mapVC.mode = PlaceModeChoose;
+    NSMutableArray *arr = [[NSMutableArray alloc] init];
+    
+    for (PlaceEntity *pl in self.route.places) {
+        MKPointAnnotation *ann = [[MKPointAnnotation alloc] init];
+        ann.title = pl.name;
+        CLLocationCoordinate2D loc;
+        loc.longitude = pl.longtitude;
+        loc.latitude = pl.latitude;
+        [ann setCoordinate:loc];
+        [arr addObject:ann];
+        [ann release];
     }
+     mapVC.annotations = arr;
+    [arr release];
+    [self.navigationController pushViewController:mapVC animated:YES];
+    [mapVC release];
+}
+
+- (void)onMapClear:(NSNotification *)notification {
+    [self.route.places removeAllObjects];
+    [self.tableView reloadData];
+}
+
+- (void)receivedAnnotaion:(NSNotification *)notification {
+    MKPointAnnotation *ann = [notification.userInfo objectForKey:kAnnotation];
+    PlaceEntity *pl = [[PlaceEntity alloc] init];
+    pl.name = @"Waypoint";
+    pl.comment = @"From Map";
+    pl.longtitude = ann.coordinate.longitude;
+    pl.latitude = ann.coordinate.latitude;
+    [self.route.places addObject:pl];
+    [pl release];
+    [self.tableView reloadData];
 }
 
 #pragma actions implementations
 
-- (IBAction)saveAction:(UIButton *)sender {
+- (IBAction)saveAction:(UIBarButtonItem *)sender {
     NSLog(@"save");
 }
 
-- (IBAction)doneAction:(UIButton *)sender {
+- (IBAction)doneAction:(UIBarButtonItem *)sender {
     NSLog(@"done");
     if ([self.route.places count] > 1) {
         RequestDispatcher *dispatcher = [[[RequestDispatcher alloc] init] autorelease];
@@ -116,6 +143,7 @@
         [dispatcher requestRoute:self.route.places options:nil];
     }
 }
+
 - (void)request:(RequestDispatcher *)request didFinishedWithResponse:(Response *)response {
     if(response.code == ResponseCodeError) {
         NSError *error = [response.responseInfo objectForKey:kError];
@@ -140,6 +168,7 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+        cell.showsReorderControl = YES;
     }
     cell.textLabel.text = ((PlaceEntity *)[self.route.places objectAtIndex:indexPath.row]).name;
     cell.detailTextLabel.text = ((PlaceEntity *)[self.route.places objectAtIndex:indexPath.row]).comment;
@@ -156,11 +185,43 @@
     [place release];
 }
 
+- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath {
+    PlaceEntity *source = [(PlaceEntity *)[self.route.places objectAtIndex:sourceIndexPath.row] retain];
+    [self.route.places removeObject:source];
+    [self.route.places insertObject:source atIndex:destinationIndexPath.row];
+    [source release];
+    [tableView reloadData];
+}
+
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        [self.route.places removeObjectAtIndex:indexPath.row];
+         [self.route.places removeObjectAtIndex:indexPath.row];
+        if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+            NSMutableArray *arr = [[NSMutableArray alloc] init];
+            for (PlaceEntity *pl in self.route.places) {
+                MKPointAnnotation *ann = [[MKPointAnnotation alloc] init];
+                ann.title = pl.name;
+                CLLocationCoordinate2D loc;
+                loc.longitude = pl.longtitude;
+                loc.latitude = pl.latitude;
+                [ann setCoordinate:loc];
+                [arr addObject:ann];
+                [ann release];
+            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateMap
+                                                                object:nil
+                                                              userInfo:[NSDictionary dictionaryWithObject:arr forKey:kAnnotation]];
+            [arr release];
+          
+        }
+       
         [self.tableView reloadData];
     }
 }
+
+- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
+    return YES;
+}
+
 
 @end
