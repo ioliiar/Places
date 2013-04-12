@@ -19,7 +19,7 @@
 }
 
 - (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObject:self];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [_annotations release];
     [_detailItems release];
     [_masterPopoverController release];
