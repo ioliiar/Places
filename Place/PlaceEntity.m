@@ -17,7 +17,7 @@
 @synthesize Id;
 @synthesize category;
 @synthesize latitude;
-@synthesize longtitude;
+@synthesize longitude;
 
 - (void)dealloc {
     [photo release];
