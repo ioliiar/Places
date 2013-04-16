@@ -47,7 +47,6 @@
 		25E8ACC9171424440096EDBC /* MenuPopController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25E8ACC7171424440096EDBC /* MenuPopController.m */; };
 		25E8ACCA171424440096EDBC /* MenuPopController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25E8ACC8171424440096EDBC /* MenuPopController.xib */; };
 		25F7874917156EA900892CB4 /* JSONKit.m in Sources */ = {isa = PBXBuildFile; fileRef = 25F7870F17156EA900892CB4 /* JSONKit.m */; settings = {COMPILER_FLAGS = "-w"; }; };
-		25F7874A17156EA900892CB4 /* PLPlaceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 25F7871117156EA900892CB4 /* PLPlaceManager.m */; };
 		25F7874B17156EA900892CB4 /* 0.png in Resources */ = {isa = PBXBuildFile; fileRef = 25F7871317156EA900892CB4 /* 0.png */; };
 		25F7874C17156EA900892CB4 /* 1.png in Resources */ = {isa = PBXBuildFile; fileRef = 25F7871417156EA900892CB4 /* 1.png */; };
 		25F7874D17156EA900892CB4 /* 10.png in Resources */ = {isa = PBXBuildFile; fileRef = 25F7871517156EA900892CB4 /* 10.png */; };
@@ -164,8 +163,6 @@
 		25E8ACC8171424440096EDBC /* MenuPopController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuPopController.xib; sourceTree = "<group>"; };
 		25F7870E17156EA900892CB4 /* JSONKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JSONKit.h; sourceTree = "<group>"; };
 		25F7870F17156EA900892CB4 /* JSONKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JSONKit.m; sourceTree = "<group>"; };
-		25F7871017156EA900892CB4 /* PLPlaceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PLPlaceManager.h; sourceTree = "<group>"; };
-		25F7871117156EA900892CB4 /* PLPlaceManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PLPlaceManager.m; sourceTree = "<group>"; };
 		25F7871317156EA900892CB4 /* 0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0.png; sourceTree = "<group>"; };
 		25F7871417156EA900892CB4 /* 1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1.png; sourceTree = "<group>"; };
 		25F7871517156EA900892CB4 /* 10.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 10.png; sourceTree = "<group>"; };
@@ -355,6 +352,9 @@
 				2598012A1705AF160025806D /* PlaceViewController.m */,
 				2598012B1705AF160025806D /* PlaceViewController~ipad.xib */,
 				259801301705AF920025806D /* PlaceViewController~iphone.xib */,
+				C524400B171D527700FF0F59 /* Places.plist */,
+				C524400E171D52BC00FF0F59 /* PLPlaceManager.h */,
+				C524400F171D52BC00FF0F59 /* PLPlaceManager.m */,
 			);
 			name = Place_Model;
 			sourceTree = "<group>";
@@ -408,8 +408,6 @@
 			children = (
 				25F7870E17156EA900892CB4 /* JSONKit.h */,
 				25F7870F17156EA900892CB4 /* JSONKit.m */,
-				25F7871017156EA900892CB4 /* PLPlaceManager.h */,
-				25F7871117156EA900892CB4 /* PLPlaceManager.m */,
 				25F7871217156EA900892CB4 /* weather icon */,
 				25F7874317156EA900892CB4 /* Weather.h */,
 				25F7874417156EA900892CB4 /* Weather.m */,
@@ -594,6 +592,7 @@
 				25F787861715A78200892CB4 /* TextFieldCell.xib in Resources */,
 				258726131716BC6C00D0D15C /* TwoLabelCell.xib in Resources */,
 				2587261D1716C8F200D0D15C /* DatePickerController.xib in Resources */,
+				C524400C171D527700FF0F59 /* Places.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -617,7 +616,6 @@
 				25DA641F1709AE3600F04710 /* RouteViewController.m in Sources */,
 				25E8ACC9171424440096EDBC /* MenuPopController.m in Sources */,
 				25F7874917156EA900892CB4 /* JSONKit.m in Sources */,
-				25F7874A17156EA900892CB4 /* PLPlaceManager.m in Sources */,
 				25F7877B17156EA900892CB4 /* Weather.m in Sources */,
 				25F7877C17156EA900892CB4 /* WeatherManager.m in Sources */,
 				25F7877D17156EA900892CB4 /* WeatherParser.m in Sources */,

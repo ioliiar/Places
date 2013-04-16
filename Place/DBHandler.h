@@ -13,6 +13,7 @@
 
 //Places table
 - (NSArray*)getPlacesByName:(NSString*)name;  // nil means all
+- (NSArray*)getLastVisitedPlacesNamed:(NSString*)name; // nil means all
 - (BOOL)insertPlace:(PlaceEntity*)place;
 - (BOOL)updatePlaceWithId:(NSInteger)Ident;
 - (BOOL)deletePlaceWithId:(NSInteger)Ident;

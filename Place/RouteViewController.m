@@ -101,7 +101,7 @@
         TaggedAnnotation *ann = [[TaggedAnnotation alloc] init];
         ann.title = pl.name;
         CLLocationCoordinate2D loc;
-        loc.longitude = pl.longtitude;
+        loc.longitude = pl.longitude;
         loc.latitude = pl.latitude;
         [ann setCoordinate:loc];
         [arr addObject:ann];
@@ -123,7 +123,7 @@
     PlaceEntity *pl = [[PlaceEntity alloc] init];
     pl.name = @"Waypoint";
     pl.comment = @"From Map";
-    pl.longtitude = ann.coordinate.longitude;
+    pl.longitude = ann.coordinate.longitude;
     pl.latitude = ann.coordinate.latitude;
     pl.tag = ann.tag;
     [self.route.places addObject:pl];

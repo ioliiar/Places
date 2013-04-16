@@ -66,7 +66,7 @@
     }
     
     NSString *defaultPath = [[[NSBundle mainBundle] resourcePath]
-                             stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.%@",kDBName,@"sqlite"]];
+                             stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.%@",kDBName,@"db"]];
     success = [fileManager copyItemAtPath:defaultPath
                                    toPath:writableDB error:&error];
     if (!success) {
@@ -77,6 +77,7 @@
 #pragma mark DB Queries
 
 - (NSArray*)getPlacesByName:(NSString*)name {
+    
     char *sql;
     NSMutableArray *placesArray = [[NSMutableArray alloc] init];
     
@@ -96,27 +97,31 @@
     // Retrieving result
     if (sqlResult == SQLITE_OK) {
         while (sqlite3_step(statement) == SQLITE_ROW) {
+           
             PlaceEntity *place = [[PlaceEntity alloc] init];
+            
             place.Id = sqlite3_column_int(statement, 0);
             
-            char *nm = (char *)sqlite3_column_text(statement, 1);
-            place.name = (nm) ? [NSString stringWithUTF8String:nm] : @"";
+            char *cName = (char *)sqlite3_column_text(statement, 1);
+            place.name = (cName) ? [NSString stringWithUTF8String:cName] : @"";
             
-            char *cm = (char *)sqlite3_column_text(statement, 2);
-            place.comment = (cm) ? [NSString stringWithUTF8String:cm] : @"";
             
-            const void *ptr = sqlite3_column_blob(statement, 3);
-            int imSize = sqlite3_column_bytes(statement, 3);
-            NSData *imData = [[NSData alloc] initWithBytes:ptr length:imSize];
-            place.photo = [UIImage imageWithData:imData];
-            [imData release];
-            double since1970 = sqlite3_column_double(statement, 4);
-            place.dateVisited = [NSDate dateWithTimeIntervalSince1970:since1970];
-            place.latitude = sqlite3_column_double(statement, 5);
-            place.longtitude = sqlite3_column_double(statement, 6);
+            char *cComment = (char *)sqlite3_column_text(statement, 2);
+            place.comment = (cComment) ? [NSString stringWithUTF8String:cComment] : @"";
+            
+            NSData *getImageData = [[NSData alloc] initWithBytes:sqlite3_column_blob(statement, 3) length:sqlite3_column_bytes(statement, 3)];
+            place.photo=[UIImage imageWithData:getImageData];
+            
+            place.dateVisited = [NSDate dateWithTimeIntervalSince1970:sqlite3_column_double(statement, 4)];
+                        
+            place.latitude =(double)sqlite3_column_double(statement, 5);
+         
+            place.longitude =(double)sqlite3_column_double(statement, 6);
             place.category = sqlite3_column_int(statement, 7);
+            
             [placesArray addObject:place];
             [place release];
+            [getImageData release];
         }
         sqlite3_finalize(statement);
     } else {
@@ -125,15 +130,48 @@
     
     NSArray *result = [placesArray copy];
     [placesArray release];
+    
     return [result autorelease];
 }
 
+- (NSArray*)getLastVisitedPlacesNamed:(NSString*)name {
+    return nil;
+}
+
 - (BOOL)insertPlace:(PlaceEntity*)place {
-    const char* sql = "INSERT INTO Place (Name,Comment,Photo,Visited,Latitude,Longtitude,Category) Values (?,?,?,?,?,?,?)";//read about this
-    sqlite3_stmt *statement;
-    int sqlResult = sqlite3_prepare_v2(database, sql, -1, &statement, NULL);
-    NSLog(@"sqlResult %i", sqlResult);
     
+    const char* sql = "INSERT INTO Place (Name,Comment,Photo,Visited,Latitude,Longitude,Category) Values (?,?,?,?,?,?,?)";//read about this
+    
+    sqlite3_stmt *statement;
+ 
+    if (sqlite3_prepare_v2(database, sql, -1, &statement, NULL)==SQLITE_OK) {
+        
+        sqlite3_bind_int(statement, 0, place.Id);
+        sqlite3_bind_text(statement,1,[place.name UTF8String],-1,SQLITE_TRANSIENT);
+        sqlite3_bind_text(statement,2,[place.comment UTF8String],-1,SQLITE_TRANSIENT);
+        
+        NSData *imageData=UIImagePNGRepresentation(place.photo);
+   
+        
+        if (imageData!=nil) {
+            
+            sqlite3_bind_blob(statement, 3, [imageData bytes], [imageData length], NULL);
+        }
+        
+        else{
+        
+            NSURL *url=[NSURL URLWithString:@"http://imagesfromseminar.tk/images/none-3.png"];
+            NSData * defaultData=[NSData dataWithContentsOfURL:url];
+            sqlite3_bind_blob(statement, 3, [defaultData bytes], [defaultData length], NULL);
+        }
+   
+        sqlite3_bind_double(statement, 4, [place.dateVisited timeIntervalSince1970]);
+        sqlite3_bind_double(statement,5,place.latitude);
+        sqlite3_bind_double(statement,6,place.longitude);
+        sqlite3_bind_int(statement, 7, place.category);
+        
+    } ;
+ 
     if (sqlite3_step(statement) != SQLITE_DONE) {
         int rowID = sqlite3_last_insert_rowid(database);
         NSLog(@"last inserted rowId = %d",rowID);
@@ -143,13 +181,98 @@
     return YES;
 }
 
-- (BOOL)updatePlaceWithId:(NSInteger)Ident {
+- (BOOL)updatePlaceWithId:(PlaceEntity *)place ident:(NSInteger)Ident {
+    
+    const char *sql = "UPDATE Place Set Name = ?, Comment = ?, Photo = ?, Visited = ?, Latitude = ?, Longitude = ?, Category = ?    Where PlaceId = ?";
+    sqlite3_stmt *statement;
+    
+    if(sqlite3_prepare_v2(database, sql, -1, &statement, NULL) == SQLITE_OK){
+        
+        sqlite3_bind_int(statement, 0, place.Id);
+        sqlite3_bind_text(statement,1,[place.name UTF8String],-1,SQLITE_TRANSIENT);
+        sqlite3_bind_text(statement,2,[place.comment UTF8String],-1,SQLITE_TRANSIENT);
+        
+        NSData *imageData=UIImagePNGRepresentation(place.photo);
+        
+        
+        if (imageData!=nil) {
+            
+            sqlite3_bind_blob(statement, 3, [imageData bytes], [imageData length], NULL);
+        }
+        
+        else{
+            
+            NSURL *url=[NSURL URLWithString:@"http://imagesfromseminar.tk/images/none-3.png"];
+            NSData * defaultData=[NSData dataWithContentsOfURL:url];
+            sqlite3_bind_blob(statement, 3, [defaultData bytes], [defaultData length], NULL);
+        }
+        
+        sqlite3_bind_double(statement, 4, [place.dateVisited timeIntervalSince1970]);
+        sqlite3_bind_double(statement,5,place.latitude);
+        sqlite3_bind_double(statement,6,place.longitude);
+        sqlite3_bind_int(statement, 7, place.category);
+
+    
+    }
+    
+    if (sqlite3_step(statement) != SQLITE_DONE) {
+        NSLog(@"Update has not been successuly completed ");
+    }
+    
+    sqlite3_finalize(statement);
+    
     return YES;
 }
 
 - (BOOL)deletePlaceWithId:(NSInteger)Ident {
+    
+    
+    NSString *sqlStr =[NSString stringWithFormat:@"DELETE FROM Place WHERE PlaceId = %i",Ident];
+    
+    NSLog(@"%@",sqlStr);
+    
+    const char *sql = [sqlStr UTF8String];
+    
+    sqlite3_stmt *deleteStmt;
+    
+    
+    if (sqlite3_prepare_v2(database,sql,-1,&deleteStmt,NULL) !=SQLITE_OK)      {
+        
+        NSAssert1(0, @"Error while creating delete statement. '%s'",sqlite3_errmsg(database));
+    }
+    
+    sqlite3_bind_int(deleteStmt, 1, Ident);
+    
+    
+    if (SQLITE_DONE != sqlite3_step(deleteStmt)){
+        NSAssert1(0, @"Error while deleting. '%s'", sqlite3_errmsg(database));
+        
+    }
+    
+    
+    [self reindexDatabase];
+    
+    
+    sqlite3_reset(deleteStmt);
+    
+    
     return YES;
 }
+
+-(void)reindexDatabase{
+    
+    if(sqlite3_exec(database, "VACUUM;REINDEX", 0, 0, NULL)==SQLITE_OK) {
+        
+        NSLog(@"Vacuumed DataBase");}
+    
+    else {NSLog(@"Can't Vacuume DataBase");}
+    
+    
+}
+
+
+
+
 
 // Route table
 - (NSArray*)getRouteNamed:(NSString*)name {
