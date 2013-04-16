@@ -24,10 +24,13 @@
 
 @interface RequestDispatcher ()<NSURLConnectionDelegate, NSURLConnectionDataDelegate>
 
-@property (nonatomic, retain) Response *response;
+
 @property (nonatomic, retain) NSMutableData *data;
 
 @end
+
+
+static RequestDispatcher *sharedInstance = nil;
 
 @implementation RequestDispatcher
 
@@ -36,10 +39,38 @@
 @synthesize delegate;
 @synthesize data;
 
+
++ (RequestDispatcher *)sharedRequestDispatcher {
+    if (sharedInstance != nil) {
+        return sharedInstance;
+    }
+    @synchronized([RequestDispatcher class]) {
+        if (sharedInstance == nil) {
+            sharedInstance = [[RequestDispatcher alloc] init];
+        }
+        return sharedInstance;
+    }
+}
+
+- (oneway void)release {
+}
+
+- (id)retain {
+    return sharedInstance;
+}
+
+- (NSUInteger)retainCount {
+    return INT_MAX;
+}
+
+
+- (id)autorelease {
+    return sharedInstance;
+}
+
 - (void)dealloc {
-    [data release];
-    [delegate release];
     [response release];
+    [data release];
     [super dealloc];
 }
 
@@ -48,6 +79,7 @@
 }
 
 - (void)requestRoute:(NSArray *)routePoints options:(NSDictionary *)options {
+    self.type = RequestTypeRoute;
 //    NSInteger rpCount = [routePoints count];
 //    NSAssert(rpCount < 2, @"routePoints.count < 2 ");
 //    NSMutableString *str = [[NSMutableString alloc] initWithString:@"http://maps.googleapis.com/maps/api/directions/json?origin="];
@@ -83,12 +115,12 @@
 }
 
 - (void)requestPlacemarkNamed:(NSString*)name {
+    self.type = RequestTypePlacemarkSearch;
     CLGeocoder *geocoder = [[[CLGeocoder alloc] init] autorelease];
     [geocoder geocodeAddressString:name completionHandler:^(NSArray *placemarks, NSError *error) {
         if ([placemarks count] > 0 && error == nil){
             CLPlacemark *firstPlacemark = [placemarks objectAtIndex:0];
-            NSLog(@"Longitude = %f", firstPlacemark.location.coordinate.longitude);
-            NSLog(@"Latitude = %f", firstPlacemark.location.coordinate.latitude);
+            self.response = [[Response alloc] init];
             self.response.code = ResponseCodeOK;
             self.response.responseInfo = [NSDictionary dictionaryWithObject:firstPlacemark.location forKey: kLocation];
             [self.delegate request:self didFinishedWithResponse:self.response];
@@ -96,7 +128,7 @@
         else if ([placemarks count] == 0 &&
                  error == nil) {
             NSLog(@"Found no placemarks.");
-            self.response.code = ResponseCodeOK;
+            self.response.code = ResponseCodeError;
             self.response.responseInfo = [NSDictionary dictionaryWithObject:nil forKey: kLocation];
             [self.delegate request:self didFinishedWithResponse:self.response];
         }

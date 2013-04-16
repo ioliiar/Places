@@ -8,18 +8,20 @@
 
 #import "DetailViewController.h"
 #import <CoreLocation/CoreLocation.h>
+#import "TaggedAnnotation.h"
+#import "RequestDispatcher.h"
 
-@interface DetailViewController ()
+@interface DetailViewController ()<UISearchBarDelegate, RequestDispatcherDelegate>
 @property (strong, nonatomic) UIPopoverController *masterPopoverController;
+@property (retain, nonatomic) UISearchBar *searchBar;
 - (void)configureView;
 @end
 
-@implementation DetailViewController {
-    BOOL receivedTouch;
-}
+@implementation DetailViewController
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [_searchBar release];
     [_annotations release];
     [_detailItems release];
     [_masterPopoverController release];
@@ -44,10 +46,9 @@
 }
 
 - (void)configureView {
-    for (MKPointAnnotation *ann in _annotations) {
+    for (TaggedAnnotation *ann in _annotations) {
         [self.mapView addAnnotation:ann];
     }
-
     if (self.detailItems) {
         //self.detailDescriptionLabel.text = [self.detailItem description];
     }
@@ -55,6 +56,16 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.searchBar = [[[UISearchBar alloc] init] autorelease];
+    self.searchBar.delegate = self;
+    self.searchBar.frame = CGRectMake(0, 0, 250, 44);
+    _searchBar.placeholder = @"Place";
+    self.navigationItem.titleView = self.searchBar;
+    UIBarButtonItem *searchBarItem = [[UIBarButtonItem alloc] initWithCustomView:_searchBar];
+    
+    
+    
+    
     [self configureView];
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self
                                                                                             action:@selector(handleLongPress:)];
@@ -65,8 +76,9 @@
     UIBarButtonItem *clear = [[UIBarButtonItem alloc] initWithTitle:LOC_CLEAR
                                                               style:UIBarButtonItemStylePlain                                                                           target:self
                                                              action:@selector(clearMap)];
-    self.navigationItem.rightBarButtonItem = clear;
+    self.navigationItem.rightBarButtonItems = @[clear,searchBarItem];
     [clear release];
+    [searchBarItem release];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(updateMap:)
                                                  name:kUpdateMap
@@ -74,17 +86,9 @@
 }
 
 - (void)updateMap:(NSNotification *)notification {
-    self.annotations = [notification.userInfo objectForKey:kAnnotation];
-    id userLocation = [self.mapView userLocation];
-    NSMutableArray *pins = [[NSMutableArray alloc] initWithArray:[self.mapView annotations]];
+    int k = [[notification.userInfo objectForKey:kAnnotation] integerValue];
+    [self.mapView removeAnnotation:[self.mapView.annotations objectAtIndex:k]];
     
-    if ( userLocation != nil ) {
-        [pins removeObject:userLocation]; // avoid removing user location off the map
-    }
-    
-    [self.mapView removeAnnotations:pins];
-    [pins release];
-    [self configureView];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -120,6 +124,7 @@
 }
 
 - (void)viewDidUnload {
+    self.searchBar = nil;
     self.mapView = nil;
     [super viewDidUnload];
 }
@@ -145,20 +150,22 @@
 }
 
 - (void)handleLongPress:(UILongPressGestureRecognizer *)sender {
-    if (!receivedTouch) {
-        receivedTouch = YES;
-        sender.enabled = NO;
+    if (sender.state == UIGestureRecognizerStateBegan) {
+        static int counter = 0;
         if (_mode == PlaceModeChoose) {
             int i = [self.mapView.annotations count];
             if (i > 8) {
+                
                 return;
             }
+            
             CGPoint p = [sender locationInView:self.view];
             CLLocationCoordinate2D cor = [self.mapView convertPoint:p toCoordinateFromView:self.mapView];
-            MKPointAnnotation *ann = [[MKPointAnnotation alloc] init];
+            TaggedAnnotation *ann = [[TaggedAnnotation alloc] init];
             ann.coordinate = cor;
             ann.title = @"waypoint";
-      
+            ann.tag = counter;
+            counter++;
             [self.mapView addAnnotation:ann];
             [[NSNotificationCenter defaultCenter] postNotificationName:kPlaceChosen
                                                                 object:nil
@@ -168,10 +175,45 @@
             // TODO add ability to add place from map
         }
         
-    } else {
-        receivedTouch = NO;
-        sender.enabled = YES;
     }
 }
+
+#pragma mark searchBar delegate methods
+
+- (void)filterRegion:(NSString *)word {
+    if ([word isEqualToString:@""]) {
+        return;
+    }
+    RequestDispatcher *dispatcher = [RequestDispatcher sharedRequestDispatcher];
+    dispatcher.delegate = self;
+    [dispatcher requestPlacemarkNamed:word];
+}
+
+- (void)request:(RequestDispatcher *)request didFinishedWithResponse:(Response *)response {
+    if(response.code == ResponseCodeError) {
+        NSError *error = [response.responseInfo objectForKey:kError];
+        NSLog(@"%@", [error localizedDescription]);
+        return;
+    }
+    CLLocation *loc =[response.responseInfo objectForKey:kLocation];
+       
+    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(loc.coordinate, 50000.0, 50000.0);
+    [self.mapView setRegion:region animated:YES];
+}
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
+    //[self filterRegion:searchText];   do we really need it
+}
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    [searchBar resignFirstResponder];
+    [self filterRegion:searchBar.text];
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *) searchBar {
+    [searchBar resignFirstResponder];
+    searchBar.text = @"";
+}
+
 
 @end

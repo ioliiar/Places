@@ -13,6 +13,8 @@
 #import "PlaceEntity.h"
 //Place.PlaceId,Place.Name,Place.Comment,Place.Photo,Place.Visited,Place.Latitude,Place.Longtitude,Place.Category
 
+#define SQLITE_ENABLE_MEMORY_MANAGEMENT
+
 @implementation DBHandler {
     sqlite3 *database;
 }
@@ -165,7 +167,5 @@
 - (BOOL)deleteRouteWithId:(NSInteger)Ident {
     return YES;
 }
-
-
 
 @end

@@ -20,5 +20,6 @@
 @property (nonatomic, assign) NSInteger category;
 @property (nonatomic, assign) double latitude;
 @property (nonatomic, assign) double longtitude;
+@property (nonatomic, assign) NSInteger tag;
 
 @end

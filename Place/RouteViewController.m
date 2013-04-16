@@ -11,6 +11,7 @@
 #import "DetailViewController.h"
 
 #import "RouteEntity.h"
+#import "TaggedAnnotation.h"
 #import <CoreLocation/CLLocation.h>
 
 #import "RequestDispatcher.h"
@@ -97,7 +98,7 @@
     NSMutableArray *arr = [[NSMutableArray alloc] init];
     
     for (PlaceEntity *pl in self.route.places) {
-        MKPointAnnotation *ann = [[MKPointAnnotation alloc] init];
+        TaggedAnnotation *ann = [[TaggedAnnotation alloc] init];
         ann.title = pl.name;
         CLLocationCoordinate2D loc;
         loc.longitude = pl.longtitude;
@@ -118,12 +119,13 @@
 }
 
 - (void)receivedAnnotaion:(NSNotification *)notification {
-    MKPointAnnotation *ann = [notification.userInfo objectForKey:kAnnotation];
+    TaggedAnnotation *ann = [notification.userInfo objectForKey:kAnnotation];
     PlaceEntity *pl = [[PlaceEntity alloc] init];
     pl.name = @"Waypoint";
     pl.comment = @"From Map";
     pl.longtitude = ann.coordinate.longitude;
     pl.latitude = ann.coordinate.latitude;
+    pl.tag = ann.tag;
     [self.route.places addObject:pl];
     [pl release];
     [self.tableView reloadData];
@@ -138,7 +140,7 @@
 - (IBAction)doneAction:(UIBarButtonItem *)sender {
     NSLog(@"done");
     if ([self.route.places count] > 1) {
-        RequestDispatcher *dispatcher = [[[RequestDispatcher alloc] init] autorelease];
+        RequestDispatcher *dispatcher = [RequestDispatcher sharedRequestDispatcher];
         dispatcher.delegate = self;
         [dispatcher requestRoute:self.route.places options:nil];
     }
@@ -195,26 +197,16 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-         [self.route.places removeObjectAtIndex:indexPath.row];
+        int i = ((PlaceEntity *)[self.route.places objectAtIndex:indexPath.row]).tag;
+        [self.route.places removeObjectAtIndex:indexPath.row];
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-            NSMutableArray *arr = [[NSMutableArray alloc] init];
-            for (PlaceEntity *pl in self.route.places) {
-                MKPointAnnotation *ann = [[MKPointAnnotation alloc] init];
-                ann.title = pl.name;
-                CLLocationCoordinate2D loc;
-                loc.longitude = pl.longtitude;
-                loc.latitude = pl.latitude;
-                [ann setCoordinate:loc];
-                [arr addObject:ann];
-                [ann release];
-            }
             [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateMap
                                                                 object:nil
-                                                              userInfo:[NSDictionary dictionaryWithObject:arr forKey:kAnnotation]];
-            [arr release];
-          
+                                                              userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:i] forKey:kAnnotation]];
+            
+            
         }
-       
+        
         [self.tableView reloadData];
     }
 }

@@ -28,9 +28,11 @@
 
 @interface RequestDispatcher : NSObject 
 
+@property (nonatomic, retain) Response *response;
 @property (nonatomic, assign) RequestType type;
 @property (nonatomic, assign) id<RequestDispatcherDelegate> delegate;
 
++ (RequestDispatcher *)sharedRequestDispatcher;
 - (void)requestWeatherForPlace:(CLLocationCoordinate2D)location;
 - (void)requestRoute:(NSArray*)routePoints options:(NSDictionary *)options;
 - (void)requestPlacemarkNamed:(NSString*)name;

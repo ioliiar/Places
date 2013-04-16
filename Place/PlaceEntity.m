@@ -18,6 +18,7 @@
 @synthesize category;
 @synthesize latitude;
 @synthesize longtitude;
+@synthesize tag;
 
 - (void)dealloc {
     [photo release];

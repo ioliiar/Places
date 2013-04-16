@@ -101,6 +101,7 @@
 		25F7877D17156EA900892CB4 /* WeatherParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 25F7874817156EA900892CB4 /* WeatherParser.m */; };
 		25F787841715A76300892CB4 /* TextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25F787831715A76300892CB4 /* TextFieldCell.m */; };
 		25F787861715A78200892CB4 /* TextFieldCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25F787851715A78100892CB4 /* TextFieldCell.xib */; };
+		25FB0D2C171D4739008A6947 /* TaggedAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 25FB0D2B171D4739008A6947 /* TaggedAnnotation.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -222,6 +223,8 @@
 		25F787821715A76300892CB4 /* TextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TextFieldCell.h; sourceTree = "<group>"; };
 		25F787831715A76300892CB4 /* TextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TextFieldCell.m; sourceTree = "<group>"; };
 		25F787851715A78100892CB4 /* TextFieldCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextFieldCell.xib; sourceTree = "<group>"; };
+		25FB0D2A171D4739008A6947 /* TaggedAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaggedAnnotation.h; sourceTree = "<group>"; };
+		25FB0D2B171D4739008A6947 /* TaggedAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaggedAnnotation.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -282,6 +285,8 @@
 				25E8ACCB17142ECA0096EDBC /* Master */,
 				25E8ACC6171424430096EDBC /* MenuPopController.h */,
 				25E8ACC7171424440096EDBC /* MenuPopController.m */,
+				25FB0D2A171D4739008A6947 /* TaggedAnnotation.h */,
+				25FB0D2B171D4739008A6947 /* TaggedAnnotation.m */,
 				25E8ACC8171424440096EDBC /* MenuPopController.xib */,
 				259801281705A2680025806D /* Place_Model */,
 				250635651704889200DBA7BA /* Resources */,
@@ -619,6 +624,7 @@
 				25F787841715A76300892CB4 /* TextFieldCell.m in Sources */,
 				258726111716BC5800D0D15C /* TwoLabelCell.m in Sources */,
 				2587261C1716C8F200D0D15C /* DatePickerController.m in Sources */,
+				25FB0D2C171D4739008A6947 /* TaggedAnnotation.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
