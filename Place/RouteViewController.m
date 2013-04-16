@@ -100,7 +100,7 @@
         MKPointAnnotation *ann = [[MKPointAnnotation alloc] init];
         ann.title = pl.name;
         CLLocationCoordinate2D loc;
-        loc.longitude = pl.longtitude;
+        loc.longitude = pl.longitude;
         loc.latitude = pl.latitude;
         [ann setCoordinate:loc];
         [arr addObject:ann];
@@ -122,7 +122,7 @@
     PlaceEntity *pl = [[PlaceEntity alloc] init];
     pl.name = @"Waypoint";
     pl.comment = @"From Map";
-    pl.longtitude = ann.coordinate.longitude;
+    pl.longitude = ann.coordinate.longitude;
     pl.latitude = ann.coordinate.latitude;
     [self.route.places addObject:pl];
     [pl release];
@@ -202,7 +202,7 @@
                 MKPointAnnotation *ann = [[MKPointAnnotation alloc] init];
                 ann.title = pl.name;
                 CLLocationCoordinate2D loc;
-                loc.longitude = pl.longtitude;
+                loc.longitude = pl.longitude;
                 loc.latitude = pl.latitude;
                 [ann setCoordinate:loc];
                 [arr addObject:ann];

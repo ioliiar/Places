@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<string>default</string>
+	<string>airport</string>
+	<string>art_gallery</string>
+	<string>bank</string>
+	<string>bar</string>
+	<string>beauty_salon</string>
+	<string>book_store</string>
+	<string>bowling_alley</string>
+	<string>bus_station</string>
+	<string>cafe</string>
+	<string>campground</string>
+	<string>car_dealer</string>
+	<string>car_rental</string>
+	<string>car_repair</string>
+	<string>car_wash</string>
+	<string>cemetery</string>
+	<string>church</string>
+	<string>clothing_store</string>
+	<string>dentist</string>
+	<string>department_store</string>
+	<string>doctor</string>
+	<string>electronics_store</string>
+	<string>finance</string>
+	<string>food</string>
+	<string>funeral_home</string>
+	<string>gas_station</string>
+	<string>health</string>
+	<string>hospital</string>
+	<string>home_goods_store</string>
+	<string>lawyer</string>
+	<string>library</string>
+	<string>movie_rental</string>
+	<string>movie_theater</string>
+	<string>museum</string>
+	<string>night_club</string>
+	<string>park</string>
+	<string>parking</string>
+	<string>pet_store</string>
+	<string>police</string>
+	<string>post_office</string>
+	<string>real_estate_agency</string>
+	<string>restaurant</string>
+	<string>school</string>
+	<string>shoe_store</string>
+	<string>spa</string>
+	<string>stadium
+stadium
+storage</string>
+	<string>storage</string>
+	<string>store</string>
+	<string>subway_station</string>
+	<string>synagogue</string>
+	<string>taxi_stand</string>
+	<string>train_station</string>
+	<string>travel_agency</string>
+	<string>university</string>
+	<string>zoo</string>
+</array>
+</plist>
