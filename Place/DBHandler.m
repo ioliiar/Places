@@ -116,7 +116,7 @@
                         
             place.latitude =(double)sqlite3_column_double(statement, 5);
          
-            place.longitude =(double)sqlite3_column_double(statement, 6);
+            place.longtitude =(double)sqlite3_column_double(statement, 6);
             place.category = sqlite3_column_int(statement, 7);
             
             [placesArray addObject:place];
@@ -167,7 +167,7 @@
    
         sqlite3_bind_double(statement, 4, [place.dateVisited timeIntervalSince1970]);
         sqlite3_bind_double(statement,5,place.latitude);
-        sqlite3_bind_double(statement,6,place.longitude);
+        sqlite3_bind_double(statement,6,place.longtitude);
         sqlite3_bind_int(statement, 7, place.category);
         
     } ;
@@ -209,7 +209,7 @@
         
         sqlite3_bind_double(statement, 4, [place.dateVisited timeIntervalSince1970]);
         sqlite3_bind_double(statement,5,place.latitude);
-        sqlite3_bind_double(statement,6,place.longitude);
+        sqlite3_bind_double(statement,6,place.longtitude);
         sqlite3_bind_int(statement, 7, place.category);
 
     

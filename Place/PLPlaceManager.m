@@ -93,7 +93,7 @@
         placeCoord.longitude=[[loc objectForKey:@"lng"] doubleValue];
         
         placeEntity.latitude = placeCoord.latitude;
-        placeEntity.longitude = placeCoord.longitude;
+        placeEntity.longtitude = placeCoord.longitude;
         placeEntity.name = name;
         placeEntity.category = intType;
         
