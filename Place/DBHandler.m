@@ -59,7 +59,7 @@
     NSError *error;
     NSArray *paths = NSSearchPathForDirectoriesInDomains (NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDir = [paths objectAtIndex:0];
-    NSString *writableDB = [documentsDir stringByAppendingPathComponent: [NSString stringWithFormat:@"%@.%@",kDBName,@"db"]];
+    NSString *writableDB = [documentsDir stringByAppendingPathComponent: [NSString stringWithFormat:@"%@.%@",kDBName,@"sqlite"]];
     success = [fileManager fileExistsAtPath:writableDB];
     if (success) {
         return;
