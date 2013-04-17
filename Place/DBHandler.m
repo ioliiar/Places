@@ -232,7 +232,8 @@
 }
 
 - (BOOL)updatePlaceWithId:(PlaceEntity *)place ident:(NSInteger)Ident {
-    const char *sql = "UPDATE Place Set Name = ?, Comment = ?, Photo = ?, Visited = ?, Latitude = ?, Longitude = ?, Category = ?    Where PlaceId = ?";
+    
+    const char *sql = "UPDATE Place Set Name = ?, Comment = ?, Image = ?, Visited = ?, Latitude = ?, Longitude = ?, Category = ?    Where PlaceId = ?";
     sqlite3_stmt *statement;
     
     if(sqlite3_prepare_v2(database, sql, -1, &statement, NULL) == SQLITE_OK){
