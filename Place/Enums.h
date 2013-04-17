@@ -20,6 +20,7 @@
 #define kClearMap    @"ClearMap"
 #define kAnnToRemove @"AnnotationToRemove"
 #define kUpdateMap   @"UpdateMap"
+#define kDirection   @"Direction"
 
 //Enums
 

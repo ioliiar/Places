@@ -6,9 +6,10 @@
 //  Copyright (c) 2013 Iurii Oliiar. All rights reserved.
 //
 
-#import <CoreLocation/CoreLocation.h>
+#import <CoreLocation/CLLocation.h>
 #import "RequestDispatcher.h"
 #import "PlaceEntity.h"
+#import "GoogleStep.h"
 
 @implementation Response
 
@@ -24,85 +25,61 @@
 
 @interface RequestDispatcher ()<NSURLConnectionDelegate, NSURLConnectionDataDelegate>
 
-
+@property (nonatomic, copy) NSArray *directionPoints;
 @property (nonatomic, retain) NSMutableData *data;
 
 @end
 
 
-static RequestDispatcher *sharedInstance = nil;
-
 @implementation RequestDispatcher
 
+@synthesize directionPoints;
 @synthesize response;
 @synthesize type;
 @synthesize delegate;
 @synthesize data;
 
-
-+ (RequestDispatcher *)sharedRequestDispatcher {
-    if (sharedInstance != nil) {
-        return sharedInstance;
-    }
-    @synchronized([RequestDispatcher class]) {
-        if (sharedInstance == nil) {
-            sharedInstance = [[RequestDispatcher alloc] init];
-        }
-        return sharedInstance;
-    }
-}
-
-- (oneway void)release {
-}
-
-- (id)retain {
-    return sharedInstance;
-}
-
-- (NSUInteger)retainCount {
-    return INT_MAX;
-}
-
-
-- (id)autorelease {
-    return sharedInstance;
-}
-
 - (void)dealloc {
-    [response release];
-    [data release];
+    [directionPoints release];
+    [response release]; 
     [super dealloc];
 }
 
-- (void)requestWeatherForPlace:(CLLocationCoordinate2D)location {
-    
+- (void)requestWeatherForPlace:(CLLocationCoordinate2D)location {    
+}
+
+- (NSString *)makeQueryString:(PlaceEntity *)place {
+    return [NSString stringWithFormat:@"%1.6f,%1.6f",place.latitude,place.longtitude];
 }
 
 - (void)requestRoute:(NSArray *)routePoints options:(NSDictionary *)options {
+    self.directionPoints = routePoints;
     self.type = RequestTypeRoute;
-//    NSInteger rpCount = [routePoints count];
-//    NSAssert(rpCount < 2, @"routePoints.count < 2 ");
-//    NSMutableString *str = [[NSMutableString alloc] initWithString:@"http://maps.googleapis.com/maps/api/directions/json?origin="];
-//
-//    NSString *start = [NSString stringWithFormat:@"%@&destination=%@", [routePoints objectAtIndex:0], [routePoints objectAtIndex:rpCount - 1]];
-//    [str appendString:start];
-//    if (rpCount > 2) {
-//        [str appendString:@"&waypoints="];
-//        for (int j = 1; j < rpCount - 3; j++) {
-//            NSString *wp = [NSString stringWithFormat:@"%@|",[routePoints objectAtIndex:j]];
-//            [str appendString:wp];
-//        }
-//        [str appendString:[routePoints objectAtIndex:rpCount - 2]];
-//    }
-//    NSString *end = @"&sensor=false";
-//    [str appendString:end];
+    NSInteger rpCount = [routePoints count];
+
+    NSMutableString *str = [[NSMutableString alloc] initWithString:@"http://maps.googleapis.com/maps/api/directions/json?origin="];
+
+    NSString *start = [NSString stringWithFormat:@"%@&destination=%@", [self makeQueryString:[routePoints objectAtIndex:0]], [self makeQueryString:[routePoints objectAtIndex:rpCount - 1]]];
+    [str appendString:start];
+    if (rpCount > 2) {
+        [str appendString:@"&waypoints="];
+        for (int j = 1; j < rpCount - 2; j++) {
+            NSString *wp = [NSString stringWithFormat:@"%@|",[self makeQueryString:[routePoints objectAtIndex:j]]];
+            [str appendString:wp];
+        }
+        [str appendString:[self makeQueryString:[routePoints objectAtIndex:rpCount - 2]]];
+    }
+    NSString *end = @"&sensor=false";
+    [str appendString:end];
     
-    // there are some hardcode in this method just to check how it works
+
+    //examples of using Google Directions
+//    
+//    NSString *googleMapsURLString = [NSString stringWithFormat:@"http://maps.google.com/?saddr=%1.6f,%1.6f&daddr=%1.6f,%1.6f",
+//                                     start.latitude, start.longitude, destination.latitude, destination.longitude];
+//    NSString *str = @"http://maps.googleapis.com/maps/api/directions/json?origin=Chicago,IL&destination=Los+Angeles,CA&waypoints=Joplin,MO|Oklahoma+City,OK&sensor=false";
     
-    /*NSString *googleMapsURLString = [NSString stringWithFormat:@"http://maps.google.com/?saddr=%1.6f,%1.6f&daddr=%1.6f,%1.6f",
-                                     start.latitude, start.longitude, destination.latitude, destination.longitude];*/
-    NSString *str = @"http://maps.googleapis.com/maps/api/directions/json?origin=Chicago,IL&destination=Los+Angeles,CA&waypoints=Joplin,MO|Oklahoma+City,OK&sensor=false";
-    
+    NSLog(@"%@",str);
     NSURL *url = [NSURL URLWithString:[str stringByAddingPercentEscapesUsingEncoding:NSASCIIStringEncoding]];
     NSURLRequest *request = [NSURLRequest requestWithURL:url];
     NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:request delegate:self];
@@ -116,11 +93,13 @@ static RequestDispatcher *sharedInstance = nil;
 
 - (void)requestPlacemarkNamed:(NSString*)name {
     self.type = RequestTypePlacemarkSearch;
+    self.response = nil;
+    self.response = [[[Response alloc] init] autorelease];
+    
     CLGeocoder *geocoder = [[[CLGeocoder alloc] init] autorelease];
     [geocoder geocodeAddressString:name completionHandler:^(NSArray *placemarks, NSError *error) {
         if ([placemarks count] > 0 && error == nil){
             CLPlacemark *firstPlacemark = [placemarks objectAtIndex:0];
-            self.response = [[Response alloc] init];
             self.response.code = ResponseCodeOK;
             self.response.responseInfo = [NSDictionary dictionaryWithObject:firstPlacemark.location forKey: kLocation];
             [self.delegate request:self didFinishedWithResponse:self.response];
@@ -144,6 +123,8 @@ static RequestDispatcher *sharedInstance = nil;
 #pragma mark NSURLConnection  methods
 
 - (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+    self.response = nil;
+    self.response = [[[Response alloc] init] autorelease];
     self.response.code = ResponseCodeError;
     self.response.responseInfo = [NSDictionary dictionaryWithObject:error forKey: kError];
     [self.delegate request:self didFinishedWithResponse:self.response];
@@ -161,41 +142,56 @@ static RequestDispatcher *sharedInstance = nil;
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     NSError *err = nil;
+    NSArray *results = nil;
+    NSMutableArray *resultSteps = [[NSMutableArray alloc] init];
     NSDictionary *responseObject = [NSJSONSerialization JSONObjectWithData:self.data
                                                                    options:NSJSONReadingMutableContainers
                                                                      error:&err];
     
     NSLog(@"%@",responseObject);
-/*
-    // TODO parse in cycle
-    NSMutableArray *routes = [responseObject valueForKeyPath:@"routes"];
-    NSMutableArray *legs = [[routes objectAtIndex:0] valueForKeyPath:@"legs"];
-    NSMutableArray *steps = [[legs objectAtIndex:0] valueForKeyPath:@"steps"];
+    NSArray *routes = [responseObject objectForKey:@"routes"];
+    NSDictionary *route = [routes lastObject];
     
-    CLLocationCoordinate2D startLocation;
-    startLocation.latitude = [(NSString *)[steps valueForKeyPath: @"start_location.lat"] doubleValue];
-    startLocation.longitude = [(NSString *)[steps valueForKeyPath: @"start_location.lng"] doubleValue];
+    if (route) {
+        NSArray *legs = [route objectForKey:@"legs"];
+        for (int i = 0; i < [legs count]; i++) {
+            //waypoint are not reordered (we doesn't implement this option)
+            NSDictionary *leg = [legs objectAtIndex:i];
+            NSArray *steps = [leg objectForKey:@"steps"];
+            for (int k = 0 ; k < [steps count]; k++) {
+                NSDictionary *step = [steps objectAtIndex:k];
+                NSDictionary *stLoc = [step objectForKey:@"start_location"];
+                NSDictionary *endLoc = [step objectForKey:@"end_location"];
+                
+                GoogleStep *gStep  = [[GoogleStep alloc] init];
+                CLLocationCoordinate2D start;
+                start.latitude = [[stLoc objectForKey:@"lat"] doubleValue];
+                start.longitude = [[stLoc objectForKey:@"lng"] doubleValue];
+                
+                CLLocationCoordinate2D end;
+                end.latitude = [[endLoc objectForKey:@"lat"] doubleValue];
+                end.longitude = [[endLoc objectForKey:@"lng"] doubleValue];
+                
+                gStep.start = start;
+                gStep.end = end;
+                
+                [resultSteps addObject:gStep];
     
-    CLLocationCoordinate2D endLocation;
-    endLocation.latitude = [(NSString *)[steps valueForKeyPath: @"end_location.lat"] doubleValue];
-    endLocation.longitude = [(NSString *)[steps valueForKeyPath: @"end_location.lng"] doubleValue];
+                [gStep release];
+            }
+        }
+       
+    }
+    results = [resultSteps copy];
+    [resultSteps release];
     
+    self.response = nil;
+    self.response = [[[Response alloc] init] autorelease];
+    self.response.code = ResponseCodeOK;
+    self.response.responseInfo = [NSDictionary dictionaryWithObject:[results autorelease] forKey:kDirection];
+    [self.delegate request:self didFinishedWithResponse:self.response];
     [connection release];
     [data release];
- */   
-//    NSString *responseString=[[NSString alloc]initWithData:responseData encoding:NSUTF8StringEncoding];
-//    NSMutableDictionary *data1 = [responseData objectFromJSONData];
-//    NSMutableArray *ad = [data1 objectForKey:@"routes"];
-//    NSMutableArray *data2 = [[ad objectAtIndex:0] objectForKey:@"legs"];
-//    NSMutableArray *data3 = [[data2 objectAtIndex:0] objectForKey:@"steps"];
-//    //    NSLog(@"Data3 %@", data3);
-//    for(int i = 0; i<data3.count;i++){
-//        NSLog(@"Start %@", [[data3 objectAtIndex:i] objectForKey:@"start_location"]);
-//        NSLog(@"End %@", [[data3 objectAtIndex:i] objectForKey:@"end_location"]);
-//        
-//    }
-
-    
     
 }
 

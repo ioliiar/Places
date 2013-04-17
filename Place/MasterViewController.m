@@ -16,7 +16,7 @@
 #import "RouteEntity.h"
 #import "PlaceEntity.h"
 
-@interface MasterViewController ()<UIActionSheetDelegate, UIPopoverControllerDelegate, MenuPopControllerDelegate, UISearchBarDelegate>
+@interface MasterViewController ()<UIActionSheetDelegate, UIPopoverControllerDelegate, UISearchBarDelegate, MenuPopControllerDelegate,PlaceViewControllerDelegate>
 
 @property (nonatomic, copy) NSArray *routes;
 @property (nonatomic, copy) NSArray *places;
@@ -55,19 +55,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
-    dispatch_queue_t queue = dispatch_queue_create("BaseStart", nil);
-    dispatch_async(queue, ^ {
-        self.places = [self.dbHandler getPlacesByName:nil];
-        self.routes = [self.dbHandler getRouteNamed:nil];
-        _filteredPlaces = [[self.places mutableCopy] retain];
-        _filteredRoutes = [[self.routes mutableCopy] retain];
-
-        dispatch_sync(dispatch_get_main_queue(), ^ {
-            [self.tableView reloadData];
-        });
-    });
-    UIBarButtonItem *rb = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+    [self getDBList];
+        UIBarButtonItem *rb = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
                                                                         target:self
                                                                         action:@selector(menuAction:)];
     self.navigationItem.rightBarButtonItem = rb;
@@ -94,7 +83,20 @@
     return ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad || orientation == UIDeviceOrientationPortrait);
 }
 
+- (void)getDBList {
+    dispatch_queue_t queue = dispatch_queue_create("BaseStart", nil);
+    dispatch_async(queue, ^ {
+        self.places = [self.dbHandler getPlacesByName:nil];
+        self.routes = [self.dbHandler getRouteNamed:nil];
+        _filteredPlaces = [[self.places mutableCopy] retain];
+        _filteredRoutes = [[self.routes mutableCopy] retain];
+        
+        dispatch_sync(dispatch_get_main_queue(), ^ {
+            [self.tableView reloadData];
+        });
+    });
 
+}
 
 #pragma mark Menu Picker methods
 
@@ -126,6 +128,7 @@
         case MenuRowAddPlace: {
             PlaceViewController *place = [[PlaceViewController alloc] init];
             place.mode = PlaceModeSurvey;
+            place.delegate = self;
             [self.navigationController pushViewController:place animated:YES];
             [place release];
         } break;
@@ -149,12 +152,24 @@
 
 }
 
+#pragma mark custom Delegate methods
+
+- (void)placeVC:(PlaceViewController *)placeVC didDismissedInMode:(PlaceMode)mode {
+    if (mode == PlaceModeSurvey) {
+        if ([self.dbHandler insertPlace:placeVC.place]) {
+            [self getDBList];
+        }
+        
+    }
+}
+
 - (void)menuPopController:(MenuPopController *)menu didChoseItem:(NSInteger)item {
     [self.popController dismissPopoverAnimated:YES];
     switch (item) {
         case MenuRowAddPlace: {
             PlaceViewController *place = [[PlaceViewController alloc] init];
             place.mode = PlaceModeSurvey;
+            place.delegate = self;
             [self.navigationController pushViewController:place animated:YES];
             [place release];
         } break;
@@ -237,6 +252,7 @@
         case CategorySectionPlace: {
             PlaceViewController *pl = [[PlaceViewController alloc] init];
             pl.place = [self.filteredPlaces objectAtIndex:indexPath.row];
+            pl.delegate = self;
             [self.navigationController pushViewController:pl animated:YES];
             [pl release];
         }

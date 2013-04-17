@@ -140,9 +140,10 @@
 - (IBAction)doneAction:(UIBarButtonItem *)sender {
     NSLog(@"done");
     if ([self.route.places count] > 1) {
-        RequestDispatcher *dispatcher = [RequestDispatcher sharedRequestDispatcher];
+        RequestDispatcher *dispatcher = [[RequestDispatcher alloc] init];
         dispatcher.delegate = self;
         [dispatcher requestRoute:self.route.places options:nil];
+        [dispatcher release];
     }
 }
 
@@ -200,17 +201,6 @@
         int i = ((PlaceEntity *)[self.route.places objectAtIndex:indexPath.row]).tag;
         [self.route.places removeObjectAtIndex:indexPath.row];
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
-            NSMutableArray *arr = [[NSMutableArray alloc] init];
-            for (PlaceEntity *pl in self.route.places) {
-                MKPointAnnotation *ann = [[MKPointAnnotation alloc] init];
-                ann.title = pl.name;
-                CLLocationCoordinate2D loc;
-                loc.longitude = pl.longtitude;
-                loc.latitude = pl.latitude;
-                [ann setCoordinate:loc];
-                [arr addObject:ann];
-                [ann release];
-            }
             [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateMap
                                                                 object:nil
                                                               userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:i] forKey:kAnnotation]];

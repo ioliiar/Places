@@ -58,14 +58,9 @@
     [super viewDidLoad];
     self.searchBar = [[[UISearchBar alloc] init] autorelease];
     self.searchBar.delegate = self;
-    self.searchBar.frame = CGRectMake(0, 0, 250, 44);
+    self.searchBar.frame = CGRectMake(0, 0, 550, 44);
     _searchBar.placeholder = @"Place";
     self.navigationItem.titleView = self.searchBar;
-    UIBarButtonItem *searchBarItem = [[UIBarButtonItem alloc] initWithCustomView:_searchBar];
-    
-    
-    
-    
     [self configureView];
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self
                                                                                             action:@selector(handleLongPress:)];
@@ -76,9 +71,9 @@
     UIBarButtonItem *clear = [[UIBarButtonItem alloc] initWithTitle:LOC_CLEAR
                                                               style:UIBarButtonItemStylePlain                                                                           target:self
                                                              action:@selector(clearMap)];
-    self.navigationItem.rightBarButtonItems = @[clear,searchBarItem];
+    self.navigationItem.rightBarButtonItem = clear;
     [clear release];
-    [searchBarItem release];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(updateMap:)
                                                  name:kUpdateMap
@@ -87,8 +82,14 @@
 
 - (void)updateMap:(NSNotification *)notification {
     int k = [[notification.userInfo objectForKey:kAnnotation] integerValue];
-    [self.mapView removeAnnotation:[self.mapView.annotations objectAtIndex:k]];
-    
+    for (int i = 0; i < [self.mapView.annotations count]; i++) {
+        id userLocation = [self.mapView userLocation];
+        if (![[self.mapView.annotations objectAtIndex:i] isEqual:userLocation]) {
+        if (((TaggedAnnotation *)[self.mapView.annotations objectAtIndex:i]).tag == k) {
+            [self.mapView removeAnnotation:[self.mapView.annotations objectAtIndex:i]];
+        }
+    }
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -184,9 +185,10 @@
     if ([word isEqualToString:@""]) {
         return;
     }
-    RequestDispatcher *dispatcher = [RequestDispatcher sharedRequestDispatcher];
+    RequestDispatcher *dispatcher = [[RequestDispatcher alloc] init];
     dispatcher.delegate = self;
     [dispatcher requestPlacemarkNamed:word];
+    [dispatcher release];
 }
 
 - (void)request:(RequestDispatcher *)request didFinishedWithResponse:(Response *)response {
@@ -195,8 +197,8 @@
         NSLog(@"%@", [error localizedDescription]);
         return;
     }
+    
     CLLocation *loc =[response.responseInfo objectForKey:kLocation];
-       
     MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(loc.coordinate, 50000.0, 50000.0);
     [self.mapView setRegion:region animated:YES];
 }

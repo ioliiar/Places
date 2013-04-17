@@ -15,8 +15,9 @@
 - (NSArray*)getPlacesByName:(NSString*)name;  // nil means all
 - (NSArray*)getLastVisitedPlacesNamed:(NSString*)name; // nil means all
 - (BOOL)insertPlace:(PlaceEntity*)place;
-- (BOOL)updatePlaceWithId:(NSInteger)Ident;
+- (BOOL)updatePlaceWithId:(PlaceEntity *)place ident:(NSInteger)Ident;
 - (BOOL)deletePlaceWithId:(NSInteger)Ident;
+- (PlaceEntity *)getPlaceById:(NSInteger)Ident;
 
 // Route table
 - (NSArray*)getRouteNamed:(NSString*)name;
