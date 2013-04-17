@@ -8,6 +8,8 @@
 
 
 #define LOC_OK              NSLocalizedStringWithDefaultValue(@"LOC_OK",            nil, [NSBundle mainBundle], @"OK", @"OK")
+#define LOC_ERROR           NSLocalizedStringWithDefaultValue(@"LOC_ERROR",         nil, [NSBundle mainBundle], @"Error", @"Error")
+#define LOC_TRY_LTR         NSLocalizedStringWithDefaultValue(@"LOC_TRY_LTR",       nil, [NSBundle mainBundle], @"Please, try again later", @"Please, try again later")
 #define LOC_CANCEL          NSLocalizedStringWithDefaultValue(@"LOC_CANCEL",        nil, [NSBundle mainBundle], @"Cancel", @"Cancel")
 #define LOC_YES             NSLocalizedStringWithDefaultValue(@"LOC_YES",           nil, [NSBundle mainBundle], @"YES", @"YES")
 #define LOC_NO              NSLocalizedStringWithDefaultValue(@"LOC_NO",            nil, [NSBundle mainBundle], @"NO", @"NO")

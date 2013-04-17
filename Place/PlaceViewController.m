@@ -281,6 +281,7 @@
             break;
         case DescriptionRowDateVisited: {
             self.datePicker.view.frame = [self frameForDatePickerSwapAxis:NO];
+            self.datePicker.datePicker.date = self.place.dateVisited;
             self.datePicker.delegate = self;
             datePickerVisible = YES;
             [self.view addSubview:_datePicker.view];

@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 @class PlaceEntity;
+@class RouteEntity;
 
 @interface DBHandler : NSObject
 
@@ -15,14 +16,14 @@
 - (NSArray*)getPlacesByName:(NSString*)name;  // nil means all
 - (NSArray*)getLastVisitedPlacesNamed:(NSString*)name; // nil means all
 - (BOOL)insertPlace:(PlaceEntity*)place;
-- (BOOL)updatePlaceWithId:(PlaceEntity *)place ident:(NSInteger)Ident;
+- (BOOL)updatePlace:(PlaceEntity *)place;
 - (BOOL)deletePlaceWithId:(NSInteger)Ident;
 - (PlaceEntity *)getPlaceById:(NSInteger)Ident;
 
 // Route table
 - (NSArray*)getRouteNamed:(NSString*)name;
 - (BOOL)saveRoute:(NSArray*)route named:(NSString*)name;
-- (BOOL)updateRouteWithId:(NSInteger)Ident;
+- (BOOL)updateRoute:(RouteEntity *)route;
 - (BOOL)deleteRouteWithId:(NSInteger)Ident;
 
 @end

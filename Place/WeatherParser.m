@@ -72,6 +72,7 @@
     NSString *locationId = nil;
     NSURL *URL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://weather.yahooapis.com/forecastrss?w=%d&u=%@", WOEID, (weatherUnit == WeatherUnitCelcius) ? @"c" : @"f"]];
     NSXMLParser *xmlParser = [[NSXMLParser alloc] initWithContentsOfURL:URL];
+    [URL release];
     [xmlParser setDelegate:self];
     if ([xmlParser parse]) {
         NSArray *array = [self.guidContent componentsSeparatedByString:@"_"];
@@ -81,11 +82,11 @@
 }
 
 - (void)parse:(NSString *)locationId {
-    
     NSURL *URL = [[NSURL alloc] initWithString:[NSString stringWithFormat:@"http://xml.weather.yahoo.com/forecastrss/%@_c.xml",locationId]];
     NSLog(@"%@",URL);
     
     NSXMLParser *xmlParser = [[NSXMLParser alloc] initWithContentsOfURL:URL];
+    [URL release];
     [xmlParser setDelegate:self];
     [xmlParser parse];
     
@@ -107,6 +108,7 @@
         [formatter setDateFormat:@"d MMM yyyy"];
         
         NSString *currentDateStr = [formatter stringFromDate:currentWeather.date];
+        [formatter release];
         
         if ([forecaseDataDic objectForKey:currentDateStr]) {
             NSDictionary *dic = [forecaseDataDic objectForKey:currentDateStr];
@@ -115,7 +117,7 @@
         }
         
         if (self.weatherArray == nil) {
-            self.weatherArray = [[NSMutableArray alloc] init];
+            self.weatherArray = [[[NSMutableArray alloc] init] autorelease];
         }
         
         for (NSString *key in [forecaseDataDic allKeys]) {
@@ -124,8 +126,9 @@
             // }
             NSLog(@"keys is %@",key);
             NSLog(@"key %@",[forecaseDataDic objectForKey:key]);
-            
-            [weatherArray addObject:[[Weather alloc] initForecastWeatherWithDic:[forecaseDataDic objectForKey:key]]];
+            Weather *weather = [[Weather alloc] initForecastWeatherWithDic:[forecaseDataDic objectForKey:key]];
+            [weatherArray addObject:weather];
+            [weather release];
             
         }
         

@@ -39,25 +39,28 @@
 }
 
 -(NSArray *)fetchedData:(NSData *)responseData {
-    
     NSError* error;
     NSDictionary* json = [NSJSONSerialization
                           JSONObjectWithData:responseData
-                          
                           options:kNilOptions
                           error:&error];
     
     
     NSArray* places = [json objectForKey:@"results"];
-    return [self plotPlaces:places];
+    NSArray *result  = [self plotPlaces:places];
+    
+    return result;
     
     
 }
 
 -(NSArray*)plotPlaces:(NSArray *)data {
     
-    NSMutableArray *places = [NSMutableArray array];
-   
+    NSMutableArray *places = [[NSMutableArray alloc] init];
+    NSString *pathPlist = [[NSBundle mainBundle] pathForResource:
+                           @"Places" ofType:@"plist"];
+    NSMutableArray *arrayPlaces = [[NSMutableArray alloc] initWithContentsOfFile:pathPlist];
+
     for (int i=0; i<[data count]; i++) {
         
         PlaceEntity *placeEntity = [[PlaceEntity alloc] init];
@@ -79,10 +82,7 @@
         
         NSArray* types = [place objectForKey:@"types"];
         NSString *type = [types objectAtIndex:0];
-        NSString *pathPlist = [[NSBundle mainBundle] pathForResource:
-                          @"Places" ofType:@"plist"];
-        NSMutableArray *arrayPlaces = [[NSMutableArray alloc] initWithContentsOfFile:pathPlist];
-        NSInteger intType = 0;
+                NSInteger intType = 0;
         
         if ([arrayPlaces containsObject:type]) {
             intType = [arrayPlaces indexOfObject:type];
@@ -109,6 +109,10 @@
         [placeEntity release];
     }
     
-    return [places copy];
+    [arrayPlaces release];
+    NSArray *res = [places copy];
+    [places release];
+    
+    return [res autorelease];
 }
 @end

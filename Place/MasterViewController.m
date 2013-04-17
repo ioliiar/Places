@@ -155,11 +155,26 @@
 #pragma mark custom Delegate methods
 
 - (void)placeVC:(PlaceViewController *)placeVC didDismissedInMode:(PlaceMode)mode {
-    if (mode == PlaceModeSurvey) {
-        if ([self.dbHandler insertPlace:placeVC.place]) {
-            [self getDBList];
+    if (mode != PlaceModeSurvey) {
+        return;
+    }
+    BOOL success;
+        if (placeVC.place.Id) {
+            success = [self.dbHandler updatePlace:placeVC.place];
+            
+        } else {
+            success = [self.dbHandler insertPlace:placeVC.place];
         }
-        
+    if (success) {
+        [self getDBList];
+    } else {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:LOC_ERROR
+                                                        message:LOC_TRY_LTR
+                                                       delegate:nil
+                                              cancelButtonTitle:nil
+                                              otherButtonTitles:@"OK", nil];
+        [alert show];
+        [alert release];
     }
 }
 
@@ -271,6 +286,23 @@
     
 }
 
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        int i = ((PlaceEntity *)[_filteredPlaces objectAtIndex:indexPath.row]).Id;
+        if ([self.dbHandler deletePlaceWithId:i]) {
+            [self getDBList];
+        } else {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:LOC_ERROR
+                                                            message:LOC_TRY_LTR
+                                                           delegate:nil
+                                                  cancelButtonTitle:nil
+                                                  otherButtonTitles:@"OK", nil];
+            [alert show];
+            [alert release];
+
+        }
+    }
+}
 
 #pragma mark UISearchBar delegate methods
 
@@ -300,7 +332,6 @@
     }
     [self.tableView reloadData];
 }
-
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
     searchBar.showsCancelButton = YES;

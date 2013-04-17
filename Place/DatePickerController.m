@@ -48,4 +48,8 @@
     [self.delegate datePickerDidChooseDate:self.datePicker.date];
 }
 
+- (IBAction)today:(UIBarButtonItem *)sender {
+    self.datePicker.date  = [NSDate date];
+}
+
 @end

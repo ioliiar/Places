@@ -59,7 +59,7 @@
     self.searchBar = [[[UISearchBar alloc] init] autorelease];
     self.searchBar.delegate = self;
     self.searchBar.frame = CGRectMake(0, 0, 550, 44);
-    _searchBar.placeholder = @"Place";
+    _searchBar.placeholder = @"External Search";
     self.navigationItem.titleView = self.searchBar;
     [self configureView];
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self
