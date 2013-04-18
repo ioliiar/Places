@@ -232,6 +232,9 @@
             cell.whatLabel.text = LOC_NAME;
             cell.valueTextField.text = self.place.name;
             cell.valueTextField.tag = DescriptionRowName;
+            [cell.valueTextField addTarget:self
+                                    action:@selector(textFieldDidEndEditing:)
+                          forControlEvents:UIControlEventEditingChanged];
             return cell;
         }
         case DescriptionRowComment: {
@@ -239,6 +242,9 @@
             cell.whatLabel.text = LOC_COMMENT;
             cell.valueTextField.text = self.place.comment;
             cell.valueTextField.tag = DescriptionRowComment;
+            [cell.valueTextField addTarget:self
+                                    action:@selector(textFieldDidEndEditing:)
+                          forControlEvents:UIControlEventEditingChanged];
             return cell;
         }
         case DescriptionRowCategory: {
@@ -284,6 +290,7 @@
             self.datePicker.datePicker.date = self.place.dateVisited;
             self.datePicker.delegate = self;
             datePickerVisible = YES;
+            [tableView endEditing:YES];
             [self.view addSubview:_datePicker.view];
             
         }
@@ -309,6 +316,8 @@
     self.place.dateVisited = date;
     [self.detailTableView reloadData];
 }
+
+#pragma mark textField delegate methods
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];

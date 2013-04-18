@@ -121,7 +121,10 @@
 - (void)receivedAnnotaion:(NSNotification *)notification {
     TaggedAnnotation *ann = [notification.userInfo objectForKey:kAnnotation];
     PlaceEntity *pl = [[PlaceEntity alloc] init];
-    pl.name = @"Waypoint";
+    NSMutableString * str = [[NSMutableString alloc] initWithString:LOC_WAYPOINT];
+    [str appendString:[NSString stringWithFormat:@"_%i",[self.route.places count]]];
+    pl.name = str;
+    [str release];
     pl.comment = @"From Map";
     pl.longtitude = ann.coordinate.longitude;
     pl.latitude = ann.coordinate.latitude;
@@ -153,7 +156,18 @@
         NSLog(@"%@", [error localizedDescription]);
         return;
     }
-    //TODO handle responseCodeOK,draw on map
+    NSArray *direction = [response.responseInfo objectForKey:kDirection];
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone) {
+        DetailViewController *mapVC = [[DetailViewController alloc] init];
+        mapVC.mode = PlaceModeSurvey;
+        mapVC.detailItems = direction;
+        [self.navigationController pushViewController:mapVC animated:YES];
+        [mapVC release];
+    } else {
+        [[NSNotificationCenter defaultCenter] postNotificationName:kRoutePoints
+                                                            object:nil
+                                                          userInfo:[NSDictionary dictionaryWithObject:direction forKey:kDirection]];
+    }
 }
 
 #pragma mark UITableView methods

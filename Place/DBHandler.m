@@ -233,16 +233,6 @@
         
         NSData *imageData=UIImagePNGRepresentation(place.photo);
         
-        
-//        if (imageData!=nil) {
-//            sqlite3_bind_blob(statement, 3, [imageData bytes], [imageData length], NULL);
-//        } else {
-//            
-//            NSURL *url=[NSURL URLWithString:@"http://imagesfromseminar.tk/images/none-3.png"];
-//            NSData * defaultData=[NSData dataWithContentsOfURL:url];
-//            sqlite3_bind_blob(statement, 3, [defaultData bytes], [defaultData length], NULL);
-//        }
-        
         sqlite3_bind_blob(statement, 3, [imageData bytes], [imageData length], NULL);
         
         sqlite3_bind_double(statement, 4, [place.dateVisited timeIntervalSince1970]);

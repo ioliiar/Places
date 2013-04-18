@@ -9,9 +9,10 @@
 #import "DetailViewController.h"
 #import <CoreLocation/CoreLocation.h>
 #import "TaggedAnnotation.h"
+#import "GoogleStep.h"
 #import "RequestDispatcher.h"
 
-@interface DetailViewController ()<UISearchBarDelegate, RequestDispatcherDelegate>
+@interface DetailViewController ()<UISearchBarDelegate, RequestDispatcherDelegate, MKMapViewDelegate>
 @property (strong, nonatomic) UIPopoverController *masterPopoverController;
 @property (retain, nonatomic) UISearchBar *searchBar;
 - (void)configureView;
@@ -35,14 +36,27 @@
     if (_detailItems != newDetailItem) {
         [_detailItems release];
         _detailItems = [newDetailItem retain];
-
-        // Update the view.
-        [self configureView];
     }
 
     if (self.masterPopoverController != nil) {
         [self.masterPopoverController dismissPopoverAnimated:YES];
     }        
+}
+
+- (void)drawRoute {
+    int k = [_detailItems count];
+    for (int j = 0; j < k; j++) {
+        CLLocationCoordinate2D *locs = malloc(2 * sizeof(CLLocationCoordinate2D));
+        GoogleStep *step = [self.detailItems objectAtIndex:j];
+        locs[0].latitude = step.start.latitude;
+        locs[0].longitude = step.start.longitude;
+        locs[1].latitude = step.end.latitude;
+        locs[1].longitude = step.end.longitude;
+        MKPolyline *polyline = [MKPolyline polylineWithCoordinates:locs count:2];
+        [self.mapView addOverlay:polyline];
+        free(locs);
+    }
+
 }
 
 - (void)configureView {
@@ -60,6 +74,10 @@
     self.searchBar.delegate = self;
     self.searchBar.frame = CGRectMake(0, 0, 550, 44);
     _searchBar.placeholder = @"External Search";
+    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
+        _searchBar.placeholder = @"External";
+    }
+   
     self.navigationItem.titleView = self.searchBar;
     [self configureView];
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self
@@ -78,6 +96,26 @@
                                              selector:@selector(updateMap:)
                                                  name:kUpdateMap
                                                object:nil];
+    self.mapView.delegate = self;
+    if ([_detailItems count] >= 2) {
+        [self drawRoute];
+    }
+//    CLLocationCoordinate2D locs[2];
+//    locs[0] = self.mapView.userLocation.coordinate;
+//    locs[1].latitude = locs[0].latitude + 1.0;
+//    locs[1].longitude = locs[0].longitude + 1.0;
+//    MKPolyline *polyline = [MKPolyline polylineWithCoordinates:locs count:2];
+//    
+//    // Add overlay to map.
+//    [self.mapView addOverlay:polyline];
+}
+
+- (MKOverlayView *)mapView:(MKMapView *)mapView viewForOverlay:(id <MKOverlay>)overlay {
+    MKPolylineView *polylineView = [[MKPolylineView alloc] initWithPolyline:overlay];
+    polylineView.strokeColor = [UIColor redColor];
+    polylineView.lineWidth = 3.0;
+    
+    return [polylineView autorelease];
 }
 
 - (void)updateMap:(NSNotification *)notification {
@@ -203,9 +241,6 @@
     [self.mapView setRegion:region animated:YES];
 }
 
-- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
-    //[self filterRegion:searchText];   do we really need it
-}
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
     [searchBar resignFirstResponder];

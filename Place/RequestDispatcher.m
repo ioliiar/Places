@@ -150,37 +150,40 @@
     
     NSLog(@"%@",responseObject);
     NSArray *routes = [responseObject objectForKey:@"routes"];
-    NSDictionary *route = [routes lastObject];
     
-    if (route) {
-        NSArray *legs = [route objectForKey:@"legs"];
-        for (int i = 0; i < [legs count]; i++) {
-            //waypoint are not reordered (we doesn't implement this option)
-            NSDictionary *leg = [legs objectAtIndex:i];
-            NSArray *steps = [leg objectForKey:@"steps"];
-            for (int k = 0 ; k < [steps count]; k++) {
-                NSDictionary *step = [steps objectAtIndex:k];
-                NSDictionary *stLoc = [step objectForKey:@"start_location"];
-                NSDictionary *endLoc = [step objectForKey:@"end_location"];
+    for (int j = 0; j < [routes count]; j++) {
+        NSDictionary *route = [routes objectAtIndex:j];
+        if (route) {
+            NSArray *legs = [route objectForKey:@"legs"];
+            
+            for (int i = 0; i < [legs count]; i++) {
+                NSDictionary *leg = [legs objectAtIndex:i];
+                NSArray *steps = [leg objectForKey:@"steps"];
                 
-                GoogleStep *gStep  = [[GoogleStep alloc] init];
-                CLLocationCoordinate2D start;
-                start.latitude = [[stLoc objectForKey:@"lat"] doubleValue];
-                start.longitude = [[stLoc objectForKey:@"lng"] doubleValue];
-                
-                CLLocationCoordinate2D end;
-                end.latitude = [[endLoc objectForKey:@"lat"] doubleValue];
-                end.longitude = [[endLoc objectForKey:@"lng"] doubleValue];
-                
-                gStep.start = start;
-                gStep.end = end;
-                
-                [resultSteps addObject:gStep];
-    
-                [gStep release];
+                for (int k = 0 ; k < [steps count]; k++) {
+                    NSDictionary *step = [steps objectAtIndex:k];
+                    NSDictionary *stLoc = [step objectForKey:@"start_location"];
+                    NSDictionary *endLoc = [step objectForKey:@"end_location"];
+                    
+                    GoogleStep *gStep  = [[GoogleStep alloc] init];
+                    CLLocationCoordinate2D start;
+                    start.latitude = [[stLoc objectForKey:@"lat"] doubleValue];
+                    start.longitude = [[stLoc objectForKey:@"lng"] doubleValue];
+                    
+                    CLLocationCoordinate2D end;
+                    end.latitude = [[endLoc objectForKey:@"lat"] doubleValue];
+                    end.longitude = [[endLoc objectForKey:@"lng"] doubleValue];
+                    
+                    gStep.start = start;
+                    gStep.end = end;
+                    
+                    [resultSteps addObject:gStep];
+                    
+                    [gStep release];
+                }
             }
+            
         }
-       
     }
     results = [resultSteps copy];
     [resultSteps release];
@@ -193,6 +196,81 @@
     [connection release];
     [data release];
     
+}
+
+/*
+ NSDictionary *polyline = [step objectForKey:@"polyline"];
+ NSString *encodedVal = [polyline objectForKey:@"points"];
+ NSArray *points = [self decodePolyline:encodedVal];
+ [allPoints addObjectsFromArray:points];
+ 
+ */
+
+-(NSMutableArray *)decodePolyLine:(NSString *)encodedStr {
+    NSMutableString *encoded = [[NSMutableString alloc] initWithCapacity:[encodedStr length]];
+    [encoded appendString:encodedStr];
+    [encoded replaceOccurrencesOfString:@"\\\\" withString:@"\\"
+                                options:NSLiteralSearch
+                                  range:NSMakeRange(0, [encoded length])];
+    NSInteger len = [encoded length];
+    NSInteger index = 0;
+    NSMutableArray *array = [[[NSMutableArray alloc] init] autorelease];
+    NSInteger lat=0;
+    NSInteger lng=0;
+    while (index < len) {
+        NSInteger b;
+        NSInteger shift = 0;
+        NSInteger result = 0;
+        do {
+            b = [encoded characterAtIndex:index++] - 63;
+            result |= (b & 0x1f) << shift;
+            shift += 5;
+        } while (b >= 0x20);
+        NSInteger dlat = ((result & 1) ? ~(result >> 1) : (result >> 1));
+        lat += dlat;
+        shift = 0;
+        result = 0;
+        do {
+            b = [encoded characterAtIndex:index++] - 63;
+            result |= (b & 0x1f) << shift;
+            shift += 5;
+        } while (b >= 0x20);
+        NSInteger dlng = ((result & 1) ? ~(result >> 1) : (result >> 1));
+        lng += dlng;
+        NSNumber *latitude = [[[NSNumber alloc] initWithFloat:lat * 1e-5] autorelease];
+        NSNumber *longitude = [[[NSNumber alloc] initWithFloat:lng * 1e-5] autorelease];
+        //          printf("[%f,", [latitude doubleValue]);
+        //          printf("%f]", [longitude doubleValue]);
+        CLLocation *loc = [[[CLLocation alloc] initWithLatitude:[latitude floatValue] longitude:[longitude floatValue]] autorelease];
+        [array addObject:loc];
+    }
+    [encoded release];
+    return array;
+}
+
+-(NSMutableArray *)decodePolyLineLevel:(NSString *)encodedStr {
+    NSMutableString *encoded = [[NSMutableString alloc] initWithCapacity:[encodedStr length]];
+    [encoded appendString:encodedStr];
+    [encoded replaceOccurrencesOfString:@"\\\\" withString:@"\\"
+                                options:NSLiteralSearch
+                                  range:NSMakeRange(0, [encoded length])];
+    NSInteger len = [encoded length];
+    NSInteger index = 0;
+    NSMutableArray *array = [[[NSMutableArray alloc] init] autorelease];
+    while (index < len) {
+        NSInteger b;
+        NSInteger shift = 0;
+        NSInteger result = 0;
+        do {
+            b = [encoded characterAtIndex:index++] - 63;
+            result |= (b & 0x1f) << shift;
+            shift += 5;
+        } while (b >= 0x20);
+        NSNumber *level = [[[NSNumber alloc] initWithFloat:result] autorelease];
+        [array addObject:level];
+    }
+    [encoded release];
+    return array;
 }
 
 @end

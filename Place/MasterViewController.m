@@ -202,7 +202,6 @@
 
 #pragma mark UITableview methods
 
-
 - (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     UILabel *lbl = [[[UILabel alloc] init] autorelease];
     lbl.textAlignment = NSTextAlignmentCenter;
