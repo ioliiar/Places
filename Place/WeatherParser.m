@@ -7,7 +7,6 @@
 //
 
 #import "WeatherParser.h"
-#import "JSONKit.h"
 
 #define kYahooWeatherXMLKeyLocationTag    @"yweather:location"
 #define kYahooWeatherXMLKeyWindTag        @"yweather:wind"
@@ -54,10 +53,16 @@
         
         self.weatherUnit = WeatherUnitCelcius;
         
-        NSString *urlStr = [NSString stringWithFormat:@"http://where.yahooapis.com/geocode?location=%f,%f&flags=J&gflags=R&appid=zHgnBS4m",coordinate.latitude,coordinate.longitude];
-        NSString *content = [NSString stringWithContentsOfURL:[NSURL URLWithString:urlStr] encoding:NSUTF8StringEncoding error:nil];
+        NSError *error = nil;
         
-        NSDictionary *dic = [content objectFromJSONString];
+        NSString *urlStr = [NSString stringWithFormat:@"http://where.yahooapis.com/geocode?location=%f,%f&flags=J&gflags=R&appid=zHgnBS4m",coordinate.latitude,coordinate.longitude];
+        NSData *content = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
+        
+        NSDictionary *dic = [NSJSONSerialization
+                             JSONObjectWithData:content
+                             options:kNilOptions
+                             error:&error];
+        
         WOEID = [[[[[dic objectForKey:kYahooWeatherJSONKeyResultSet] objectForKey:kYahooWeatherJSONKeyResults] objectAtIndex:0] objectForKey:kYahooWeatherJSONKeyWoeid] integerValue];
         
         [self parse:[self locationId]];
