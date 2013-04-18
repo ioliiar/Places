@@ -225,9 +225,11 @@
 - (BOOL)updatePlace:(PlaceEntity *)place{
     
     const char *sql = "UPDATE Place Set Name = ?, Comment = ?, Image = ?, Visited = ?, Latitude = ?, Longitude = ?, Category = ?    Where PlaceId = ?";
+    NSLog(@"place id:%i",place.Id);
     sqlite3_stmt *statement;
     
     if(sqlite3_prepare_v2(database, sql, -1, &statement, NULL) == SQLITE_OK){
+        sqlite3_bind_int(statement, 8, place.Id);
         sqlite3_bind_text(statement,1,[place.name UTF8String],-1,SQLITE_TRANSIENT);
         sqlite3_bind_text(statement,2,[place.comment UTF8String],-1,SQLITE_TRANSIENT);
         
@@ -249,7 +251,7 @@
         sqlite3_bind_double(statement,5,place.latitude);
         sqlite3_bind_double(statement,6,place.longtitude);
         sqlite3_bind_int(statement, 7, place.category);
-        sqlite3_bind_int(statement, 8, place.Id);
+        
     }
     
     if (sqlite3_step(statement) != SQLITE_DONE) {
