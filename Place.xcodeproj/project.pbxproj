@@ -101,7 +101,6 @@
 		25F787841715A76300892CB4 /* TextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 25F787831715A76300892CB4 /* TextFieldCell.m */; };
 		25F787861715A78200892CB4 /* TextFieldCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25F787851715A78100892CB4 /* TextFieldCell.xib */; };
 		25FB0D2C171D4739008A6947 /* TaggedAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 25FB0D2B171D4739008A6947 /* TaggedAnnotation.m */; };
-		25FB0D2F171DA230008A6947 /* GoogleStep.m in Sources */ = {isa = PBXBuildFile; fileRef = 25FB0D2E171DA230008A6947 /* GoogleStep.m */; };
 		C524400C171D527700FF0F59 /* Places.plist in Resources */ = {isa = PBXBuildFile; fileRef = C524400B171D527700FF0F59 /* Places.plist */; };
 		C5244010171D52BC00FF0F59 /* PLPlaceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C524400F171D52BC00FF0F59 /* PLPlaceManager.m */; };
 /* End PBXBuildFile section */
@@ -225,8 +224,6 @@
 		25F787851715A78100892CB4 /* TextFieldCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextFieldCell.xib; sourceTree = "<group>"; };
 		25FB0D2A171D4739008A6947 /* TaggedAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TaggedAnnotation.h; sourceTree = "<group>"; };
 		25FB0D2B171D4739008A6947 /* TaggedAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TaggedAnnotation.m; sourceTree = "<group>"; };
-		25FB0D2D171DA230008A6947 /* GoogleStep.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GoogleStep.h; sourceTree = "<group>"; };
-		25FB0D2E171DA230008A6947 /* GoogleStep.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GoogleStep.m; sourceTree = "<group>"; };
 		C524400B171D527700FF0F59 /* Places.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Places.plist; sourceTree = "<group>"; };
 		C524400E171D52BC00FF0F59 /* PLPlaceManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PLPlaceManager.h; sourceTree = "<group>"; };
 		C524400F171D52BC00FF0F59 /* PLPlaceManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PLPlaceManager.m; sourceTree = "<group>"; };
@@ -331,8 +328,6 @@
 			isa = PBXGroup;
 			children = (
 				25063567170488CE00DBA7BA /* Localization.h */,
-				25FB0D2D171DA230008A6947 /* GoogleStep.h */,
-				25FB0D2E171DA230008A6947 /* GoogleStep.m */,
 				250635701704983D00DBA7BA /* Enums.h */,
 				25063568170489C700DBA7BA /* RequestDispatcher.h */,
 				25063569170489C700DBA7BA /* RequestDispatcher.m */,
@@ -634,7 +629,6 @@
 				2587261C1716C8F200D0D15C /* DatePickerController.m in Sources */,
 				C5244010171D52BC00FF0F59 /* PLPlaceManager.m in Sources */,
 				25FB0D2C171D4739008A6947 /* TaggedAnnotation.m in Sources */,
-				25FB0D2F171DA230008A6947 /* GoogleStep.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

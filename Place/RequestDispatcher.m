@@ -9,7 +9,6 @@
 #import <CoreLocation/CLLocation.h>
 #import "RequestDispatcher.h"
 #import "PlaceEntity.h"
-#import "GoogleStep.h"
 
 @implementation Response
 
