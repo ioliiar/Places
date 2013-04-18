@@ -13,14 +13,16 @@
 #import "TextFieldCell.h"
 #import "TwoLabelCell.h"
 
-@interface PlaceViewController ()<DatePickerDelegate, UITextFieldDelegate>
+@interface PlaceViewController ()<DatePickerDelegate, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
+@property (nonatomic, retain) UIPopoverController *popover;
 @property (nonatomic, retain) DatePickerController *datePicker;
 
 @end
 
 @implementation PlaceViewController {
     BOOL datePickerVisible;
+    BOOL photoPicked;
 }
 
 @synthesize delegate;
@@ -132,8 +134,47 @@
     return ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad || orientation == UIDeviceOrientationPortrait);
 }
 
+#pragma mark UIimagePicker methods
+
 - (void)photoTapped:(UITapGestureRecognizer*)sender {
-    NSLog(@"Photo tapped");
+    UIImagePickerController *picker = [[[UIImagePickerController alloc] init] autorelease];
+    picker.delegate = self;
+    picker.contentSizeForViewInPopover = CGSizeMake(300, 400);
+    picker.modalPresentationStyle = UIModalPresentationFullScreen;
+    BOOL hasCamera = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
+    if (hasCamera) {
+        picker.sourceType = UIImagePickerControllerSourceTypeCamera;
+        picker.showsCameraControls = YES;
+    } else {
+        picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    }
+        
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone) {
+        [self presentViewController:picker
+                           animated:YES
+                         completion:nil];
+        
+    } else {
+        self.popover = nil;
+        self.popover = [[[UIPopoverController alloc] initWithContentViewController:picker] autorelease];
+        
+        [self.popover presentPopoverFromBarButtonItem:self.navigationItem.rightBarButtonItem
+                             permittedArrowDirections:UIPopoverArrowDirectionAny
+                                             animated:YES];
+        
+    }
+    
+}
+
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
+    photoPicked = YES;
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+        [self.popover dismissPopoverAnimated:YES];
+    } else {
+        [picker dismissViewControllerAnimated:YES completion:nil];
+    }
+    self.photoImageView.image = [info objectForKey:UIImagePickerControllerOriginalImage];
 }
 
 #pragma mark Keyboard method
@@ -179,6 +220,10 @@
 - (void)choose:(UIBarButtonItem *)sender {
     if ([self validatePlace:self.place]) {
         sender.enabled = NO;
+        if (photoPicked) {
+             self.place.photo = self.photoImageView.image;
+        }
+       
         [self.delegate placeVC:self didDismissedInMode:mode];
         [self.navigationController popViewControllerAnimated:YES];
     }
@@ -187,6 +232,9 @@
 - (void)done:(UIBarButtonItem *)sender {
     if ([self validatePlace:self.place]) {
         sender.enabled = NO;
+        if (photoPicked) {
+            self.place.photo = self.photoImageView.image;
+        }
         if ([self.delegate respondsToSelector:@selector(placeVC:didDismissedInMode:)]) {
             [self.delegate placeVC:self didDismissedInMode:mode];
         }

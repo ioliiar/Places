@@ -149,6 +149,15 @@
     
     NSLog(@"%@",responseObject);
     NSArray *routes = [responseObject objectForKey:@"routes"];
+    NSString *status = [responseObject objectForKey:@"status"];
+    if (![status isEqualToString:@"Ok"]) {
+        self.response = nil;
+        self.response = [[[Response alloc] init] autorelease];
+        self.response.code = ResponseCodeError;
+        self.response.responseInfo = [NSDictionary dictionaryWithObject:status forKey: kError];
+        [self.delegate request:self didFinishedWithResponse:self.response];
+        return;
+    }
     
     for (int j = 0; j < [routes count]; j++) {
         NSDictionary *route = [routes objectAtIndex:j];

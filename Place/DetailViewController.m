@@ -80,6 +80,9 @@
                                                object:nil];
     self.mapView.delegate = self;
     if ([_detailItems count] >= 2) {
+        for (id<MKOverlay> overlayToRemove in self.mapView.overlays) {
+            [self.mapView removeOverlay:overlayToRemove];
+        }
         [self drawAllPoints:_detailItems];
     }
 }
@@ -99,6 +102,10 @@
 
 - (void)drawRoute:(NSNotification *)notification {
     NSArray *encPoiints = [notification.userInfo objectForKey:kDirection];
+    for (id<MKOverlay> overlayToRemove in self.mapView.overlays) {
+        [self.mapView removeOverlay:overlayToRemove];
+    }
+
     [self drawAllPoints:encPoiints];
 }
 

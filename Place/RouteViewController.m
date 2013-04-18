@@ -20,6 +20,8 @@
 
 @end
 
+static int counter = 0;
+
 @implementation RouteViewController
 
 @synthesize route;
@@ -27,6 +29,7 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
+        counter = 0;
         self.contentSizeForViewInPopover = CGSizeMake(320.0, 320.0);
         self.title = LOC_ROUTE;
         self.route = [[[RouteEntity alloc] init] autorelease];
@@ -122,7 +125,8 @@
     TaggedAnnotation *ann = [notification.userInfo objectForKey:kAnnotation];
     PlaceEntity *pl = [[PlaceEntity alloc] init];
     NSMutableString * str = [[NSMutableString alloc] initWithString:LOC_WAYPOINT];
-    [str appendString:[NSString stringWithFormat:@"_%i",[self.route.places count]]];
+    [str appendString:[NSString stringWithFormat:@"_%i",counter]];
+    counter++;
     pl.name = str;
     [str release];
     pl.comment = @"From Map";
@@ -151,6 +155,19 @@
 }
 
 - (void)request:(RequestDispatcher *)request didFinishedWithResponse:(Response *)response {
+    if (request.type  == RequestTypeRoute && response.code == ResponseCodeError) {
+        NSString *status =[response.responseInfo objectForKey:kError];
+
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No results"
+                                                        message:status
+                                                       delegate:nil
+                                              cancelButtonTitle:@"Ok"
+                                              otherButtonTitles:nil];
+        [alert show];
+        [alert release];
+        
+        return;
+    }
     if(response.code == ResponseCodeError) {
         NSError *error = [response.responseInfo objectForKey:kError];
         NSLog(@"%@", [error localizedDescription]);

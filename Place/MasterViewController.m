@@ -110,6 +110,7 @@
         [sheet showInView:self.view];
         [sheet release];
     } else {
+         self.navigationItem.rightBarButtonItem.enabled = NO;
         MenuPopController *menu = [[MenuPopController alloc] init];
         menu.delegate = self;
         self.popController = [[[UIPopoverController alloc] initWithContentViewController:menu] autorelease];
@@ -180,6 +181,7 @@
 
 - (void)menuPopController:(MenuPopController *)menu didChoseItem:(NSInteger)item {
     [self.popController dismissPopoverAnimated:YES];
+    self.navigationItem.rightBarButtonItem.enabled = YES;
     switch (item) {
         case MenuRowAddPlace: {
             PlaceViewController *place = [[PlaceViewController alloc] init];
