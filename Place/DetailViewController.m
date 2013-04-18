@@ -9,7 +9,6 @@
 #import "DetailViewController.h"
 #import <CoreLocation/CoreLocation.h>
 #import "TaggedAnnotation.h"
-#import "GoogleStep.h"
 #import "RequestDispatcher.h"
 
 @interface DetailViewController ()<UISearchBarDelegate, RequestDispatcherDelegate, MKMapViewDelegate>
