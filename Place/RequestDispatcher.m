@@ -142,8 +142,7 @@
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
     NSError *err = nil;
-    NSArray *results = nil;
-    NSMutableArray *resultSteps = [[NSMutableArray alloc] init];
+    NSMutableArray *allPoints = [[NSMutableArray alloc] init];
     NSDictionary *responseObject = [NSJSONSerialization JSONObjectWithData:self.data
                                                                    options:NSJSONReadingMutableContainers
                                                                      error:&err];
@@ -162,51 +161,30 @@
                 
                 for (int k = 0 ; k < [steps count]; k++) {
                     NSDictionary *step = [steps objectAtIndex:k];
-                    NSDictionary *stLoc = [step objectForKey:@"start_location"];
-                    NSDictionary *endLoc = [step objectForKey:@"end_location"];
-                    
-                    GoogleStep *gStep  = [[GoogleStep alloc] init];
-                    CLLocationCoordinate2D start;
-                    start.latitude = [[stLoc objectForKey:@"lat"] doubleValue];
-                    start.longitude = [[stLoc objectForKey:@"lng"] doubleValue];
-                    
-                    CLLocationCoordinate2D end;
-                    end.latitude = [[endLoc objectForKey:@"lat"] doubleValue];
-                    end.longitude = [[endLoc objectForKey:@"lng"] doubleValue];
-                    
-                    gStep.start = start;
-                    gStep.end = end;
-                    
-                    [resultSteps addObject:gStep];
-                    
-                    [gStep release];
+                    NSDictionary *polyline = [step objectForKey:@"polyline"];
+                    NSString *encodedVal = [polyline objectForKey:@"points"];
+                    NSArray *points = [self decodePolyline:encodedVal];
+                    [allPoints addObjectsFromArray:points];
                 }
             }
             
         }
     }
-    results = [resultSteps copy];
-    [resultSteps release];
-    
+    NSArray *encResults = [allPoints copy];
+    [allPoints release];
     self.response = nil;
     self.response = [[[Response alloc] init] autorelease];
     self.response.code = ResponseCodeOK;
-    self.response.responseInfo = [NSDictionary dictionaryWithObject:[results autorelease] forKey:kDirection];
+    self.response.responseInfo = [NSDictionary dictionaryWithObjectsAndKeys:[encResults autorelease],kDirection,nil];
+    
     [self.delegate request:self didFinishedWithResponse:self.response];
     [connection release];
     [data release];
     
 }
 
-/*
- NSDictionary *polyline = [step objectForKey:@"polyline"];
- NSString *encodedVal = [polyline objectForKey:@"points"];
- NSArray *points = [self decodePolyline:encodedVal];
- [allPoints addObjectsFromArray:points];
- 
- */
 
--(NSMutableArray *)decodePolyLine:(NSString *)encodedStr {
+-(NSMutableArray *)decodePolyline:(NSString *)encodedStr {
     NSMutableString *encoded = [[NSMutableString alloc] initWithCapacity:[encodedStr length]];
     [encoded appendString:encodedStr];
     [encoded replaceOccurrencesOfString:@"\\\\" withString:@"\\"
@@ -239,8 +217,6 @@
         lng += dlng;
         NSNumber *latitude = [[[NSNumber alloc] initWithFloat:lat * 1e-5] autorelease];
         NSNumber *longitude = [[[NSNumber alloc] initWithFloat:lng * 1e-5] autorelease];
-        //          printf("[%f,", [latitude doubleValue]);
-        //          printf("%f]", [longitude doubleValue]);
         CLLocation *loc = [[[CLLocation alloc] initWithLatitude:[latitude floatValue] longitude:[longitude floatValue]] autorelease];
         [array addObject:loc];
     }
@@ -248,29 +224,29 @@
     return array;
 }
 
--(NSMutableArray *)decodePolyLineLevel:(NSString *)encodedStr {
-    NSMutableString *encoded = [[NSMutableString alloc] initWithCapacity:[encodedStr length]];
-    [encoded appendString:encodedStr];
-    [encoded replaceOccurrencesOfString:@"\\\\" withString:@"\\"
-                                options:NSLiteralSearch
-                                  range:NSMakeRange(0, [encoded length])];
-    NSInteger len = [encoded length];
-    NSInteger index = 0;
-    NSMutableArray *array = [[[NSMutableArray alloc] init] autorelease];
-    while (index < len) {
-        NSInteger b;
-        NSInteger shift = 0;
-        NSInteger result = 0;
-        do {
-            b = [encoded characterAtIndex:index++] - 63;
-            result |= (b & 0x1f) << shift;
-            shift += 5;
-        } while (b >= 0x20);
-        NSNumber *level = [[[NSNumber alloc] initWithFloat:result] autorelease];
-        [array addObject:level];
-    }
-    [encoded release];
-    return array;
-}
+//-(NSMutableArray *)decodePolyLineLevel:(NSString *)encodedStr {
+//    NSMutableString *encoded = [[NSMutableString alloc] initWithCapacity:[encodedStr length]];
+//    [encoded appendString:encodedStr];
+//    [encoded replaceOccurrencesOfString:@"\\\\" withString:@"\\"
+//                                options:NSLiteralSearch
+//                                  range:NSMakeRange(0, [encoded length])];
+//    NSInteger len = [encoded length];
+//    NSInteger index = 0;
+//    NSMutableArray *array = [[[NSMutableArray alloc] init] autorelease];
+//    while (index < len) {
+//        NSInteger b;
+//        NSInteger shift = 0;
+//        NSInteger result = 0;
+//        do {
+//            b = [encoded characterAtIndex:index++] - 63;
+//            result |= (b & 0x1f) << shift;
+//            shift += 5;
+//        } while (b >= 0x20);
+//        NSNumber *level = [[[NSNumber alloc] initWithFloat:result] autorelease];
+//        [array addObject:level];
+//    }
+//    [encoded release];
+//    return array;
+//}
 
 @end

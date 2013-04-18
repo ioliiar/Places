@@ -156,17 +156,18 @@
         NSLog(@"%@", [error localizedDescription]);
         return;
     }
-    NSArray *direction = [response.responseInfo objectForKey:kDirection];
+    NSArray *encPoints = [response.responseInfo objectForKey:kDirection];
+    
     if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone) {
         DetailViewController *mapVC = [[DetailViewController alloc] init];
         mapVC.mode = PlaceModeSurvey;
-        mapVC.detailItems = direction;
+        mapVC.detailItems = encPoints;
         [self.navigationController pushViewController:mapVC animated:YES];
         [mapVC release];
     } else {
         [[NSNotificationCenter defaultCenter] postNotificationName:kRoutePoints
                                                             object:nil
-                                                          userInfo:[NSDictionary dictionaryWithObject:direction forKey:kDirection]];
+                                                          userInfo:[NSDictionary dictionaryWithObjectsAndKeys:encPoints,kDirection,nil]];
     }
 }
 

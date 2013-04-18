@@ -20,6 +20,22 @@
 
 @implementation DetailViewController
 
+
+
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        self.title = LOC_MAP;
+        self.mode = PlaceModeSurvey;
+    }
+    return self;
+}
+
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [_searchBar release];
@@ -28,44 +44,6 @@
     [_masterPopoverController release];
     [_mapView release];
     [super dealloc];
-}
-
-#pragma mark - Managing the detail item
-
-- (void)setDetailItem:(NSArray*)newDetailItem{
-    if (_detailItems != newDetailItem) {
-        [_detailItems release];
-        _detailItems = [newDetailItem retain];
-    }
-
-    if (self.masterPopoverController != nil) {
-        [self.masterPopoverController dismissPopoverAnimated:YES];
-    }        
-}
-
-- (void)drawRoute {
-    int k = [_detailItems count];
-    for (int j = 0; j < k; j++) {
-        CLLocationCoordinate2D *locs = malloc(2 * sizeof(CLLocationCoordinate2D));
-        GoogleStep *step = [self.detailItems objectAtIndex:j];
-        locs[0].latitude = step.start.latitude;
-        locs[0].longitude = step.start.longitude;
-        locs[1].latitude = step.end.latitude;
-        locs[1].longitude = step.end.longitude;
-        MKPolyline *polyline = [MKPolyline polylineWithCoordinates:locs count:2];
-        [self.mapView addOverlay:polyline];
-        free(locs);
-    }
-
-}
-
-- (void)configureView {
-    for (TaggedAnnotation *ann in _annotations) {
-        [self.mapView addAnnotation:ann];
-    }
-    if (self.detailItems) {
-        //self.detailDescriptionLabel.text = [self.detailItem description];
-    }
 }
 
 - (void)viewDidLoad {
@@ -77,7 +55,7 @@
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         _searchBar.placeholder = @"External";
     }
-   
+    
     self.navigationItem.titleView = self.searchBar;
     [self configureView];
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self
@@ -96,18 +74,58 @@
                                              selector:@selector(updateMap:)
                                                  name:kUpdateMap
                                                object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(drawRoute:)
+                                                 name:kRoutePoints
+                                               object:nil];
     self.mapView.delegate = self;
     if ([_detailItems count] >= 2) {
-        [self drawRoute];
+        [self drawAllPoints:_detailItems];
     }
-//    CLLocationCoordinate2D locs[2];
-//    locs[0] = self.mapView.userLocation.coordinate;
-//    locs[1].latitude = locs[0].latitude + 1.0;
-//    locs[1].longitude = locs[0].longitude + 1.0;
-//    MKPolyline *polyline = [MKPolyline polylineWithCoordinates:locs count:2];
-//    
-//    // Add overlay to map.
-//    [self.mapView addOverlay:polyline];
+}
+
+#pragma mark - Managing the detail item
+
+- (void)setDetailItem:(NSArray*)newDetailItem{
+    if (_detailItems != newDetailItem) {
+        [_detailItems release];
+        _detailItems = [newDetailItem retain];
+    }
+
+    if (self.masterPopoverController != nil) {
+        [self.masterPopoverController dismissPopoverAnimated:YES];
+    }        
+}
+
+- (void)drawRoute:(NSNotification *)notification {
+    NSArray *encPoiints = [notification.userInfo objectForKey:kDirection];
+    [self drawAllPoints:encPoiints];
+}
+
+- (void)drawAllPoints:(NSArray *)points {
+    int k = [points count];
+    CLLocationCoordinate2D *locs = malloc(k * sizeof(CLLocationCoordinate2D));
+    
+    for (int j = 0; j < k; j++) {
+        CLLocation *lc = [points objectAtIndex:j];
+        locs[j].latitude = lc.coordinate.latitude;
+        locs[j].longitude = lc.coordinate.longitude;
+    }
+    
+    MKPolyline *polyline = [MKPolyline polylineWithCoordinates:locs count:k];
+    [self.mapView addOverlay:polyline];
+    self.mapView.visibleMapRect = polyline.boundingMapRect;
+    free(locs);
+    
+}
+
+- (void)configureView {
+    for (TaggedAnnotation *ann in _annotations) {
+        [self.mapView addAnnotation:ann];
+    }
+    if (self.detailItems) {
+        //self.detailDescriptionLabel.text = [self.detailItem description];
+    }
 }
 
 - (MKOverlayView *)mapView:(MKMapView *)mapView viewForOverlay:(id <MKOverlay>)overlay {
@@ -130,20 +148,6 @@
     }
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
-    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
-    if (self) {
-        self.title = LOC_MAP;
-        self.mode = PlaceModeSurvey;
-    }
-    return self;
-}
-							
 #pragma mark - Split view
 
 - (void)splitViewController:(UISplitViewController *)splitController willHideViewController:(UIViewController *)viewController withBarButtonItem:(UIBarButtonItem *)barButtonItem forPopoverController:(UIPopoverController *)popoverController {
