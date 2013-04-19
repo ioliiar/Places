@@ -177,7 +177,19 @@ static int counter = 0;
     
     if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone) {
         DetailViewController *mapVC = [[DetailViewController alloc] init];
-        mapVC.mode = PlaceModeSurvey;
+        NSMutableArray *arr = [NSMutableArray arrayWithCapacity:[self.route.places count]];
+        for (PlaceEntity *pl in self.route.places) {
+            TaggedAnnotation *ann = [[TaggedAnnotation alloc] init];
+            ann.title = pl.name;
+            CLLocationCoordinate2D loc;
+            loc.longitude = pl.longtitude;
+            loc.latitude = pl.latitude;
+            [ann setCoordinate:loc];
+            [arr addObject:ann];
+            [ann release];
+        }
+        mapVC.annotations = arr;
+        mapVC.mode = PlaceModeChoose;
         mapVC.detailItems = encPoints;
         [self.navigationController pushViewController:mapVC animated:YES];
         [mapVC release];

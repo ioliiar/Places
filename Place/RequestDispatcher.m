@@ -149,7 +149,7 @@
     NSLog(@"%@",responseObject);
     NSArray *routes = [responseObject objectForKey:@"routes"];
     NSString *status = [responseObject objectForKey:@"status"];
-    if (![status isEqualToString:@"Ok"]) {
+    if (![status isEqualToString:@"OK"]) {
         self.response = nil;
         self.response = [[[Response alloc] init] autorelease];
         self.response.code = ResponseCodeError;
@@ -191,14 +191,14 @@
     
 }
 
-
--(NSMutableArray *)decodePolyline:(NSString *)encodedStr {
+- (NSMutableArray *)decodePolyline:(NSString *)encodedStr {
     NSMutableString *encoded = [[NSMutableString alloc] initWithCapacity:[encodedStr length]];
     [encoded appendString:encodedStr];
     [encoded replaceOccurrencesOfString:@"\\\\" withString:@"\\"
                                 options:NSLiteralSearch
                                   range:NSMakeRange(0, [encoded length])];
     NSInteger len = [encoded length];
+    const char *poly = [encoded UTF8String];
     NSInteger index = 0;
     NSMutableArray *array = [[[NSMutableArray alloc] init] autorelease];
     NSInteger lat=0;
@@ -208,7 +208,7 @@
         NSInteger shift = 0;
         NSInteger result = 0;
         do {
-            b = [encoded characterAtIndex:index++] - 63;
+            b = poly[index++] - 63;
             result |= (b & 0x1f) << shift;
             shift += 5;
         } while (b >= 0x20);
@@ -217,7 +217,7 @@
         shift = 0;
         result = 0;
         do {
-            b = [encoded characterAtIndex:index++] - 63;
+            b = poly[index++] - 63;
             result |= (b & 0x1f) << shift;
             shift += 5;
         } while (b >= 0x20);
@@ -232,15 +232,20 @@
     return array;
 }
 
-//-(NSMutableArray *)decodePolyLineLevel:(NSString *)encodedStr {
+
+//Can throw Out of Range Exception
+//
+//- (NSMutableArray *)decodePolyline:(NSString *)encodedStr {
 //    NSMutableString *encoded = [[NSMutableString alloc] initWithCapacity:[encodedStr length]];
 //    [encoded appendString:encodedStr];
 //    [encoded replaceOccurrencesOfString:@"\\\\" withString:@"\\"
-//                                options:NSLiteralSearch
-//                                  range:NSMakeRange(0, [encoded length])];
+//                                    options:NSLiteralSearch
+//                                      range:NSMakeRange(0, [encoded length])];
 //    NSInteger len = [encoded length];
 //    NSInteger index = 0;
 //    NSMutableArray *array = [[[NSMutableArray alloc] init] autorelease];
+//    NSInteger lat=0;
+//    NSInteger lng=0;
 //    while (index < len) {
 //        NSInteger b;
 //        NSInteger shift = 0;
@@ -250,8 +255,26 @@
 //            result |= (b & 0x1f) << shift;
 //            shift += 5;
 //        } while (b >= 0x20);
-//        NSNumber *level = [[[NSNumber alloc] initWithFloat:result] autorelease];
-//        [array addObject:level];
+//        NSInteger dlat = ((result & 1) ? ~(result >> 1) : (result >> 1));
+//        lat += dlat;
+//        shift = 0;
+//        result = 0;
+//        do {
+//            @try {
+//                b = [encoded characterAtIndex:index++] - 63;
+//            }
+//            @catch (NSException *exception) {
+//                NSLog(@"%@",[exception reason]);
+//            }
+//            result |= (b & 0x1f) << shift;
+//            shift += 5;
+//        } while (b >= 0x20);
+//        NSInteger dlng = ((result & 1) ? ~(result >> 1) : (result >> 1));
+//        lng += dlng;
+//        NSNumber *latitude = [[[NSNumber alloc] initWithFloat:lat * 1e-5] autorelease];
+//        NSNumber *longitude = [[[NSNumber alloc] initWithFloat:lng * 1e-5] autorelease];
+//        CLLocation *loc = [[[CLLocation alloc] initWithLatitude:[latitude floatValue] longitude:[longitude floatValue]] autorelease];
+//        [array addObject:loc];
 //    }
 //    [encoded release];
 //    return array;
