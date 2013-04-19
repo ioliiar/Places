@@ -38,12 +38,16 @@
 		2598012C1705AF160025806D /* PlaceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2598012A1705AF160025806D /* PlaceViewController.m */; };
 		2598012D1705AF160025806D /* PlaceViewController~ipad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2598012B1705AF160025806D /* PlaceViewController~ipad.xib */; };
 		259801311705AF920025806D /* PlaceViewController~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 259801301705AF920025806D /* PlaceViewController~iphone.xib */; };
+		25C637F117217A6C00DE3FAE /* CustomFooter.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C637EE17217A6C00DE3FAE /* CustomFooter.m */; };
+		25C637F217217A6C00DE3FAE /* CustomHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C637F017217A6C00DE3FAE /* CustomHeader.m */; };
+		25C637F517217C1500DE3FAE /* CustomMath.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C637F417217C1500DE3FAE /* CustomMath.m */; };
 		25DA641B1709AD2100F04710 /* RouteEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 25DA641A1709AD2100F04710 /* RouteEntity.m */; };
 		25DA641F1709AE3600F04710 /* RouteViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25DA641D1709AE3600F04710 /* RouteViewController.m */; };
 		25DA64201709AE3600F04710 /* RouteViewController~ipad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25DA641E1709AE3600F04710 /* RouteViewController~ipad.xib */; };
 		25DA64221709AE5F00F04710 /* RouteViewController~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25DA64211709AE5F00F04710 /* RouteViewController~iphone.xib */; };
 		25DA642B1709BB8900F04710 /* question-mark.png in Resources */ = {isa = PBXBuildFile; fileRef = 25DA642A1709BB8900F04710 /* question-mark.png */; };
 		25DA642D1709BD9B00F04710 /* question-mark~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 25DA642C1709BD9B00F04710 /* question-mark~ipad.png */; };
+		25DE3A0417218F0F00CE2378 /* CustomCellBackground.m in Sources */ = {isa = PBXBuildFile; fileRef = 25DE3A0317218F0F00CE2378 /* CustomCellBackground.m */; };
 		25E8ACC9171424440096EDBC /* MenuPopController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25E8ACC7171424440096EDBC /* MenuPopController.m */; };
 		25E8ACCA171424440096EDBC /* MenuPopController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25E8ACC8171424440096EDBC /* MenuPopController.xib */; };
 		25F7874B17156EA900892CB4 /* 0.png in Resources */ = {isa = PBXBuildFile; fileRef = 25F7871317156EA900892CB4 /* 0.png */; };
@@ -102,7 +106,6 @@
 		25FB0D2C171D4739008A6947 /* TaggedAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 25FB0D2B171D4739008A6947 /* TaggedAnnotation.m */; };
 		C524400C171D527700FF0F59 /* Places.plist in Resources */ = {isa = PBXBuildFile; fileRef = C524400B171D527700FF0F59 /* Places.plist */; };
 		C5244010171D52BC00FF0F59 /* PLPlaceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C524400F171D52BC00FF0F59 /* PLPlaceManager.m */; };
-		C56C612F171F09D0007FCF21 /* PLAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = C56C612E171F09D0007FCF21 /* PLAnnotation.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -152,6 +155,12 @@
 		2598012A1705AF160025806D /* PlaceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaceViewController.m; sourceTree = "<group>"; };
 		2598012B1705AF160025806D /* PlaceViewController~ipad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "PlaceViewController~ipad.xib"; sourceTree = "<group>"; };
 		259801301705AF920025806D /* PlaceViewController~iphone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "PlaceViewController~iphone.xib"; sourceTree = "<group>"; };
+		25C637ED17217A6C00DE3FAE /* CustomFooter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomFooter.h; sourceTree = "<group>"; };
+		25C637EE17217A6C00DE3FAE /* CustomFooter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomFooter.m; sourceTree = "<group>"; };
+		25C637EF17217A6C00DE3FAE /* CustomHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomHeader.h; sourceTree = "<group>"; };
+		25C637F017217A6C00DE3FAE /* CustomHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomHeader.m; sourceTree = "<group>"; };
+		25C637F417217C1500DE3FAE /* CustomMath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomMath.m; sourceTree = "<group>"; };
+		25D6E88C17218CBD008053FF /* CustomMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomMath.h; sourceTree = "<group>"; };
 		25DA64191709AD2100F04710 /* RouteEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RouteEntity.h; sourceTree = "<group>"; };
 		25DA641A1709AD2100F04710 /* RouteEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RouteEntity.m; sourceTree = "<group>"; };
 		25DA641C1709AE3600F04710 /* RouteViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RouteViewController.h; sourceTree = "<group>"; };
@@ -160,6 +169,8 @@
 		25DA64211709AE5F00F04710 /* RouteViewController~iphone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "RouteViewController~iphone.xib"; sourceTree = "<group>"; };
 		25DA642A1709BB8900F04710 /* question-mark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "question-mark.png"; path = "Images/question-mark.png"; sourceTree = "<group>"; };
 		25DA642C1709BD9B00F04710 /* question-mark~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "question-mark~ipad.png"; path = "Images/question-mark~ipad.png"; sourceTree = "<group>"; };
+		25DE3A0217218F0F00CE2378 /* CustomCellBackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomCellBackground.h; sourceTree = "<group>"; };
+		25DE3A0317218F0F00CE2378 /* CustomCellBackground.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomCellBackground.m; sourceTree = "<group>"; };
 		25E8ACC6171424430096EDBC /* MenuPopController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MenuPopController.h; sourceTree = "<group>"; };
 		25E8ACC7171424440096EDBC /* MenuPopController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MenuPopController.m; sourceTree = "<group>"; };
 		25E8ACC8171424440096EDBC /* MenuPopController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = MenuPopController.xib; sourceTree = "<group>"; };
@@ -283,20 +294,16 @@
 			children = (
 				250635451704821200DBA7BA /* AppDelegate.h */,
 				250635461704821200DBA7BA /* AppDelegate.m */,
+				25C637EC17217A3200DE3FAE /* CustomViews */,
 				25E8ACCC17142EDF0096EDBC /* Detail */,
+				250635351704821100DBA7BA /* Frameworks */,
 				25E8ACCB17142ECA0096EDBC /* Master */,
-				25E8ACC6171424430096EDBC /* MenuPopController.h */,
-				25E8ACC7171424440096EDBC /* MenuPopController.m */,
-				25FB0D2A171D4739008A6947 /* TaggedAnnotation.h */,
-				25FB0D2B171D4739008A6947 /* TaggedAnnotation.m */,
-				25E8ACC8171424440096EDBC /* MenuPopController.xib */,
 				259801281705A2680025806D /* Place_Model */,
 				250635651704889200DBA7BA /* Resources */,
 				25DA64181709ACEF00F04710 /* Route_Model */,
 				2506353D1704821200DBA7BA /* Supporting Files */,
 				250635661704889F00DBA7BA /* Utility */,
 				25F7870D17156E4B00892CB4 /* Weather */,
-				250635351704821100DBA7BA /* Frameworks */,
 			);
 			path = Place;
 			sourceTree = "<group>";
@@ -328,6 +335,8 @@
 			isa = PBXGroup;
 			children = (
 				25063567170488CE00DBA7BA /* Localization.h */,
+				25D6E88C17218CBD008053FF /* CustomMath.h */,
+				25C637F417217C1500DE3FAE /* CustomMath.m */,
 				250635701704983D00DBA7BA /* Enums.h */,
 				25063568170489C700DBA7BA /* RequestDispatcher.h */,
 				25063569170489C700DBA7BA /* RequestDispatcher.m */,
@@ -364,6 +373,24 @@
 				C524400F171D52BC00FF0F59 /* PLPlaceManager.m */,
 			);
 			name = Place_Model;
+			sourceTree = "<group>";
+		};
+		25C637EC17217A3200DE3FAE /* CustomViews */ = {
+			isa = PBXGroup;
+			children = (
+				25E8ACC6171424430096EDBC /* MenuPopController.h */,
+				25C637ED17217A6C00DE3FAE /* CustomFooter.h */,
+				25DE3A0217218F0F00CE2378 /* CustomCellBackground.h */,
+				25DE3A0317218F0F00CE2378 /* CustomCellBackground.m */,
+				25C637EE17217A6C00DE3FAE /* CustomFooter.m */,
+				25C637EF17217A6C00DE3FAE /* CustomHeader.h */,
+				25C637F017217A6C00DE3FAE /* CustomHeader.m */,
+				25E8ACC7171424440096EDBC /* MenuPopController.m */,
+				25E8ACC8171424440096EDBC /* MenuPopController.xib */,
+				25FB0D2A171D4739008A6947 /* TaggedAnnotation.h */,
+				25FB0D2B171D4739008A6947 /* TaggedAnnotation.m */,
+			);
+			name = CustomViews;
 			sourceTree = "<group>";
 		};
 		25DA64181709ACEF00F04710 /* Route_Model */ = {
@@ -628,6 +655,10 @@
 				2587261C1716C8F200D0D15C /* DatePickerController.m in Sources */,
 				C5244010171D52BC00FF0F59 /* PLPlaceManager.m in Sources */,
 				25FB0D2C171D4739008A6947 /* TaggedAnnotation.m in Sources */,
+				25C637F117217A6C00DE3FAE /* CustomFooter.m in Sources */,
+				25C637F217217A6C00DE3FAE /* CustomHeader.m in Sources */,
+				25C637F517217C1500DE3FAE /* CustomMath.m in Sources */,
+				25DE3A0417218F0F00CE2378 /* CustomCellBackground.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

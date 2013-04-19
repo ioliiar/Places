@@ -20,8 +20,6 @@
 
 @end
 
-static int counter = 0;
-
 @implementation RouteViewController
 
 @synthesize route;
@@ -29,7 +27,6 @@ static int counter = 0;
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        counter = 0;
         self.contentSizeForViewInPopover = CGSizeMake(320.0, 320.0);
         self.title = LOC_ROUTE;
         self.route = [[[RouteEntity alloc] init] autorelease];
@@ -124,11 +121,7 @@ static int counter = 0;
 - (void)receivedAnnotaion:(NSNotification *)notification {
     TaggedAnnotation *ann = [notification.userInfo objectForKey:kAnnotation];
     PlaceEntity *pl = [[PlaceEntity alloc] init];
-    NSMutableString * str = [[NSMutableString alloc] initWithString:LOC_WAYPOINT];
-    [str appendString:[NSString stringWithFormat:@"_%i",counter]];
-    counter++;
-    pl.name = str;
-    [str release];
+    pl.name = LOC_WAYPOINT;
     pl.comment = @"From Map";
     pl.longtitude = ann.coordinate.longitude;
     pl.latitude = ann.coordinate.latitude;

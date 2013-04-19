@@ -23,10 +23,40 @@
     [super dealloc];
 }
 
+- (void)customize {
+    //appearance
+    [[UINavigationBar appearance] setTitleTextAttributes:
+     [NSDictionary dictionaryWithObjectsAndKeys:
+      [UIColor colorWithRed:255.0/255.0 green:255.0/255.0 blue:255.0/255.0 alpha:1.0],
+      UITextAttributeTextColor,
+      [UIColor colorWithRed:0.0 green:0.0 blue:0.0 alpha:0.8],
+      UITextAttributeTextShadowColor,
+      [NSValue valueWithUIOffset:UIOffsetMake(0, -1)],
+      UITextAttributeTextShadowOffset,
+      [UIFont fontWithName:@"Arial-Bold" size:0.0],
+      UITextAttributeFont,
+      nil]];
+    
+    [[UINavigationBar appearance] setTintColor:[UIColor colorWithRed:0.0/255.0
+                                                               green:189.0/255.0
+                                                                blue:243.0/255.0
+                                                               alpha:1.0]];
+    [[UIToolbar appearance] setTintColor:[UIColor colorWithRed:0.0/255.0
+                                                         green:189.0/255.0
+                                                          blue:243.0/255.0
+                                                         alpha:1.0]];
+    [[UISearchBar appearance] setTintColor:[UIColor colorWithRed:0.0/255.0
+                                                           green:189.0/255.0
+                                                            blue:243.0/255.0
+                                                           alpha:1.0]];
+
+}
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]] autorelease];
-    // Override point for customization after application launch.
+    [self customize];
+    
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         MasterViewController *masterViewController = [[[MasterViewController alloc] initWithNibName:@"MasterViewController" bundle:nil] autorelease];
         self.navigationController = [[[UINavigationController alloc] initWithRootViewController:masterViewController] autorelease];

@@ -13,6 +13,10 @@
 #import "TextFieldCell.h"
 #import "TwoLabelCell.h"
 
+#import "CustomFooter.h"
+#import "CustomHeader.h"
+#import "CustomCellBackground.h"
+
 @interface PlaceViewController ()<DatePickerDelegate, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 @property (nonatomic, retain) UIPopoverController *popover;
@@ -34,7 +38,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.datePicker = [[[DatePickerController alloc] init] autorelease];
-    
+    self.title= LOC_PLACES;
     UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoTapped:)];
     [self.photoImageView addGestureRecognizer:recognizer];
     [recognizer release];
@@ -84,6 +88,7 @@
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
     [place release];
     [_datePicker release];
     [detailTableView release];
@@ -244,6 +249,19 @@
 
 #pragma mark UITableView methods
 
+-(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 50;
+}
+
+
+- (UIView *) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    return [[[CustomFooter alloc] init] autorelease];
+}
+
+- (UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    return [[[UIView alloc] init] autorelease];
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return DescriptionRowCount;
 }
@@ -283,6 +301,10 @@
             [cell.valueTextField addTarget:self
                                     action:@selector(textFieldDidEndEditing:)
                           forControlEvents:UIControlEventEditingChanged];
+            if (![cell.backgroundView isKindOfClass:[CustomCellBackground class]]) {
+                CustomCellBackground * backgroundCell = [[[CustomCellBackground alloc] init] autorelease];
+                cell.backgroundView = backgroundCell;
+            }
             return cell;
         }
         case DescriptionRowComment: {
@@ -293,12 +315,20 @@
             [cell.valueTextField addTarget:self
                                     action:@selector(textFieldDidEndEditing:)
                           forControlEvents:UIControlEventEditingChanged];
+            if (![cell.backgroundView isKindOfClass:[CustomCellBackground class]]) {
+                CustomCellBackground * backgroundCell = [[[CustomCellBackground alloc] init] autorelease];
+                cell.backgroundView = backgroundCell;
+            }
             return cell;
         }
         case DescriptionRowCategory: {
             TextFieldCell *cell = [self getTextFieldCell:tableView];
             cell.whatLabel.text = LOC_CATEGORY;
             cell.valueTextField.tag = DescriptionRowCategory;
+            if (![cell.backgroundView isKindOfClass:[CustomCellBackground class]]) {
+                CustomCellBackground * backgroundCell = [[[CustomCellBackground alloc] init] autorelease];
+                cell.backgroundView = backgroundCell;
+            }
             return cell;
         }
         case DescriptionRowDateVisited: {
@@ -310,6 +340,10 @@
             cell.dateLabel.text = [NSDateFormatter localizedStringFromDate:self.place.dateVisited
                                                                  dateStyle:NSDateFormatterMediumStyle
                                                                  timeStyle:NSDateFormatterShortStyle];
+            if (![cell.backgroundView isKindOfClass:[CustomCellBackground class]]) {
+                CustomCellBackground * backgroundCell = [[[CustomCellBackground alloc] init] autorelease];
+                cell.backgroundView = backgroundCell;
+            }
             return cell;
         }
         default:
@@ -349,9 +383,6 @@
     }
 }
 
-- (UIView *)tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
-    return [[[UIView alloc] init] autorelease];
-}
 
 #pragma mark DatePickerController delegate
 

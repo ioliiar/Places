@@ -16,6 +16,10 @@
 #import "RouteEntity.h"
 #import "PlaceEntity.h"
 
+#import "CustomHeader.h"
+#import "CustomFooter.h"
+#import "CustomCellBackground.h"
+
 @interface MasterViewController ()<UIActionSheetDelegate, UIPopoverControllerDelegate, UISearchBarDelegate, MenuPopControllerDelegate,PlaceViewControllerDelegate>
 
 @property (nonatomic, copy) NSArray *routes;
@@ -24,6 +28,7 @@
 @property (nonatomic, retain) UIPopoverController *popController;
 @property (nonatomic, retain) NSMutableArray *filteredPlaces;
 @property (nonatomic, retain) NSMutableArray *filteredRoutes;
+@property (nonatomic, retain) CustomCellBackground * backgroundTableView;
 
 @end
 
@@ -48,6 +53,7 @@
 }
 
 - (void)dealloc {
+    [_backgroundTableView release];
     [_detailViewController release];
     [_mySearchBar release];
     [super dealloc];
@@ -56,11 +62,15 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self getDBList];
-        UIBarButtonItem *rb = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+        UIBarButtonItem *rb = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                                                         target:self
                                                                         action:@selector(menuAction:)];
     self.navigationItem.rightBarButtonItem = rb;
     [rb release];
+   
+    self.backgroundTableView = [[[CustomCellBackground alloc] init] autorelease];
+    self.tableView.backgroundView = self.backgroundTableView;
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -75,6 +85,7 @@
 }
 
 - (void)viewDidUnload {
+    self.backgroundTableView = nil;
     self.mySearchBar = nil;
     [super viewDidUnload];
 }
@@ -204,22 +215,41 @@
 
 #pragma mark UITableview methods
 
-- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    UILabel *lbl = [[[UILabel alloc] init] autorelease];
-    lbl.textAlignment = NSTextAlignmentCenter;
-    lbl.backgroundColor = [UIColor redColor];
+-(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 50;
+}
+
+
+- (UIView *) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    return [[[CustomFooter alloc] init] autorelease];
+}
+
+-(UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    CustomHeader * head = [[[CustomHeader alloc] init] autorelease];
+    
+        head.lightColor = [UIColor colorWithRed:98.0/255.0
+                                          green:211.0/255.0
+                                           blue:247.0/255.0
+                                          alpha:1.0];
+        
+        head.darkColor = [UIColor colorWithRed:0.0/255.0
+                                         green:189.0/255.0
+                                          blue:243.0/255.0
+                                         alpha:1.0];
+    
     switch (section) {
         case CategorySectionPlace:
-            lbl.text = @"Place";
+            head.titleLabel.text = LOC_PLACES;
             break;
         case CategorySectionRoute:
-            lbl.text = @"Route";
+            head.titleLabel.text = LOC_ROUTES;
             break;
         default:
             NSLog(@"Unknown header");
             break;
     }
-    return lbl;
+
+    return head;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -248,6 +278,10 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier] autorelease];
+    }
+    if (![cell.backgroundView isKindOfClass:[CustomCellBackground class]]) {
+        CustomCellBackground * backgroundCell = [[[CustomCellBackground alloc] init] autorelease];
+        cell.backgroundView = backgroundCell;
     }
     switch (indexPath.section) {
         case CategorySectionPlace:
