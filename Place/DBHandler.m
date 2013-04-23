@@ -213,7 +213,7 @@
             PlaceEntity *place = [[PlaceEntity alloc] init];
             
             place.Id = sqlite3_column_int(statement, 0);
-            
+    
             char *cName = (char *)sqlite3_column_text(statement, 1);
             place.name = (cName) ? [NSString stringWithUTF8String:cName] : @"";
             
@@ -283,22 +283,18 @@
     
     const char *sql = "UPDATE Place Set Name = ?, Comment = ?, Image = ?, Visited = ?, Latitude = ?, Longitude = ?, Category = ?    Where PlaceId = ?";
     sqlite3_stmt *statement;
-    
+   
     if(sqlite3_prepare_v2(database, sql, -1, &statement, NULL) == SQLITE_OK){
         sqlite3_bind_text(statement,1,[place.name UTF8String],-1,SQLITE_TRANSIENT);
         sqlite3_bind_text(statement,2,[place.comment UTF8String],-1,SQLITE_TRANSIENT);
-        
         NSData *imageData=UIImagePNGRepresentation(place.photo);
-        
         sqlite3_bind_blob(statement, 3, [imageData bytes], [imageData length], NULL);
-        
         sqlite3_bind_double(statement, 4, [place.dateVisited timeIntervalSince1970]);
         sqlite3_bind_double(statement,5,place.latitude);
         sqlite3_bind_double(statement,6,place.longtitude);
         sqlite3_bind_int(statement, 7, place.category);
         sqlite3_bind_int(statement, 8, place.Id);
     }
-    
     if (sqlite3_step(statement) != SQLITE_DONE) {
         NSLog(@"Update has not been successuly completed ");
          printf("%s",sqlite3_errmsg(database));
@@ -382,7 +378,7 @@
     }
         if (sqlite3_step(statement) == SQLITE_DONE) {
         int rowID = sqlite3_last_insert_rowid(database);
-        route.id=rowID;
+        route.Id=rowID;
         NSLog(@"last rowid:%u",route.Id);
     }
    const char* sql2 = "INSERT INTO Route2Place (PlaceId,RouteId) Values (?,?)";
@@ -393,7 +389,7 @@
             PlaceEntity *lPlace=[place objectAtIndex:i];
             sqlite3_bind_int(statement,1,lPlace.Id);
             sqlite3_bind_int(statement,2,route.Id);
-            [lPlace release];
+
         }
      if (sqlite3_step(statement) != SQLITE_DONE) {
         int rowID = sqlite3_last_insert_rowid(database);
@@ -410,6 +406,21 @@
 }
 
 - (BOOL)updateRoute:(RouteEntity *)route {
+    
+  const char *sql= " UPDATE Route Set Name = ? Where RouteId = ?";
+   
+    sqlite3_stmt *statement;
+ 
+    if(sqlite3_prepare_v2(database, sql, -1, &statement, NULL) == SQLITE_OK){
+        sqlite3_bind_text(statement,1,[route.name UTF8String],-1,SQLITE_TRANSIENT);
+        sqlite3_bind_int(statement, 2, route.Id);
+    }
+    if (sqlite3_step(statement) != SQLITE_DONE) {
+        NSLog(@"Update has not been successuly completed ");
+        printf("%s",sqlite3_errmsg(database));
+        return NO;
+    }
+    sqlite3_finalize(statement);
     return YES;
 }
 
