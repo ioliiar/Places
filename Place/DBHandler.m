@@ -381,6 +381,12 @@
         route.Id=rowID;
         NSLog(@"last rowid:%u",route.Id);
     }
+
+        else{
+            int rowID = sqlite3_last_insert_rowid(database);
+            NSLog(@"last rowid:%u",rowID);
+            return NO;
+        }
    const char* sql2 = "INSERT INTO Route2Place (PlaceId,RouteId) Values (?,?)";
   
     for (int i=0; i<place.count; i++) {
