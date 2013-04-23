@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 @class PlaceEntity;
-@class RouteEntity;
+//@class RouteEntity;
 
 @interface DBHandler : NSObject
 
@@ -21,9 +21,12 @@
 - (PlaceEntity *)getPlaceById:(NSInteger)Ident;
 
 // Route table
-- (NSArray*)getRouteNamed:(NSString*)name;
-- (BOOL)saveRoute:(NSArray*)route named:(NSString*)name;
-- (BOOL)updateRoute:(RouteEntity *)route;
-- (BOOL)deleteRouteWithId:(NSInteger)Ident;
+
+
+
+//- (NSArray*)getRouteNamed:(NSString*)name;
+//- (BOOL)saveRoute:(NSArray*)place named:(NSString*)name;
+//- (BOOL)updateRoute:(RouteEntity *)route;
+//- (BOOL)deleteRouteWithId:(NSInteger)Ident;
 
 @end

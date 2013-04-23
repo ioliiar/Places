@@ -12,6 +12,7 @@
 
 @property (nonatomic, copy) NSString *name;
 @property (nonatomic, copy) NSString *comment;
+@property (nonatomic, copy) NSString *route;
 
 @property (nonatomic, retain) NSDate *dateVisited;
 @property (nonatomic, retain) UIImage *photo;
@@ -21,5 +22,6 @@
 @property (nonatomic, assign) double latitude;
 @property (nonatomic, assign) double longtitude;
 @property (nonatomic, assign) NSInteger tag;
+
 
 @end

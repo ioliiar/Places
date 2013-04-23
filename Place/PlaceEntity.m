@@ -12,6 +12,7 @@
 
 @synthesize name;
 @synthesize comment;
+@synthesize route;
 @synthesize dateVisited;
 @synthesize photo;
 @synthesize Id;
@@ -20,11 +21,14 @@
 @synthesize longtitude;
 @synthesize tag;
 
+
 - (void)dealloc {
+    
     [photo release];
     [dateVisited release];
     [comment release];
     [name release];
+    [route release];
     [super dealloc];
 }
 
