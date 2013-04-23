@@ -49,7 +49,6 @@
                                                            green:189.0/255.0
                                                             blue:243.0/255.0
                                                            alpha:1.0]];
-
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -69,7 +68,6 @@
         UINavigationController *detailNavigationController = [[[UINavigationController alloc] initWithRootViewController:detailViewController] autorelease];
     	
     	masterViewController.detailViewController = detailViewController;
-   
         self.splitViewController = [[[UISplitViewController alloc] init] autorelease];
         self.splitViewController.delegate = detailViewController;
         self.splitViewController.viewControllers = @[masterNavigationController, detailNavigationController];

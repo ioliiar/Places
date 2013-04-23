@@ -6,18 +6,29 @@
 //  Copyright (c) 2013 Iurii Oliiar. All rights reserved.
 //
 
+#import "MasterViewController.h"
 #import "DetailViewController.h"
-#import <CoreLocation/CoreLocation.h>
-#import "TaggedAnnotation.h"
-#import "RequestDispatcher.h"
+#import "PlaceViewController.h"
+#import "RouteViewController.h"
 
-@interface DetailViewController ()<UISearchBarDelegate, RequestDispatcherDelegate, MKMapViewDelegate>
-@property (strong, nonatomic) UIPopoverController *masterPopoverController;
+#import "TaggedAnnotation.h"
+#import "IOGhostPickerView.h"
+
+#import "RouteEntity.h"
+#import "RequestDispatcher.h"
+#import "DBHandler.h"
+
+@interface DetailViewController ()<UISearchBarDelegate, RequestDispatcherDelegate, MKMapViewDelegate, IOGhostPickerDataSource, IOGhostPickerDelegate, PlaceViewControllerDelegate>
+@property (retain, nonatomic) UIPopoverController *masterPopoverController;
 @property (retain, nonatomic) UISearchBar *searchBar;
-- (void)configureView;
+@property (retain, nonatomic) IOGhostPickerView *pickerView;
+@property (retain, nonatomic) UILongPressGestureRecognizer *longPress;
+
 @end
 
-@implementation DetailViewController
+@implementation DetailViewController {
+    CLLocationCoordinate2D tapCoord;
+}
 
 
 
@@ -37,6 +48,8 @@
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [_longPress release];
+    [_pickerView release];
     [_searchBar release];
     [_annotations release];
     [_detailItems release];
@@ -56,12 +69,13 @@
     }
     
     self.navigationItem.titleView = self.searchBar;
-    [self configureView];
-    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self
-                                                                                            action:@selector(handleLongPress:)];
-    longPress.minimumPressDuration = 0.5;
-    [self.view addGestureRecognizer:longPress];
-    [longPress release];
+    
+    self.longPress = [[[UILongPressGestureRecognizer alloc] initWithTarget:self
+                                                                   action:@selector(handleLongPress:)] autorelease];
+    self.longPress.minimumPressDuration = 0.5;
+    self.longPress.cancelsTouchesInView = NO;
+    [self.view addGestureRecognizer:self.longPress];
+    
     
     UIBarButtonItem *clear = [[UIBarButtonItem alloc] initWithTitle:LOC_CLEAR
                                                               style:UIBarButtonItemStylePlain                                                                           target:self
@@ -77,6 +91,12 @@
                                              selector:@selector(drawRoute:)
                                                  name:kRoutePoints
                                                object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(routeFromMap:)
+                                                 name:kRouteFromMap
+                                               object:nil];
+    
+   // [self configureView];
     self.mapView.delegate = self;
     if ([_detailItems count] >= 2) {
         for (id<MKOverlay> overlayToRemove in self.mapView.overlays) {
@@ -84,6 +104,23 @@
         }
         [self drawAllPoints:_detailItems];
     }
+}
+
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    if (_mode == PlaceModeSurvey) {
+        [self clearMap];
+    } else
+    [self configureView];
+}
+
+- (void)viewDidUnload {
+    self.masterPopoverController = nil;
+    self.mapView = nil;
+    self.searchBar = nil;
+    self.pickerView = nil;
+    [super viewDidUnload];
 }
 
 #pragma mark - Managing the detail item
@@ -125,6 +162,28 @@
     
 }
 
+- (void)routeFromMap:(NSNotification *)notification {
+    NSArray *places = [notification.userInfo objectForKey:kRouteFromMap];
+    int k = [places count];
+    NSMutableArray *arr = [NSMutableArray arrayWithCapacity:k];
+    for (int j = 0; j < k; j++) {
+        PlaceEntity *pl = [places objectAtIndex:j];
+        TaggedAnnotation *ann = [[TaggedAnnotation alloc] init];
+        ann.title = pl.name;
+        CLLocationCoordinate2D cor;
+        cor.latitude = pl.latitude;
+        cor.longitude = pl.longtitude;
+        ann.tag = j;
+        [ann setCoordinate:cor];
+        [arr addObject:ann];
+        [ann release];
+    }
+    NSArray *array = [arr copy];
+    self.annotations = [NSArray arrayWithArray:array];
+    [array release];
+    [self configureView];
+}
+
 - (void)configureView {
     for (TaggedAnnotation *ann in _annotations) {
         [self.mapView addAnnotation:ann];
@@ -132,6 +191,32 @@
     if (self.detailItems) {
         //self.detailDescriptionLabel.text = [self.detailItem description];
     }
+}
+
+#pragma mark mapView delegate methods
+
+- (MKAnnotationView *)mapView:(MKMapView *)mapview viewForAnnotation:(id <MKAnnotation>)annotation{
+    if ([annotation isKindOfClass:[MKUserLocation class]])
+        return nil;
+    static NSString* AnnotationIdentifier = @"AnnotationIdentifier";
+    MKAnnotationView *annotationView = [self.mapView dequeueReusableAnnotationViewWithIdentifier:AnnotationIdentifier];
+    if(annotationView)
+        return annotationView;
+    else
+    {
+        MKAnnotationView *annotationView = [[[MKAnnotationView alloc] initWithAnnotation:annotation
+                                                                         reuseIdentifier:AnnotationIdentifier] autorelease];
+        annotationView.canShowCallout = YES;
+        annotationView.image = [UIImage imageNamed:@"DrawingPin1"];
+        UIButton* rightButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+       // [rightButton addTarget:self action:@selector(doSomething:) forControlEvents:UIControlEventTouchUpInside];
+        [rightButton setTitle:annotation.title forState:UIControlStateNormal];
+        annotationView.rightCalloutAccessoryView = rightButton;
+        annotationView.canShowCallout = YES;
+        annotationView.draggable = NO;
+        return annotationView;
+    }
+    return nil;
 }
 
 - (MKOverlayView *)mapView:(MKMapView *)mapView viewForOverlay:(id <MKOverlay>)overlay {
@@ -172,12 +257,6 @@
     return ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad || orientation == UIDeviceOrientationPortrait);
 }
 
-- (void)viewDidUnload {
-    self.searchBar = nil;
-    self.mapView = nil;
-    [super viewDidUnload];
-}
-
 - (void)clearMap {
     id userLocation = [self.mapView userLocation];
     NSMutableArray *pins = [[NSMutableArray alloc] initWithArray:[self.mapView annotations]];
@@ -204,10 +283,8 @@
         if (_mode == PlaceModeChoose) {
             int i = [self.mapView.annotations count];
             if (i > 8) {
-                
                 return;
             }
-            
             CGPoint p = [sender locationInView:self.view];
             CLLocationCoordinate2D cor = [self.mapView convertPoint:p toCoordinateFromView:self.mapView];
             TaggedAnnotation *ann = [[TaggedAnnotation alloc] init];
@@ -221,10 +298,229 @@
                                                               userInfo:[NSDictionary dictionaryWithObject:ann forKey:kAnnotation]];
             [ann release];
         } else {
-            // TODO add ability to add place from map
+            CGPoint point = [sender locationInView:self.view];
+            tapCoord = [self.mapView convertPoint:point toCoordinateFromView:self.view];
+            CGFloat circleHalfSize = kGhostPickerRadius+ kGhostPickerLineWidth + kGhostPickerImageSize + allowableOversight/2;
+            CGRect frameRect = CGRectMake(point.x-circleHalfSize, point.y-circleHalfSize, 2 * circleHalfSize, 2 * circleHalfSize);
+            self.pickerView = nil;
+            self.pickerView = [[[IOGhostPickerView alloc] initWithFrame:frameRect] autorelease];
+            [sender removeTarget:self action:@selector(longPressRecognized:)];
+            [sender addTarget:_pickerView action:@selector(methodForPressRecognizer:)];
+            _pickerView.dataSource = self;
+            _pickerView.delegate = self;
+            [self.view addSubview:_pickerView];
+            [_pickerView displayMenuAnimated:YES];
         }
         
     }
+}
+
+
+- (void)placeVC:(PlaceViewController *)placeVC didDismissedInMode:(PlaceMode)mode {
+    if (mode != PlaceModeSurvey) {
+        return;
+    }
+    DBHandler *dbHandler = [[DBHandler alloc] init];
+    BOOL success;
+    if (placeVC.place.Id) {
+        success = [dbHandler updatePlace:placeVC.place];
+        
+    } else {
+        success = [dbHandler insertPlace:placeVC.place];
+    }
+    if (!success) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:LOC_ERROR
+                                                        message:LOC_TRY_LTR
+                                                       delegate:nil
+                                              cancelButtonTitle:nil
+                                              otherButtonTitles:@"OK", nil];
+        [alert show];
+        [alert release];
+    }
+    [dbHandler release];
+}
+
+#pragma mark place processing methods
+
+- (void)processPlaceComponent:(NSInteger)component tapCoordinate:(CLLocationCoordinate2D)coordinate {
+    switch (component) {
+        case 0:{
+            PlaceViewController *place = [[PlaceViewController alloc] init];
+            place.mode = PlaceModeSurvey;
+            place.delegate = self;
+            [self.navigationController pushViewController:place animated:YES];
+            [place release];
+        } break;
+            
+        case 1:{
+            PlaceViewController *place = [[PlaceViewController alloc] init];
+            place.mode = PlaceModeSurvey;
+            place.delegate = self;
+            place.place.latitude = coordinate.latitude;
+            place.place.longtitude = coordinate.longitude;
+            [self.navigationController pushViewController:place animated:YES];
+            [place release];
+        } break;
+            
+        default:
+            NSLog(@"Unknown component %i", component);
+            break;
+    }
+}
+
+- (void)processRouteComponent:(NSInteger)component startPoint:(CLLocationCoordinate2D)coordinate {
+    switch (component) {
+        case 0: {
+            RouteViewController *route = [[RouteViewController alloc] init];
+            [self.navigationController pushViewController:route animated:YES];
+            [route release];
+        }
+            break;
+        case 1: {
+            RouteViewController *route = [[RouteViewController alloc] init];
+            PlaceEntity *pl = [[PlaceEntity alloc] init];
+            pl.name = LOC_WAYPOINT;
+            pl.latitude = coordinate.latitude;
+            pl.longtitude = coordinate.longitude;
+            [route.route.places addObject:pl];
+            [pl release];
+            [self.navigationController pushViewController:route animated:YES];
+            [route release];
+        }
+            break;
+        default:
+            NSLog(@"Unknown component %i", component);
+            break;
+    }
+    
+}
+
+#pragma mark imageMaking methods
+
+- (UIImage *)imageForPlaceComponent:(NSInteger)component {
+    switch (component) {
+        case 0:
+            return [UIImage imageNamed:@"schedule"];
+        case 1:
+            return [UIImage imageNamed:@"earth"];
+        default:
+            NSLog(@"Unknown component %i", component);
+            break;
+    }
+    return nil;
+}
+
+- (UIImage *)imageForRouteComponent:(NSInteger)component {
+    switch (component) {
+        case 0:
+            return [UIImage imageNamed:@"schedule.png"];
+        case 1:
+            return [UIImage imageNamed:@"earth.png"];
+        default:
+            NSLog(@"Unknown component %i", component);
+            break;
+    }
+    return nil;
+}
+
+
+#pragma mark IOGhostPickerDelegate method
+
+- (void)IOGhostPicker:(IOGhostPickerView*)ghostPicker
+   didChooseComponent:(NSInteger)component
+          inDirection:(NSInteger)direction {
+    
+    switch (direction) {
+        case 0:
+            if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+                [self.delegate processPlaceComponent:component tapCoordinate:tapCoord];
+            } else {
+                [self processPlaceComponent:component tapCoordinate:tapCoord];
+            }
+            break;
+        case 1:
+            if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+                [self.delegate processRouteComponent:component startPoint:tapCoord];
+            } else {
+                [self processRouteComponent:component startPoint:tapCoord];
+            }
+            break;
+        default:
+            NSLog(@"Unknown direction");
+            break;
+    }
+    [self.longPress removeTarget:_pickerView action:@selector(methodForPressRecognizer:)];
+    [self.longPress addTarget:self action:@selector(handleLongPress:)];
+    self.longPress.minimumPressDuration = 0.5f;
+    [ghostPicker removeFromSuperview];
+}
+
+- (void)IOGhostPicker:(IOGhostPickerView *)ghostPicker cancelledChoosingInDirection:(NSInteger)direction {
+    [self.longPress removeTarget:_pickerView action:@selector(methodForPressRecognizer:)];
+    [self.longPress addTarget:self action:@selector(handleLongPress:)];
+    self.longPress.minimumPressDuration = 0.5f;
+    [ghostPicker removeFromSuperview];
+}
+
+- (void)IOGhostPicker:(IOGhostPickerView *)ghostPicker
+ highlightedComponent:(NSInteger)component
+          inDirection:(NSInteger)direction
+                 view:(UIView*)view {
+    
+}
+
+
+#pragma mark IOGhostPickerDataSource methods
+
+- (NSUInteger)numberOfDirectionInGhostPicker {
+    return 2;
+}
+
+- (NSUInteger)numberOfComponentsInDirection:(NSInteger)direction {
+    switch (direction) {
+        case 0:
+            return 2;
+        case 1:
+            return 2;
+        default:
+            NSLog(@"unknown component");
+            break;
+    }
+    return 0;
+}
+
+- (UIView*)viewForGhostPickerDirection:(NSInteger)direction {
+    UIImageView *iv = [[UIImageView alloc] init];
+    
+    switch (direction) {
+        case 0://add place
+            iv.image = [UIImage imageNamed:@"DrawingPin"];
+            break;
+        case 1:// add route
+            iv.image = [UIImage imageNamed:@"direction"];
+            break;
+        default:
+            NSLog(@"Unknown direction");
+            break;
+    }
+    
+    return [iv autorelease];
+}
+
+- (UIView*)viewForComponent:(NSInteger)component inDirection:(NSInteger)direction {
+    UIImageView *iv = [[UIImageView alloc] init];
+    switch (direction) {
+        case 0:
+            iv.image  = [self imageForPlaceComponent:component];
+            break;
+        case 1:
+            iv.image  = [self imageForRouteComponent:component];
+            break;
+        default:
+            NSLog(@"Unknown component in direction %i",direction);
+            break;
+    }
+    return [iv autorelease];
 }
 
 #pragma mark searchBar delegate methods

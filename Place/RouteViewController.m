@@ -59,6 +59,11 @@
         self.navigationItem.rightBarButtonItem = bar;
         [bar release];
     }
+        [[NSNotificationCenter defaultCenter] postNotificationName:kRouteFromMap
+                                                            object:nil
+                                                          userInfo:[NSDictionary dictionaryWithObject:self.route.places forKey:kRouteFromMap]];
+    
+    
 }
 
 - (void)didReceiveMemoryWarning {

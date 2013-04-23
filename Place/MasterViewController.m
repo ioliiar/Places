@@ -10,7 +10,6 @@
 #import "DetailViewController.h"
 #import "PlaceViewController.h"
 #import "RouteViewController.h"
-#import "MenuPopController.h"
 
 #import "DBHandler.h"
 #import "RouteEntity.h"
@@ -20,12 +19,11 @@
 #import "CustomFooter.h"
 #import "CustomCellBackground.h"
 
-@interface MasterViewController ()<UIActionSheetDelegate, UIPopoverControllerDelegate, UISearchBarDelegate, MenuPopControllerDelegate,PlaceViewControllerDelegate>
+@interface MasterViewController ()<UIActionSheetDelegate, UISearchBarDelegate,PlaceViewControllerDelegate, DetailViewControllerDelegate>
 
 @property (nonatomic, copy) NSArray *routes;
 @property (nonatomic, copy) NSArray *places;
 @property (nonatomic, retain) DBHandler *dbHandler;
-@property (nonatomic, retain) UIPopoverController *popController;
 @property (nonatomic, retain) NSMutableArray *filteredPlaces;
 @property (nonatomic, retain) NSMutableArray *filteredRoutes;
 @property (nonatomic, retain) CustomCellBackground * backgroundTableView;
@@ -43,7 +41,6 @@
     if (self) {
         self.title = LOC_MY_PLACES;
         self.dbHandler = [[[DBHandler alloc] init] autorelease];
-        
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
             self.clearsSelectionOnViewWillAppear = YES;
             self.contentSizeForViewInPopover = CGSizeMake(320.0, 600.0);
@@ -61,13 +58,16 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self getDBList];
-        UIBarButtonItem *rb = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+        
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone) {
+    UIBarButtonItem *rb = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                                                         target:self
                                                                         action:@selector(menuAction:)];
     self.navigationItem.rightBarButtonItem = rb;
     [rb release];
-   
+    }
+    
+    self.detailViewController.delegate = self;
     self.backgroundTableView = [[[CustomCellBackground alloc] init] autorelease];
     self.tableView.backgroundView = self.backgroundTableView;
     
@@ -75,6 +75,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    [self getDBList];
     self.detailViewController.mode = PlaceModeSurvey;
     [self.detailViewController clearMap];
 }
@@ -112,26 +113,14 @@
 #pragma mark Menu Picker methods
 
 - (void)menuAction:(UIBarButtonItem*)sender {
-    if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil
                                                            delegate:self
                                                   cancelButtonTitle:nil
                                              destructiveButtonTitle:LOC_CANCEL
                                                   otherButtonTitles:LOC_ADD_PLACE, LOC_ADD_ROUTE, LOC_GOTO_MAP, nil];
+        sheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
         [sheet showInView:self.view];
         [sheet release];
-    } else {
-         self.navigationItem.rightBarButtonItem.enabled = NO;
-        MenuPopController *menu = [[MenuPopController alloc] init];
-        menu.delegate = self;
-        self.popController = [[[UIPopoverController alloc] initWithContentViewController:menu] autorelease];
-        [self.popController setPopoverContentSize:CGSizeMake(320, 88)];
-        [self.popController presentPopoverFromBarButtonItem:self.navigationItem.rightBarButtonItem
-                                   permittedArrowDirections:UIPopoverArrowDirectionAny
-                                                   animated:YES];
-        
-        [menu release];
-    }
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
@@ -190,35 +179,69 @@
     }
 }
 
-- (void)menuPopController:(MenuPopController *)menu didChoseItem:(NSInteger)item {
-    [self.popController dismissPopoverAnimated:YES];
-    self.navigationItem.rightBarButtonItem.enabled = YES;
-    switch (item) {
-        case MenuRowAddPlace: {
+#pragma mark GhostPicker processing methods
+
+- (void)processPlaceComponent:(NSInteger)component tapCoordinate:(CLLocationCoordinate2D)coordinate {
+    switch (component) {
+        case 0:{
             PlaceViewController *place = [[PlaceViewController alloc] init];
             place.mode = PlaceModeSurvey;
             place.delegate = self;
             [self.navigationController pushViewController:place animated:YES];
             [place release];
         } break;
-        case MenuRowAddRoute:{
+
+        case 1:{
+            PlaceViewController *place = [[PlaceViewController alloc] init];
+            place.mode = PlaceModeSurvey;
+            place.delegate = self;
+            place.place.latitude = coordinate.latitude;
+            place.place.longtitude = coordinate.longitude;
+            [self.navigationController pushViewController:place animated:YES];
+            [place release];
+        } break;
+
+        default:
+            NSLog(@"Unknown component %i", component);
+            break;
+    }
+}
+
+- (void)processRouteComponent:(NSInteger)component startPoint:(CLLocationCoordinate2D)coordinate {
+    switch (component) {
+        case 0: {
             RouteViewController *route = [[RouteViewController alloc] init];
             [self.navigationController pushViewController:route animated:YES];
             self.detailViewController.mode = PlaceModeChoose;
             [route release];
-        } break;
+        }
+            break;
+        case 1: {
+            RouteViewController *route = [[RouteViewController alloc] init];
+            PlaceEntity *pl = [[PlaceEntity alloc] init];
+            pl.name = LOC_WAYPOINT;
+            pl.latitude = coordinate.latitude;
+            pl.longtitude = coordinate.longitude;
+            [route.route.places addObject:pl];
+            [pl release];
+            [self.navigationController pushViewController:route animated:YES];
+            self.detailViewController.mode = PlaceModeChoose;
+            [route release];
+        }
+            break;
         default:
-            NSLog(@"Unknown menu item");
+            NSLog(@"Unknown component %i", component);
             break;
     }
+    
 }
+
 
 #pragma mark UITableview methods
 
 -(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
     return 50;
 }
-
 
 - (UIView *) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     return [[[CustomFooter alloc] init] autorelease];

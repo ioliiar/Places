@@ -8,10 +8,20 @@
 
 #import <UIKit/UIKit.h>
 #import <MapKit/MapKit.h>
+#import <CoreLocation/CoreLocation.h>
+
+@class DetailViewController;
+@protocol DetailViewControllerDelegate <NSObject>
+
+- (void)processPlaceComponent:(NSInteger)component tapCoordinate:(CLLocationCoordinate2D)coordinate;
+- (void)processRouteComponent:(NSInteger)component startPoint:(CLLocationCoordinate2D)coordinate;
+
+@end
 
 @interface DetailViewController : UIViewController <UISplitViewControllerDelegate>
 
 @property (assign, nonatomic) PlaceMode mode;
+@property (assign, nonatomic) id <DetailViewControllerDelegate> delegate;
 @property (retain, nonatomic) NSArray *detailItems;
 @property (copy,   nonatomic) NSArray *annotations;
 @property (retain, nonatomic) IBOutlet MKMapView *mapView;

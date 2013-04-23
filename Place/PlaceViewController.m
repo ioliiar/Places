@@ -304,6 +304,7 @@
             if (![cell.backgroundView isKindOfClass:[CustomCellBackground class]]) {
                 CustomCellBackground * backgroundCell = [[[CustomCellBackground alloc] init] autorelease];
                 cell.backgroundView = backgroundCell;
+                cell.selectionStyle = UITableViewCellSelectionStyleNone;
             }
             return cell;
         }
@@ -318,6 +319,7 @@
             if (![cell.backgroundView isKindOfClass:[CustomCellBackground class]]) {
                 CustomCellBackground * backgroundCell = [[[CustomCellBackground alloc] init] autorelease];
                 cell.backgroundView = backgroundCell;
+                cell.selectionStyle = UITableViewCellSelectionStyleNone;
             }
             return cell;
         }
@@ -328,6 +330,7 @@
             if (![cell.backgroundView isKindOfClass:[CustomCellBackground class]]) {
                 CustomCellBackground * backgroundCell = [[[CustomCellBackground alloc] init] autorelease];
                 cell.backgroundView = backgroundCell;
+                cell.selectionStyle = UITableViewCellSelectionStyleNone;
             }
             return cell;
         }
@@ -343,6 +346,7 @@
             if (![cell.backgroundView isKindOfClass:[CustomCellBackground class]]) {
                 CustomCellBackground * backgroundCell = [[[CustomCellBackground alloc] init] autorelease];
                 cell.backgroundView = backgroundCell;
+                cell.selectionStyle = UITableViewCellSelectionStyleNone;
             }
             return cell;
         }

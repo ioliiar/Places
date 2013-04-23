@@ -42,7 +42,6 @@
 						<string key="NSFrame">{{0, 374}, {320, 630}}</string>
 						<reference key="NSSuperview" ref="766721923"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
 						<object class="NSColor" key="IBUIBackgroundColor">
 							<int key="NSColorSpace">3</int>
@@ -51,9 +50,10 @@
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<string key="targetRuntimeIdentifier">IBIPadFramework</string>
 						<bool key="IBUIAlwaysBounceVertical">YES</bool>
+						<bool key="IBUIScrollEnabled">NO</bool>
+						<bool key="IBUIBouncesZoom">NO</bool>
 						<int key="IBUISeparatorStyle">1</int>
 						<int key="IBUISectionIndexMinimumDisplayRowCount">0</int>
-						<bool key="IBUIShowsSelectionImmediatelyOnTouchBegin">YES</bool>
 						<float key="IBUIRowHeight">44</float>
 						<float key="IBUISectionHeaderHeight">22</float>
 						<float key="IBUISectionFooterHeight">22</float>
@@ -61,7 +61,7 @@
 					<object class="IBUIImageView" id="521250562">
 						<reference key="NSNextResponder" ref="766721923"/>
 						<int key="NSvFlags">293</int>
-						<string key="NSFrameSize">{320, 330}</string>
+						<string key="NSFrameSize">{320, 320}</string>
 						<reference key="NSSuperview" ref="766721923"/>
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="111452196"/>
