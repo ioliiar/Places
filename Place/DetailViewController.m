@@ -95,6 +95,11 @@
                                              selector:@selector(routeFromMap:)
                                                  name:kRouteFromMap
                                                object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(newAnnotation:)
+                                                 name:kAddDBAnnot
+                                               object:nil];
+    
     
    // [self configureView];
     self.mapView.delegate = self;
@@ -184,13 +189,27 @@
     [self configureView];
 }
 
+- (void)newAnnotation:(NSNotification *)notification {
+    PlaceEntity *pl = [notification.userInfo objectForKey:kAddDBAnnot];
+    TaggedAnnotation *ann = [[TaggedAnnotation alloc] init];
+    ann.title = pl.name;
+    CLLocationCoordinate2D loc;
+    loc.latitude = pl.latitude;
+    loc.longitude = pl.longtitude;
+    [ann setCoordinate:loc];
+    ann.tag = pl.tag;
+    [self.mapView addAnnotation:ann];
+    [ann release];
+    
+}
+
 - (void)configureView {
     for (TaggedAnnotation *ann in _annotations) {
         [self.mapView addAnnotation:ann];
     }
-    if (self.detailItems) {
-        //self.detailDescriptionLabel.text = [self.detailItem description];
-    }
+//    if (self.detailItems) {
+//        //self.detailDescriptionLabel.text = [self.detailItem description];
+//    }
 }
 
 #pragma mark mapView delegate methods
@@ -356,6 +375,7 @@
             PlaceViewController *place = [[PlaceViewController alloc] init];
             place.mode = PlaceModeSurvey;
             place.delegate = self;
+            place.place = [[[PlaceEntity alloc] init] autorelease];
             place.place.latitude = coordinate.latitude;
             place.place.longtitude = coordinate.longitude;
             [self.navigationController pushViewController:place animated:YES];

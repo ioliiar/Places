@@ -22,6 +22,7 @@
 #define kUpdateMap   @"UpdateMap"
 #define kDirection   @"Direction"
 #define kRouteFromMap @"RouteFromMap"
+#define kAddDBAnnot  @"DBAnnotation"
 
 //Enums
 

@@ -199,7 +199,7 @@
                                   range:NSMakeRange(0, [encoded length])];
     NSInteger len = [encoded length];
     const char *poly = [encoded UTF8String];
-    NSInteger index = 0;
+    long int index = 0;
     NSMutableArray *array = [[[NSMutableArray alloc] init] autorelease];
     NSInteger lat=0;
     NSInteger lng=0;

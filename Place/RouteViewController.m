@@ -10,13 +10,17 @@
 #import "PlaceViewController.h"
 #import "DetailViewController.h"
 
-#import "RouteEntity.h"
 #import "TaggedAnnotation.h"
-#import <CoreLocation/CLLocation.h>
+#import "TableAlertView.h"
 
+#import "DBHandler.h"
+#import "RouteEntity.h"
+#import <CoreLocation/CLLocation.h>
 #import "RequestDispatcher.h"
 
-@interface RouteViewController ()<PlaceViewControllerDelegate, UIAlertViewDelegate, RequestDispatcherDelegate>
+@interface RouteViewController ()<PlaceViewControllerDelegate, TableAlertViewDelegate, UIAlertViewDelegate, RequestDispatcherDelegate>
+
+@property (nonatomic, retain) NSArray *dbList;
 
 @end
 
@@ -51,17 +55,17 @@
                                              selector:@selector(onMapClear:)
                                                  name:kClearMap
                                                object:nil];
-    if ([[UIDevice currentDevice] userInterfaceIdiom]  == UIUserInterfaceIdiomPhone) {
-        UIBarButtonItem *bar = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
-                                                                             target:self
-                                                                             action:@selector(addPlace:)];
-        
-        self.navigationItem.rightBarButtonItem = bar;
-        [bar release];
-    }
-        [[NSNotificationCenter defaultCenter] postNotificationName:kRouteFromMap
-                                                            object:nil
-                                                          userInfo:[NSDictionary dictionaryWithObject:self.route.places forKey:kRouteFromMap]];
+    
+    UIBarButtonItem *bar = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
+                                                                         target:self
+                                                                         action:@selector(addPlace:)];
+    
+    self.navigationItem.rightBarButtonItem = bar;
+    [bar release];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kRouteFromMap
+                                                        object:nil
+                                                      userInfo:[NSDictionary dictionaryWithObject:self.route.places forKey:kRouteFromMap]];
     
     
 }
@@ -80,28 +84,37 @@
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [route release];
+    [_dbList release];
     [_tableView release];
     [_saveBtn release];
     [_doneBtn release];
     [super dealloc];
 }
 
-#pragma mark BarButton Actions
+#pragma mark TableAlertView delegate method and show list methods
 
-- (void)placeVC:(PlaceViewController *)placeVC didDismissedInMode:(PlaceMode)mode {
-    [self.route.places addObject:placeVC.place];
-    [self.tableView reloadData];
+- (void)showDBList {
+    dispatch_queue_t queue = dispatch_queue_create("Start", nil);
+    dispatch_async(queue, ^ {
+        DBHandler *dbHandler = [[DBHandler alloc] init];
+        self.dbList = [dbHandler getPlacesByName:nil];
+        
+        dispatch_sync(dispatch_get_main_queue(), ^ {
+            TableAlertView  *alert = [[[TableAlertView alloc] initWithCaller:self
+                                                                        data:self.dbList
+                                                                       title:@"Choose Place"
+                                                                  andContext:nil] autorelease];
+            [alert show];
+            [dbHandler release];
+        });
+    });
+    
 }
 
-#pragma mark point add methods
-
-- (void)addPlace:(UIBarButtonItem *)sender {
-    if ([self.route.places count] == 8)
-        return;
+- (void)showListOnMap {
     DetailViewController *mapVC = [[DetailViewController alloc] init];
     mapVC.mode = PlaceModeChoose;
     NSMutableArray *arr = [[NSMutableArray alloc] init];
-    
     for (PlaceEntity *pl in self.route.places) {
         TaggedAnnotation *ann = [[TaggedAnnotation alloc] init];
         ann.title = pl.name;
@@ -112,11 +125,78 @@
         [arr addObject:ann];
         [ann release];
     }
-     mapVC.annotations = arr;
+    mapVC.annotations = arr;
     [arr release];
     [self.navigationController pushViewController:mapVC animated:YES];
     [mapVC release];
+
 }
+
+-(void)didSelectRowAtIndex:(NSInteger)row withContext:(id)context{
+    if(row >= 0){
+        PlaceEntity *pl = [self.dbList objectAtIndex:row];
+        pl.tag  = [self.route.places count];
+        if (pl.latitude != 0.0 && pl.longtitude != 0.0) {
+        [self.route.places addObject:pl];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kAddDBAnnot
+                                                            object:nil
+                                                          userInfo:[NSDictionary dictionaryWithObject:pl forKey:kAddDBAnnot]];
+        [self.tableView reloadData];
+        } else {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Sorry"
+                                                            message:@"There are no location for this point"
+                                                           delegate:nil
+                                                  cancelButtonTitle:@"Ok"
+                                                  otherButtonTitles:nil];
+            [alert show];
+            [alert release];
+        }
+    }
+    // else "Selection cancelled";
+}
+
+#pragma mark BarButton Actions
+
+- (void)placeVC:(PlaceViewController *)placeVC didDismissedInMode:(PlaceMode)mode {
+    [self.route.places addObject:placeVC.place];
+    [self.tableView reloadData];
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    switch (buttonIndex) {
+        case 0:
+            [self showListOnMap];
+            break;
+        case 1:
+            [self showDBList];
+            break;
+        default:
+            NSLog(@"Unknown button index");
+            break;
+    }
+}
+
+#pragma mark Map  methods
+
+- (void)addPlace:(UIBarButtonItem *)sender {
+    if ([self.route.places count] == 8)
+        return;
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:LOC_PLACES
+                                                        message:nil
+                                                       delegate:self
+                                              cancelButtonTitle:nil
+                                              otherButtonTitles:@"From Map",@"Local place",nil];
+        [alert show];
+        [alert release];
+        
+    } else {
+        [self showDBList];
+        
+    }
+}
+
+
 
 - (void)onMapClear:(NSNotification *)notification {
     [self.route.places removeAllObjects];
