@@ -8,10 +8,9 @@
 
 #import "DBHandler.h"
 #import <sqlite3.h>
+
+#import "RouteEntity.h"
 #import "PlaceEntity.h"
-
-//#import "RouteEntity.h"
-
 //Place.PlaceId,Place.Name,Place.Comment,Place.Photo,Place.Visited,Place.Latitude,Place.Longtitude,Place.Category
 
 #define SQLITE_ENABLE_MEMORY_MANAGEMENT
@@ -159,6 +158,11 @@
            
             PlaceEntity *place = [[PlaceEntity alloc] init];
             
+            place.category = sqlite3_column_int(statement, 7);
+            if (place.category == 0) {
+                [place release];
+                continue;
+            }
             place.Id = sqlite3_column_int(statement, 0);
             
             char *cName = (char *)sqlite3_column_text(statement, 1);
@@ -176,10 +180,11 @@
             place.latitude =(double)sqlite3_column_double(statement, 5);
          
             place.longtitude =(double)sqlite3_column_double(statement, 6);
-            place.category = sqlite3_column_int(statement, 7);
+            
+           
            
             char *cRoute = (char *)sqlite3_column_text(statement, 8);
-            place.route = (cName) ? [NSString stringWithUTF8String:cRoute] : @"";
+            place.route = (cRoute) ? [NSString stringWithUTF8String:cRoute] : @"";
             
             [placesArray addObject:place];
             [place release];
@@ -195,7 +200,7 @@
     
     return [result autorelease];
 }
-//
+
 
 - (NSArray*)getLastVisitedPlacesNamed:(NSString*)name {
    
@@ -335,129 +340,22 @@
 }
 // Route table
 
-//- (NSArray*)getRouteNamed:(NSString*)name {
-//    
-//    char *sql;
-//    NSMutableArray *routesArray = [[NSMutableArray alloc] init];
-//    if (name) {
-//        sql = "SELECT * FROM Route WHERE Route.Name =?";
-//    } else {
-//        sql = " SELECT * FROM Route";
-//    }
-//    
-//    sqlite3_stmt *statement;
-//   
-//    int sqlResult = sqlite3_prepare_v2(database, sql, -1, &statement, NULL);
-//    
-//    if (name) {
-//        sqlResult = sqlite3_bind_text(statement, 1, [name UTF8String], -1, SQLITE_TRANSIENT);
-//    }
-//    
-//    // Retrieving result
-//    if (sqlResult == SQLITE_OK) {
-//        while (sqlite3_step(statement) == SQLITE_ROW) {
-//            
-//            RouteEntity *route = [[RouteEntity alloc] init];
-//            route.Id = sqlite3_column_int(statement, 0);
-//            char *cName = (char *)sqlite3_column_text(statement, 1);
-//            route.name = (cName) ? [NSString stringWithUTF8String:cName] : @"";
-//       
-//            [routesArray addObject:route];
-//            [route release];
-//  
-//        }
-//        sqlite3_finalize(statement);
-//    } else {
-//        NSLog(@"Problem with database %d",sqlResult);
-//    }
-//    
-//    NSArray *result = [routesArray copy];
-//    [routesArray release];
-//    
-//    return [result autorelease];
-//    
-//    return nil;
-//}
+- (NSArray*)getRouteNamed:(NSString*)name {
+    return nil;
+}
 
-//- (BOOL)saveRoute:(NSArray*)place named:(NSString*)name {
-//    
-//    const char* sql = "INSERT INTO Route (Name) Values (?)";
-//    RouteEntity *route = [[RouteEntity alloc] init];
-//    sqlite3_stmt *statement;
-//    if (sqlite3_prepare_v2(database, sql, -1, &statement, NULL)==SQLITE_OK) {
-//        sqlite3_bind_text(statement,1,[name UTF8String],-1,SQLITE_TRANSIENT);
-//      
-//    }
-//        if (sqlite3_step(statement) == SQLITE_DONE) {
-//        int rowID = sqlite3_last_insert_rowid(database);
-//        route.Id=rowID;
-//        NSLog(@"last rowid:%u",route.Id);
-//    }
-//
-//        else{
-//            int rowID = sqlite3_last_insert_rowid(database);
-//            NSLog(@"last rowid:%u",rowID);
-//            return NO;
-//        }
-//   const char* sql2 = "INSERT INTO Route2Place (PlaceId,RouteId) Values (?,?)";
-//  
-//    for (int i=0; i<place.count; i++) {
-//  
-//        if (sqlite3_prepare_v2(database, sql2, -1, &statement, NULL)==SQLITE_OK) {
-//            PlaceEntity *lPlace=[place objectAtIndex:i];
-//            sqlite3_bind_int(statement,1,lPlace.Id);
-//            sqlite3_bind_int(statement,2,route.Id);
-//
-//        }
-//     if (sqlite3_step(statement) != SQLITE_DONE) {
-//        int rowID = sqlite3_last_insert_rowid(database);
-//        NSLog(@"last inserted rowId = %d",rowID);
-//        printf("%s",sqlite3_errmsg(database));
-//        return NO;
-//        }
-//    }
-//  
-//    sqlite3_finalize(statement);
-//   [route release];
-// 
-//    return YES;
-//}
-//
-//- (BOOL)updateRoute:(RouteEntity *)route {
-//    
-//  const char *sql= " UPDATE Route Set Name = ? Where RouteId = ?";
-//   
-//    sqlite3_stmt *statement;
-// 
-//    if(sqlite3_prepare_v2(database, sql, -1, &statement, NULL) == SQLITE_OK){
-//        sqlite3_bind_text(statement,1,[route.name UTF8String],-1,SQLITE_TRANSIENT);
-//        sqlite3_bind_int(statement, 2, route.Id);
-//    }
-//    if (sqlite3_step(statement) != SQLITE_DONE) {
-//        NSLog(@"Update has not been successuly completed ");
-//        printf("%s",sqlite3_errmsg(database));
-//        return NO;
-//    }
-//    sqlite3_finalize(statement);
-//    return YES;
-//}
-//
-//- (BOOL)deleteRouteWithId:(NSInteger)Ident {
-//   
-//    const char *sql = "DELETE FROM Route WHERE RouteId = ?";
-//    sqlite3_stmt *deleteStmt;
-//    if (sqlite3_prepare_v2(database, sql, -1, &deleteStmt, NULL) !=SQLITE_OK)      {
-//        printf("%s",sqlite3_errmsg(database));
-//        return NO;
-//    }
-//    sqlite3_bind_int(deleteStmt, 1, Ident);
-//    if (sqlite3_step(deleteStmt) != SQLITE_DONE){
-//        printf("%s",sqlite3_errmsg(database));
-//        return NO;
-//    }
-//    sqlite3_reset(deleteStmt);
-//    return YES;
-//}
+- (BOOL)saveRoute:(NSArray*)place named:(NSString*)name {
+    return YES;
+}
+
+- (BOOL)updateRoute:(RouteEntity *)route {
+    return YES;
+}
+
+- (BOOL)deleteRouteWithId:(NSInteger)Ident {
+    return YES;
+}
+
 -(void)reindexDatabase{
     if(sqlite3_exec(database, "VACUUM;REINDEX", 0, 0, NULL)==SQLITE_OK) {
         NSLog(@"Vacuumed DataBase");
