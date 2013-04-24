@@ -398,10 +398,11 @@
 }
 
 -(void)didSelectRowAtIndex:(NSInteger)row withContext:(id)context {
-    self.place.category = row + 1;
-    [self.detailTableView reloadData];
+    if(row >= 0) {
+        self.place.category = row + 1;
+        [self.detailTableView reloadData];
+    }
 }
-
 #pragma mark DatePickerController delegate
 
 - (void)datePickerCancelled {
