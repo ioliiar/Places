@@ -26,6 +26,6 @@
 - (NSArray*)getRouteNamed:(NSString*)name;
 - (BOOL)saveRoute:(NSArray*)place named:(NSString*)name;
 - (BOOL)updateRoute:(RouteEntity *)route;
-- (BOOL)deleteRouteWithId:(NSInteger)Ident;
+- (BOOL)deleteRouteWithId:(NSString *)name;
 
 @end
