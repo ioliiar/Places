@@ -105,7 +105,6 @@ static DBHandler *sharedInstance = nil;
     self.writableDBPath = [documentsDir stringByAppendingPathComponent: [NSString stringWithFormat:@"%@.%@",kDBName,@"sqlite"]];
     success = [fileManager fileExistsAtPath:_writableDBPath];
     if (success) {
-        NSLog(@"DB is already created");
         return;
     }
     
@@ -174,21 +173,11 @@ static DBHandler *sharedInstance = nil;
     return [place autorelease];
 }
 
-- (NSArray *)getPlacesByName:(NSString*)name {
-    char *sql;
+- (NSArray *)getAllPlaces {
+    char *sql = " SELECT * FROM Place";
     NSMutableArray *placesArray = [[NSMutableArray alloc] init];
-    if (name) {
-        sql = "SELECT * FROM Place WHERE Place.Name =?";
-    } else {
-        sql = " SELECT * FROM Place";
-    }
-    
     sqlite3_stmt *statement;
     int sqlResult = sqlite3_prepare_v2(database, sql, -1, &statement, NULL);
-    
-    if (name) {
-      sqlResult = sqlite3_bind_text(statement, 1, [name UTF8String], -1, SQLITE_TRANSIENT);
-    }
     
     // Retrieving result
     if (sqlResult == SQLITE_OK) {
@@ -215,12 +204,10 @@ static DBHandler *sharedInstance = nil;
             
             place.dateVisited = [NSDate dateWithTimeIntervalSince1970:sqlite3_column_double(statement, 4)];
                         
-            place.latitude =(double)sqlite3_column_double(statement, 5);
+            place.latitude = (double)sqlite3_column_double(statement, 5);
          
-            place.longtitude =(double)sqlite3_column_double(statement, 6);
+            place.longtitude = (double)sqlite3_column_double(statement, 6);
             
-           
-           
             char *cRoute = (char *)sqlite3_column_text(statement, 8);
             place.route = (cRoute) ? [NSString stringWithUTF8String:cRoute] : @"";
             
@@ -237,68 +224,6 @@ static DBHandler *sharedInstance = nil;
     [placesArray release];
     
     return [result autorelease];
-}
-
-- (NSArray*)getLastVisitedPlacesNamed:(NSString*)name {
-   
-    char *sql;
-    NSMutableArray *placesArray = [[NSMutableArray alloc] init];
-    if (name) {
-        sql = "SELECT * FROM Place WHERE Place.Visited =?";
-    } else {
-        sql = " SELECT * FROM Place";
-    }
-    
-    sqlite3_stmt *statement;
-    int sqlResult = sqlite3_prepare_v2(database, sql, -1, &statement, NULL);
-    
-    if (name) {
-        sqlResult = sqlite3_bind_text(statement, 1, [name UTF8String], -1, SQLITE_TRANSIENT);
-    }
-    
-    // Retrieving result
-    if (sqlResult == SQLITE_OK) {
-        while (sqlite3_step(statement) == SQLITE_ROW) {
-            
-            PlaceEntity *place = [[PlaceEntity alloc] init];
-            
-            place.Id = sqlite3_column_int(statement, 0);
-    
-            char *cName = (char *)sqlite3_column_text(statement, 1);
-            place.name = (cName) ? [NSString stringWithUTF8String:cName] : @"";
-            
-            
-            char *cComment = (char *)sqlite3_column_text(statement, 2);
-            place.comment = (cComment) ? [NSString stringWithUTF8String:cComment] : @"";
-            
-            NSData *getImageData = [[NSData alloc] initWithBytes:sqlite3_column_blob(statement, 3) length:sqlite3_column_bytes(statement, 3)];
-            place.photo=[UIImage imageWithData:getImageData];
-            
-            place.dateVisited = [NSDate dateWithTimeIntervalSince1970:sqlite3_column_double(statement, 4)];
-            
-            place.latitude =(double)sqlite3_column_double(statement, 5);
-            
-            place.longtitude =(double)sqlite3_column_double(statement, 6);
-            place.category = sqlite3_column_int(statement, 7);
-
-            char *cRoute = (char *)sqlite3_column_text(statement, 8);
-            place.route = (cName) ? [NSString stringWithUTF8String:cRoute] : @"";
-            
-            [placesArray addObject:place];
-            [place release];
-            [getImageData release];
-        }
-        sqlite3_finalize(statement);
-    } else {
-        NSLog(@"Problem with database %d",sqlResult);
-    }
-    
-    NSArray *result = [placesArray copy];
-    [placesArray release];
-    
-    return [result autorelease];
-    
-    return nil;
 }
 
 - (BOOL)insertPlace:(PlaceEntity*)place {

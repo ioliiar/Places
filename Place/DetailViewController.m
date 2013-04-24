@@ -191,16 +191,7 @@
 
 - (void)newAnnotation:(NSNotification *)notification {
     PlaceEntity *pl = [notification.userInfo objectForKey:kAddDBAnnot];
-    TaggedAnnotation *ann = [[TaggedAnnotation alloc] init];
-    ann.title = pl.name;
-    CLLocationCoordinate2D loc;
-    loc.latitude = pl.latitude;
-    loc.longitude = pl.longtitude;
-    [ann setCoordinate:loc];
-    ann.tag = pl.tag;
-    [self.mapView addAnnotation:ann];
-    [ann release];
-    
+    [self addAnnotation:pl];    
 }
 
 - (void)configureView {
@@ -256,6 +247,30 @@
         }
     }
     }
+}
+
+#pragma mark annotation + PlaceEntity
+
+- (void)addAnnotation:(PlaceEntity *)place {
+    for (int i = 0; i < [self.mapView.annotations count]; i++) {
+        id userLocation = [self.mapView userLocation];
+        if (![[self.mapView.annotations objectAtIndex:i] isEqual:userLocation]) {
+            if (((TaggedAnnotation *)[self.mapView.annotations objectAtIndex:i]).tag == place.tag) {
+                [self.mapView removeAnnotation:[self.mapView.annotations objectAtIndex:i]];
+                return;
+            }
+        }
+    }
+    
+    TaggedAnnotation *ann = [[TaggedAnnotation alloc] init];
+    CLLocationCoordinate2D cor;
+    cor.latitude = place.latitude;
+    cor.longitude = place.longtitude;
+    ann.coordinate = cor;
+    ann.title = place.name;
+    ann.tag = place.tag;
+    [self.mapView addAnnotation:ann];
+    [ann release];
 }
 
 #pragma mark - Split view
@@ -333,7 +348,6 @@
         
     }
 }
-
 
 - (void)placeVC:(PlaceViewController *)placeVC didDismissedInMode:(PlaceMode)mode {
     if (mode != PlaceModeSurvey) {

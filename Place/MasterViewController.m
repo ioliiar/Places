@@ -95,10 +95,16 @@
     return ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad || orientation == UIDeviceOrientationPortrait);
 }
 
+#pragma mark helper methods
+
+- (BOOL)validCoordinate:(PlaceEntity *)place {
+    return (place.latitude != 0.0 && place.longtitude != 0.0);
+}
+
 - (void)getDBList {
     dispatch_queue_t queue = dispatch_queue_create("BaseStart", nil);
     dispatch_async(queue, ^ {
-        self.places = [self.dbHandler getPlacesByName:nil];
+        self.places = [self.dbHandler getAllPlaces];
         self.routes = [self.dbHandler getRouteNamed:nil];
         _filteredPlaces = [[self.places mutableCopy] retain];
         _filteredRoutes = [[self.routes mutableCopy] retain];
@@ -236,6 +242,60 @@
     
 }
 
+#pragma mark customized uitableView methods
+
+- (UIButton *)makeAccessoryButton {
+    UIButton * button = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 40, 25)];
+    
+    [button addTarget: self
+               action: @selector(accessoryButtonTapped:withEvent:)
+     forControlEvents: UIControlEventTouchUpInside];
+    [button setImage:[UIImage imageNamed:@"eye_color"] forState:UIControlStateNormal];
+    return [button autorelease];
+
+}
+
+- (UIButton *) makeDetailDisclosureButtonForIndex:(NSIndexPath *)path {
+    switch (path.section) {
+        case 0:
+            if ([self validCoordinate:[self.filteredPlaces objectAtIndex:path.row]]) {
+                return [self makeAccessoryButton];
+            } 
+            return nil;
+        case 1:
+            return [self makeAccessoryButton];
+        default:
+            NSLog(@"unknown cell section %i", path.section);
+            break;
+    }
+    return nil;
+}
+
+- (void) accessoryButtonTapped:(UIControl *)button
+                     withEvent:(UIEvent *)event {
+    NSIndexPath * indexPath = [self.tableView indexPathForRowAtPoint: [[[event touchesForView: button] anyObject] locationInView: self.tableView]];
+    if ( indexPath == nil )
+        return;
+    
+    [self.tableView.delegate tableView: self.tableView accessoryButtonTappedForRowWithIndexPath: indexPath];
+}
+
+- (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
+    switch (indexPath.section) {
+        case 0: {
+            PlaceEntity *pl = [self.filteredPlaces objectAtIndex:indexPath.row];
+            pl.tag = indexPath.row;
+            [self.detailViewController addAnnotation:pl];
+        }
+            break;
+        case 1:
+            break;
+        default:
+            NSLog(@"Unknown section");
+            break;
+    }
+}
+
 
 #pragma mark UITableview methods
 
@@ -306,6 +366,11 @@
         CustomCellBackground * backgroundCell = [[[CustomCellBackground alloc] init] autorelease];
         cell.backgroundView = backgroundCell;
     }
+    
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+        cell.accessoryView  = [self makeDetailDisclosureButtonForIndex:indexPath];
+    }
+    
     switch (indexPath.section) {
         case CategorySectionPlace:
             cell.textLabel.text = ((PlaceEntity *)[_filteredPlaces objectAtIndex:indexPath.row]).name;
@@ -361,6 +426,7 @@
         }
     }
 }
+
 
 #pragma mark UISearchBar delegate methods
 

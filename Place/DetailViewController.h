@@ -11,6 +11,8 @@
 #import <CoreLocation/CoreLocation.h>
 
 @class DetailViewController;
+@class PlaceEntity;
+
 @protocol DetailViewControllerDelegate <NSObject>
 
 - (void)processPlaceComponent:(NSInteger)component tapCoordinate:(CLLocationCoordinate2D)coordinate;
@@ -26,6 +28,8 @@
 @property (copy,   nonatomic) NSArray *annotations;
 @property (retain, nonatomic) IBOutlet MKMapView *mapView;
 
+
+- (void)addAnnotation:(PlaceEntity *)place;
 - (void)clearMap;
 
 @end

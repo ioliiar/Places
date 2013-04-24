@@ -97,7 +97,7 @@
     dispatch_queue_t queue = dispatch_queue_create("Start", nil);
     dispatch_async(queue, ^ {
         DBHandler *dbHandler = [DBHandler sharedDBHandler];
-        self.dbList = [dbHandler getPlacesByName:nil];
+        self.dbList = [dbHandler getAllPlaces];
         
         dispatch_sync(dispatch_get_main_queue(), ^ {
             TableAlertView  *alert = [[TableAlertView alloc] initWithCaller:self
@@ -166,9 +166,12 @@
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
     switch (buttonIndex) {
         case 0:
-            [self showListOnMap];
+            // cancelled
             break;
         case 1:
+            [self showListOnMap];
+            break;
+        case 2:
             [self showDBList];
             break;
         default:
@@ -186,7 +189,7 @@
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:LOC_PLACES
                                                         message:nil
                                                        delegate:self
-                                              cancelButtonTitle:nil
+                                              cancelButtonTitle:LOC_CANCEL
                                               otherButtonTitles:@"From Map",@"Local place",nil];
         [alert show];
         [alert release];

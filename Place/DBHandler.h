@@ -15,8 +15,7 @@
 + (DBHandler *)sharedDBHandler;
 
 //Places table
-- (NSArray*)getPlacesByName:(NSString*)name;  // nil means all
-- (NSArray*)getLastVisitedPlacesNamed:(NSString*)name; // nil means all
+- (NSArray*)getAllPlaces;
 - (BOOL)insertPlace:(PlaceEntity*)place;
 - (BOOL)updatePlace:(PlaceEntity *)place;
 - (BOOL)deletePlaceWithId:(NSInteger)Ident;

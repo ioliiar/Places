@@ -52,7 +52,7 @@
     [recognizer release];
     
     if (!self.place.photo) {
-        self.photoImageView.image = [ResourceLoader unknownPlaceImage];
+        self.photoImageView.image = [UIImage imageNamed:@"question-mark"];
     } else {
         self.photoImageView.image = self.place.photo;
     }
@@ -403,6 +403,7 @@
         [self.detailTableView reloadData];
     }
 }
+
 #pragma mark DatePickerController delegate
 
 - (void)datePickerCancelled {

@@ -13,5 +13,4 @@
     #import <Foundation/Foundation.h>
     #import "Localization.h"
     #import "Enums.h"
-    #import "ResourceLoader.h"
 #endif
