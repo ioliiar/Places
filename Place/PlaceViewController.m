@@ -12,15 +12,17 @@
 
 #import "TextFieldCell.h"
 #import "TwoLabelCell.h"
+#import "TableAlertView.h"
 
 #import "CustomFooter.h"
 #import "CustomHeader.h"
 #import "CustomCellBackground.h"
 
-@interface PlaceViewController ()<DatePickerDelegate, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface PlaceViewController ()<DatePickerDelegate, TableAlertViewDelegate, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 @property (nonatomic, retain) UIPopoverController *popover;
 @property (nonatomic, retain) DatePickerController *datePicker;
+@property (nonatomic, copy) NSArray *categories;
 
 @end
 
@@ -29,22 +31,25 @@
     BOOL photoPicked;
 }
 
-@synthesize delegate;
-@synthesize mode;
-@synthesize place;
-@synthesize detailTableView;
-@synthesize photoImageView;
+- (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
+    self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
+    if (self) {
+        self.title = LOC_PLACES;
+        self.place = [[[PlaceEntity alloc] init] autorelease];
+        self.place.category = 1;
+        NSString *filePath = [[NSBundle mainBundle] pathForResource:@"Places" ofType:@"plist"];
+        self.categories = [NSArray arrayWithContentsOfFile:filePath];
+         
+    }
+    return self;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.datePicker = [[[DatePickerController alloc] init] autorelease];
-    self.title= LOC_PLACES;
     UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoTapped:)];
     [self.photoImageView addGestureRecognizer:recognizer];
     [recognizer release];
-    if (place == nil) {
-        self.place = [[[PlaceEntity alloc] init] autorelease];
-    }
     
     if (!self.place.photo) {
         self.photoImageView.image = [ResourceLoader unknownPlaceImage];
@@ -52,7 +57,7 @@
         self.photoImageView.image = self.place.photo;
     }
     
-    if (mode == PlaceModeSurvey) {
+    if (_mode == PlaceModeSurvey) {
         UIBarButtonItem *bar = [[UIBarButtonItem alloc] initWithTitle:LOC_DONE
                                                                 style:UIBarButtonItemStyleDone
                                                                target:self
@@ -89,10 +94,10 @@
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
-    [place release];
+    [_place release];
     [_datePicker release];
-    [detailTableView release];
-    [photoImageView release];
+    [_detailTableView release];
+    [_photoImageView release];
     [super dealloc];
 }
 
@@ -134,7 +139,6 @@
     return rect;
 }
 
-
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)orientation {
     return ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad || orientation == UIDeviceOrientationPortrait);
 }
@@ -170,7 +174,6 @@
     }
     
 }
-
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     photoPicked = YES;
@@ -229,7 +232,7 @@
              self.place.photo = self.photoImageView.image;
         }
        
-        [self.delegate placeVC:self didDismissedInMode:mode];
+        [self.delegate placeVC:self didDismissedInMode:_mode];
         [self.navigationController popViewControllerAnimated:YES];
     }
 }
@@ -241,7 +244,7 @@
             self.place.photo = self.photoImageView.image;
         }
         if ([self.delegate respondsToSelector:@selector(placeVC:didDismissedInMode:)]) {
-            [self.delegate placeVC:self didDismissedInMode:mode];
+            [self.delegate placeVC:self didDismissedInMode:_mode];
         }
         [self.navigationController popViewControllerAnimated:YES];
     }
@@ -324,9 +327,9 @@
             return cell;
         }
         case DescriptionRowCategory: {
-            TextFieldCell *cell = [self getTextFieldCell:tableView];
+            TwoLabelCell *cell = [self getTwoLabelCell:tableView];
             cell.whatLabel.text = LOC_CATEGORY;
-            cell.valueTextField.tag = DescriptionRowCategory;
+            cell.dateLabel.text = [self.categories objectAtIndex:_place.category - 1];
             if (![cell.backgroundView isKindOfClass:[CustomCellBackground class]]) {
                 CustomCellBackground * backgroundCell = [[[CustomCellBackground alloc] init] autorelease];
                 cell.backgroundView = backgroundCell;
@@ -369,7 +372,14 @@
             break;
         case DescriptionRowComment:
             break;
-        case DescriptionRowCategory:
+        case DescriptionRowCategory: {
+            TableAlertView  *alert = [[TableAlertView alloc] initWithCaller:self
+                                                                       data:self.categories
+                                                                      title:@"Choose Place"
+                                                                 andContext:nil] ;
+            [alert show];
+            [alert release];
+        }
             break;
         case DescriptionRowDateVisited: {
             self.datePicker.view.frame = [self frameForDatePickerSwapAxis:NO];
@@ -387,6 +397,10 @@
     }
 }
 
+-(void)didSelectRowAtIndex:(NSInteger)row withContext:(id)context {
+    self.place.category = row + 1;
+    [self.detailTableView reloadData];
+}
 
 #pragma mark DatePickerController delegate
 
@@ -414,8 +428,6 @@
             break;
         case DescriptionRowComment:
             self.place.comment = textField.text;
-            break;
-        case DescriptionRowCategory:
             break;
         default:
             break;

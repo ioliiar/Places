@@ -32,4 +32,8 @@
     [super dealloc];
 }
 
+- (NSString *)description {
+    return name;
+}
+
 @end

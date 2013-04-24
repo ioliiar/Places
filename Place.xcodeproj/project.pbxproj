@@ -38,8 +38,6 @@
 		2598012C1705AF160025806D /* PlaceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2598012A1705AF160025806D /* PlaceViewController.m */; };
 		2598012D1705AF160025806D /* PlaceViewController~ipad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2598012B1705AF160025806D /* PlaceViewController~ipad.xib */; };
 		259801311705AF920025806D /* PlaceViewController~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 259801301705AF920025806D /* PlaceViewController~iphone.xib */; };
-		25A3F870172585C000644D93 /* PlaceChooserViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25A3F86E172585C000644D93 /* PlaceChooserViewController.m */; };
-		25A3F871172585C000644D93 /* PlaceChooserViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25A3F86F172585C000644D93 /* PlaceChooserViewController.xib */; };
 		25C637F117217A6C00DE3FAE /* CustomFooter.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C637EE17217A6C00DE3FAE /* CustomFooter.m */; };
 		25C637F217217A6C00DE3FAE /* CustomHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C637F017217A6C00DE3FAE /* CustomHeader.m */; };
 		25C637F517217C1500DE3FAE /* CustomMath.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C637F417217C1500DE3FAE /* CustomMath.m */; };
@@ -164,9 +162,6 @@
 		2598012A1705AF160025806D /* PlaceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaceViewController.m; sourceTree = "<group>"; };
 		2598012B1705AF160025806D /* PlaceViewController~ipad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "PlaceViewController~ipad.xib"; sourceTree = "<group>"; };
 		259801301705AF920025806D /* PlaceViewController~iphone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "PlaceViewController~iphone.xib"; sourceTree = "<group>"; };
-		25A3F86D172585C000644D93 /* PlaceChooserViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaceChooserViewController.h; sourceTree = "<group>"; };
-		25A3F86E172585C000644D93 /* PlaceChooserViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaceChooserViewController.m; sourceTree = "<group>"; };
-		25A3F86F172585C000644D93 /* PlaceChooserViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PlaceChooserViewController.xib; sourceTree = "<group>"; };
 		25C637ED17217A6C00DE3FAE /* CustomFooter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomFooter.h; sourceTree = "<group>"; };
 		25C637EE17217A6C00DE3FAE /* CustomFooter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomFooter.m; sourceTree = "<group>"; };
 		25C637EF17217A6C00DE3FAE /* CustomHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomHeader.h; sourceTree = "<group>"; };
@@ -369,6 +364,20 @@
 			name = Utility;
 			sourceTree = "<group>";
 		};
+		25235FCE1727E4B2009034E5 /* images */ = {
+			isa = PBXGroup;
+			children = (
+				25CFBE52172699E0003CEDBB /* schedule.png */,
+				25CFBE4A1726833E003CEDBB /* direction.png */,
+				25CFBE4B1726833E003CEDBB /* DrawingPin.png */,
+				25CFBE4E172687CF003CEDBB /* DrawingPin1.png */,
+				25CFBE5017269738003CEDBB /* earth.png */,
+				25CFBE45172677C8003CEDBB /* tmp_apple.logo.png */,
+				25CFBE41172677C8003CEDBB /* circle1.png */,
+			);
+			name = images;
+			sourceTree = "<group>";
+		};
 		259801281705A2680025806D /* Place_Model */ = {
 			isa = PBXGroup;
 			children = (
@@ -399,7 +408,7 @@
 		25C637EC17217A3200DE3FAE /* CustomViews */ = {
 			isa = PBXGroup;
 			children = (
-				25CFBE41172677C8003CEDBB /* circle1.png */,
+				25235FCE1727E4B2009034E5 /* images */,
 				25DE3A0217218F0F00CE2378 /* CustomCellBackground.h */,
 				25DE3A0317218F0F00CE2378 /* CustomCellBackground.m */,
 				25CFBE541726C4EE003CEDBB /* TableAlertView.h */,
@@ -408,17 +417,11 @@
 				25C637EE17217A6C00DE3FAE /* CustomFooter.m */,
 				25C637EF17217A6C00DE3FAE /* CustomHeader.h */,
 				25C637F017217A6C00DE3FAE /* CustomHeader.m */,
-				25CFBE4A1726833E003CEDBB /* direction.png */,
-				25CFBE4B1726833E003CEDBB /* DrawingPin.png */,
-				25CFBE4E172687CF003CEDBB /* DrawingPin1.png */,
-				25CFBE5017269738003CEDBB /* earth.png */,
 				25CFBE42172677C8003CEDBB /* IOCommon.h */,
 				25CFBE43172677C8003CEDBB /* IOGhostPickerView.h */,
 				25CFBE44172677C8003CEDBB /* IOGhostPickerView.m */,
-				25CFBE52172699E0003CEDBB /* schedule.png */,
 				25FB0D2A171D4739008A6947 /* TaggedAnnotation.h */,
 				25FB0D2B171D4739008A6947 /* TaggedAnnotation.m */,
-				25CFBE45172677C8003CEDBB /* tmp_apple.logo.png */,
 			);
 			name = CustomViews;
 			sourceTree = "<group>";
@@ -427,9 +430,6 @@
 			isa = PBXGroup;
 			children = (
 				25DA64191709AD2100F04710 /* RouteEntity.h */,
-				25A3F86D172585C000644D93 /* PlaceChooserViewController.h */,
-				25A3F86E172585C000644D93 /* PlaceChooserViewController.m */,
-				25A3F86F172585C000644D93 /* PlaceChooserViewController.xib */,
 				25DA641A1709AD2100F04710 /* RouteEntity.m */,
 				25DA641C1709AE3600F04710 /* RouteViewController.h */,
 				25DA641D1709AE3600F04710 /* RouteViewController.m */,
@@ -657,7 +657,6 @@
 				258726131716BC6C00D0D15C /* TwoLabelCell.xib in Resources */,
 				2587261D1716C8F200D0D15C /* DatePickerController.xib in Resources */,
 				C524400C171D527700FF0F59 /* Places.plist in Resources */,
-				25A3F871172585C000644D93 /* PlaceChooserViewController.xib in Resources */,
 				25CFBE47172677C8003CEDBB /* circle1.png in Resources */,
 				25CFBE49172677C8003CEDBB /* tmp_apple.logo.png in Resources */,
 				25CFBE4C1726833E003CEDBB /* direction.png in Resources */,
@@ -698,7 +697,6 @@
 				25C637F217217A6C00DE3FAE /* CustomHeader.m in Sources */,
 				25C637F517217C1500DE3FAE /* CustomMath.m in Sources */,
 				25DE3A0417218F0F00CE2378 /* CustomCellBackground.m in Sources */,
-				25A3F870172585C000644D93 /* PlaceChooserViewController.m in Sources */,
 				25CFBE48172677C8003CEDBB /* IOGhostPickerView.m in Sources */,
 				25CFBE561726C4EF003CEDBB /* TableAlertView.m in Sources */,
 			);

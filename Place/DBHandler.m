@@ -21,11 +21,48 @@
 
 @end
 
+
 @implementation DBHandler {
     sqlite3 *database;
 }
 
-- (id)init {
+static DBHandler *sharedInstance = nil;
+
+
++ (DBHandler *)sharedDBHandler {
+    @synchronized(self){
+        if (sharedInstance == nil) {
+            sharedInstance  = [[super allocWithZone:NULL] initialize];
+        }
+        return sharedInstance;
+    }
+}
+
++ (id) allocWithZone:(NSZone *)zone {
+    return [[self sharedDBHandler] retain];
+}
+
+- (id) copyWithZone:(NSZone*)zone {
+    return self;
+}
+
+- (id) retain {
+    return self;
+}
+
+- (NSUInteger) retainCount {
+    return NSUIntegerMax;
+    
+}
+
+- (oneway void) release {
+}
+
+- (id) autorelease {
+    return self;
+}
+
+- (id)initialize {
     self = [super init];
     if (self) {
         [self createEditableDBIfNeeded];
@@ -68,6 +105,7 @@
     self.writableDBPath = [documentsDir stringByAppendingPathComponent: [NSString stringWithFormat:@"%@.%@",kDBName,@"sqlite"]];
     success = [fileManager fileExistsAtPath:_writableDBPath];
     if (success) {
+        NSLog(@"DB is already created");
         return;
     }
     
@@ -136,7 +174,7 @@
     return [place autorelease];
 }
 
-- (NSArray*)getPlacesByName:(NSString*)name {
+- (NSArray *)getPlacesByName:(NSString*)name {
     char *sql;
     NSMutableArray *placesArray = [[NSMutableArray alloc] init];
     if (name) {
@@ -200,7 +238,6 @@
     
     return [result autorelease];
 }
-
 
 - (NSArray*)getLastVisitedPlacesNamed:(NSString*)name {
    
@@ -281,7 +318,7 @@
         sqlite3_bind_double(statement,5,place.latitude);
         sqlite3_bind_double(statement,6,place.longtitude);
         sqlite3_bind_int(statement, 7, place.category);
-        sqlite3_bind_text(statement, 8,[place.route UTF8String],-1,SQLITE_TRANSIENT);
+        sqlite3_bind_text(statement, 8, [place.route UTF8String], -1, SQLITE_TRANSIENT);
     
     } ;
  
@@ -338,8 +375,9 @@
     sqlite3_reset(deleteStmt);
     return YES;
 }
-// Route table
 
+
+// Route table
 - (NSArray*)getRouteNamed:(NSString*)name {
     return nil;
 }

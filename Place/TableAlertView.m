@@ -101,7 +101,7 @@
                                      reuseIdentifier:cellID] autorelease];
 		cell.selectionStyle = UITableViewCellSelectionStyleBlue;
   }
-  cell.textLabel.text =((PlaceEntity *)[data objectAtIndex:indexPath.row]).name;
+  cell.textLabel.text =[[data objectAtIndex:indexPath.row] description];
   return cell;
 }
 

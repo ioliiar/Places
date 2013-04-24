@@ -12,6 +12,8 @@
 
 @interface DBHandler : NSObject
 
++ (DBHandler *)sharedDBHandler;
+
 //Places table
 - (NSArray*)getPlacesByName:(NSString*)name;  // nil means all
 - (NSArray*)getLastVisitedPlacesNamed:(NSString*)name; // nil means all
@@ -21,9 +23,6 @@
 - (PlaceEntity *)getPlaceById:(NSInteger)Ident;
 
 // Route table
-
-
-
 - (NSArray*)getRouteNamed:(NSString*)name;
 - (BOOL)saveRoute:(NSArray*)place named:(NSString*)name;
 - (BOOL)updateRoute:(RouteEntity *)route;

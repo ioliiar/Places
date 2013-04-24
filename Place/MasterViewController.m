@@ -195,7 +195,6 @@
             PlaceViewController *place = [[PlaceViewController alloc] init];
             place.mode = PlaceModeSurvey;
             place.delegate = self;
-            place.place = [[[PlaceEntity alloc] init] autorelease];
             place.place.latitude = coordinate.latitude;
             place.place.longtitude = coordinate.longitude;
             [self.navigationController pushViewController:place animated:YES];
