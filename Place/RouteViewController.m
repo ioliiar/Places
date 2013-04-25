@@ -17,6 +17,7 @@
 #import "RouteEntity.h"
 #import <CoreLocation/CLLocation.h>
 #import "RequestDispatcher.h"
+#import "PLLocationAnnotation.h"
 
 @interface RouteViewController ()<PlaceViewControllerDelegate, TableAlertViewDelegate, UIAlertViewDelegate, RequestDispatcherDelegate>
 
@@ -117,7 +118,7 @@
     mapVC.mode = PlaceModeChoose;
     NSMutableArray *arr = [[NSMutableArray alloc] init];
     for (PlaceEntity *pl in self.route.places) {
-        TaggedAnnotation *ann = [[TaggedAnnotation alloc] init];
+        PLLocationAnnotation *ann = [[PLLocationAnnotation alloc] init];
         ann.title = pl.name;
         CLLocationCoordinate2D loc;
         loc.longitude = pl.longtitude;
@@ -205,7 +206,7 @@
 }
 
 - (void)receivedAnnotaion:(NSNotification *)notification {
-    TaggedAnnotation *ann = [notification.userInfo objectForKey:kAnnotation];
+    PLLocationAnnotation *ann = [notification.userInfo objectForKey:kAnnotation];
     PlaceEntity *pl = [[PlaceEntity alloc] init];
     pl.name = LOC_WAYPOINT;
     pl.comment = @"From Map";
@@ -258,7 +259,7 @@
         DetailViewController *mapVC = [[DetailViewController alloc] init];
         NSMutableArray *arr = [NSMutableArray arrayWithCapacity:[self.route.places count]];
         for (PlaceEntity *pl in self.route.places) {
-            TaggedAnnotation *ann = [[TaggedAnnotation alloc] init];
+            PLLocationAnnotation *ann = [[PLLocationAnnotation alloc] init];
             ann.title = pl.name;
             CLLocationCoordinate2D loc;
             loc.longitude = pl.longtitude;

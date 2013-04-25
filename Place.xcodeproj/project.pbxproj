@@ -113,6 +113,14 @@
 		25FB0D2C171D4739008A6947 /* TaggedAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 25FB0D2B171D4739008A6947 /* TaggedAnnotation.m */; };
 		C524400C171D527700FF0F59 /* Places.plist in Resources */ = {isa = PBXBuildFile; fileRef = C524400B171D527700FF0F59 /* Places.plist */; };
 		C5244010171D52BC00FF0F59 /* PLPlaceManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C524400F171D52BC00FF0F59 /* PLPlaceManager.m */; };
+		C57D203D17297A1000A2014C /* CalloutAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = C57D203C17297A1000A2014C /* CalloutAnnotationView.m */; };
+		C5BC018D17297ACF0082ABCE /* PLCalloutAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = C5BC018C17297ACF0082ABCE /* PLCalloutAnnotation.m */; };
+		C5BC019317297B440082ABCE /* PLCalloutView.m in Sources */ = {isa = PBXBuildFile; fileRef = C5BC019217297B440082ABCE /* PLCalloutView.m */; };
+		C5BC019517297BB60082ABCE /* PLCalloutView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C5BC019417297BB60082ABCE /* PLCalloutView.xib */; };
+		C5BC019817297BFD0082ABCE /* PLLocationAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = C5BC019717297BFD0082ABCE /* PLLocationAnnotation.m */; };
+		C5BC019B17297C1F0082ABCE /* PLLocationView.m in Sources */ = {isa = PBXBuildFile; fileRef = C5BC019A17297C1F0082ABCE /* PLLocationView.m */; };
+		C5BC01A217298C8F0082ABCE /* map_marker.png in Resources */ = {isa = PBXBuildFile; fileRef = C5BC01A017298C8F0082ABCE /* map_marker.png */; };
+		C5BC01A317298C8F0082ABCE /* map_marker@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C5BC01A117298C8F0082ABCE /* map_marker@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -254,6 +262,20 @@
 		C524400F171D52BC00FF0F59 /* PLPlaceManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PLPlaceManager.m; sourceTree = "<group>"; };
 		C56C612D171F09D0007FCF21 /* PLAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PLAnnotation.h; sourceTree = "<group>"; };
 		C56C612E171F09D0007FCF21 /* PLAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PLAnnotation.m; sourceTree = "<group>"; };
+		C57D203B17297A1000A2014C /* CalloutAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalloutAnnotationView.h; sourceTree = "<group>"; };
+		C57D203C17297A1000A2014C /* CalloutAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalloutAnnotationView.m; sourceTree = "<group>"; };
+		C57D203E17297A2200A2014C /* CustomCalloutProtocols.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomCalloutProtocols.h; sourceTree = "<group>"; };
+		C5BC018A17297AAC0082ABCE /* PLCalloutAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PLCalloutAnnotation.h; sourceTree = "<group>"; };
+		C5BC018C17297ACF0082ABCE /* PLCalloutAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PLCalloutAnnotation.m; sourceTree = "<group>"; };
+		C5BC019117297B440082ABCE /* PLCalloutView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PLCalloutView.h; sourceTree = "<group>"; };
+		C5BC019217297B440082ABCE /* PLCalloutView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PLCalloutView.m; sourceTree = "<group>"; };
+		C5BC019417297BB60082ABCE /* PLCalloutView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PLCalloutView.xib; sourceTree = "<group>"; };
+		C5BC019617297BFD0082ABCE /* PLLocationAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PLLocationAnnotation.h; sourceTree = "<group>"; };
+		C5BC019717297BFD0082ABCE /* PLLocationAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PLLocationAnnotation.m; sourceTree = "<group>"; };
+		C5BC019917297C1F0082ABCE /* PLLocationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PLLocationView.h; sourceTree = "<group>"; };
+		C5BC019A17297C1F0082ABCE /* PLLocationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PLLocationView.m; sourceTree = "<group>"; };
+		C5BC01A017298C8F0082ABCE /* map_marker.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = map_marker.png; sourceTree = "<group>"; };
+		C5BC01A117298C8F0082ABCE /* map_marker@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "map_marker@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -422,6 +444,7 @@
 				25CFBE44172677C8003CEDBB /* IOGhostPickerView.m */,
 				25FB0D2A171D4739008A6947 /* TaggedAnnotation.h */,
 				25FB0D2B171D4739008A6947 /* TaggedAnnotation.m */,
+				C57D2039172979F400A2014C /* CustomAnnotationView */,
 			);
 			name = CustomViews;
 			sourceTree = "<group>";
@@ -537,6 +560,27 @@
 				25F7874217156EA900892CB4 /* 9.png */,
 			);
 			path = "weather icon";
+			sourceTree = "<group>";
+		};
+		C57D2039172979F400A2014C /* CustomAnnotationView */ = {
+			isa = PBXGroup;
+			children = (
+				C5BC019917297C1F0082ABCE /* PLLocationView.h */,
+				C5BC019A17297C1F0082ABCE /* PLLocationView.m */,
+				C5BC019617297BFD0082ABCE /* PLLocationAnnotation.h */,
+				C5BC019717297BFD0082ABCE /* PLLocationAnnotation.m */,
+				C5BC019417297BB60082ABCE /* PLCalloutView.xib */,
+				C5BC019117297B440082ABCE /* PLCalloutView.h */,
+				C5BC019217297B440082ABCE /* PLCalloutView.m */,
+				C5BC018C17297ACF0082ABCE /* PLCalloutAnnotation.m */,
+				C5BC018A17297AAC0082ABCE /* PLCalloutAnnotation.h */,
+				C57D203B17297A1000A2014C /* CalloutAnnotationView.h */,
+				C57D203C17297A1000A2014C /* CalloutAnnotationView.m */,
+				C57D203E17297A2200A2014C /* CustomCalloutProtocols.h */,
+				C5BC01A017298C8F0082ABCE /* map_marker.png */,
+				C5BC01A117298C8F0082ABCE /* map_marker@2x.png */,
+			);
+			name = CustomAnnotationView;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -664,6 +708,9 @@
 				25CFBE4F172687CF003CEDBB /* DrawingPin1.png in Resources */,
 				25CFBE5117269738003CEDBB /* earth.png in Resources */,
 				25CFBE53172699E0003CEDBB /* schedule.png in Resources */,
+				C5BC019517297BB60082ABCE /* PLCalloutView.xib in Resources */,
+				C5BC01A217298C8F0082ABCE /* map_marker.png in Resources */,
+				C5BC01A317298C8F0082ABCE /* map_marker@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -699,6 +746,11 @@
 				25DE3A0417218F0F00CE2378 /* CustomCellBackground.m in Sources */,
 				25CFBE48172677C8003CEDBB /* IOGhostPickerView.m in Sources */,
 				25CFBE561726C4EF003CEDBB /* TableAlertView.m in Sources */,
+				C57D203D17297A1000A2014C /* CalloutAnnotationView.m in Sources */,
+				C5BC018D17297ACF0082ABCE /* PLCalloutAnnotation.m in Sources */,
+				C5BC019317297B440082ABCE /* PLCalloutView.m in Sources */,
+				C5BC019817297BFD0082ABCE /* PLLocationAnnotation.m in Sources */,
+				C5BC019B17297C1F0082ABCE /* PLLocationView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

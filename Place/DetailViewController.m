@@ -18,18 +18,24 @@
 #import "RequestDispatcher.h"
 #import "DBHandler.h"
 
+#import <CoreLocation/CLLocationManagerDelegate.h>
+#import "CustomCalloutProtocols.h"
+#import "PLCalloutView.h"
+#import "PLLocationAnnotation.h"
+
 @interface DetailViewController ()<UISearchBarDelegate, RequestDispatcherDelegate, MKMapViewDelegate, IOGhostPickerDataSource, IOGhostPickerDelegate, PlaceViewControllerDelegate>
 @property (retain, nonatomic) UIPopoverController *masterPopoverController;
 @property (retain, nonatomic) UISearchBar *searchBar;
 @property (retain, nonatomic) IOGhostPickerView *pickerView;
 @property (retain, nonatomic) UILongPressGestureRecognizer *longPress;
-
+@property (retain, nonatomic) PLLocationAnnotation* locationAnnotation;
 @end
 
 @implementation DetailViewController {
     CLLocationCoordinate2D tapCoord;
 }
 
+@synthesize locationAnnotation;
 
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
@@ -173,13 +179,13 @@
     NSMutableArray *arr = [NSMutableArray arrayWithCapacity:k];
     for (int j = 0; j < k; j++) {
         PlaceEntity *pl = [places objectAtIndex:j];
-        TaggedAnnotation *ann = [[TaggedAnnotation alloc] init];
-        ann.title = pl.name;
         CLLocationCoordinate2D cor;
         cor.latitude = pl.latitude;
         cor.longitude = pl.longtitude;
+        
+        PLLocationAnnotation *ann = [[PLLocationAnnotation alloc] initWithLat:cor.latitude lon:cor.longitude];
+        ann.title = pl.name;
         ann.tag = j;
-        [ann setCoordinate:cor];
         [arr addObject:ann];
         [ann release];
     }
@@ -191,20 +197,18 @@
 
 - (void)newAnnotation:(NSNotification *)notification {
     PlaceEntity *pl = [notification.userInfo objectForKey:kAddDBAnnot];
-    TaggedAnnotation *ann = [[TaggedAnnotation alloc] init];
+    
+    PLLocationAnnotation *ann = [[PLLocationAnnotation alloc] initWithLat:pl.latitude lon:pl.longtitude];
     ann.title = pl.name;
-    CLLocationCoordinate2D loc;
-    loc.latitude = pl.latitude;
-    loc.longitude = pl.longtitude;
-    [ann setCoordinate:loc];
     ann.tag = pl.tag;
+    ann.mapView = self.mapView;
     [self.mapView addAnnotation:ann];
     [ann release];
     
 }
 
 - (void)configureView {
-    for (TaggedAnnotation *ann in _annotations) {
+    for (PLLocationAnnotation *ann in _annotations) {
         [self.mapView addAnnotation:ann];
     }
 //    if (self.detailItems) {
@@ -214,7 +218,7 @@
 
 #pragma mark mapView delegate methods
 
-- (MKAnnotationView *)mapView:(MKMapView *)mapview viewForAnnotation:(id <MKAnnotation>)annotation{
+/*- (MKAnnotationView *)mapView:(MKMapView *)mapview viewForAnnotation:(id <MKAnnotation>)annotation{
     if ([annotation isKindOfClass:[MKUserLocation class]])
         return nil;
     static NSString* AnnotationIdentifier = @"AnnotationIdentifier";
@@ -236,7 +240,7 @@
         return annotationView;
     }
     return nil;
-}
+}*/
 
 - (MKOverlayView *)mapView:(MKMapView *)mapView viewForOverlay:(id <MKOverlay>)overlay {
     MKPolylineView *polylineView = [[MKPolylineView alloc] initWithPolyline:overlay];
@@ -251,10 +255,52 @@
     for (int i = 0; i < [self.mapView.annotations count]; i++) {
         id userLocation = [self.mapView userLocation];
         if (![[self.mapView.annotations objectAtIndex:i] isEqual:userLocation]) {
-        if (((TaggedAnnotation *)[self.mapView.annotations objectAtIndex:i]).tag == k) {
+        if (((PLLocationAnnotation *)[self.mapView.annotations objectAtIndex:i]).tag == k) {
             [self.mapView removeAnnotation:[self.mapView.annotations objectAtIndex:i]];
         }
     }
+    }
+}
+
+- (void)mapView:(MKMapView *)aMapView didSelectAnnotationView:(MKAnnotationView *)view {
+    if([view conformsToProtocol:@protocol(CustomAnnotationViewProtocol)]) {
+        [((NSObject<CustomAnnotationViewProtocol>*)view) didSelectAnnotationViewInMap:self.mapView];
+    }
+}
+
+- (void)mapView:(MKMapView *)aMapView didDeselectAnnotationView:(MKAnnotationView *)view {
+    if([view conformsToProtocol:@protocol(CustomAnnotationViewProtocol)]) {
+        [((NSObject<CustomAnnotationViewProtocol>*)view) didDeselectAnnotationViewInMap:self.mapView];
+    }
+}
+
+- (MKAnnotationView *)mapView:(MKMapView *)aMapView viewForAnnotation:(id<MKAnnotation>)annotation {
+    if([annotation conformsToProtocol:@protocol(CustomAnnotationProtocol)]) {
+        
+        
+        return [((NSObject<CustomAnnotationProtocol>*)annotation) annotationViewInMap:self.mapView];
+        
+        
+    }
+    return nil;
+}
+
+- (void)mapView:(MKMapView *)mapView didAddAnnotationViews:(NSArray *)views {
+    MKAnnotationView *aV;
+    
+    for (aV in views) {
+        
+        if (![aV isKindOfClass:[PLCalloutView class]]) {
+            CGRect endFrame = aV.frame;
+            
+            aV.frame = CGRectMake(aV.frame.origin.x, aV.frame.origin.y-230.0, aV.frame.size.width, aV.frame.size.height);
+            
+            [UIView beginAnimations:nil context:NULL];
+            [UIView setAnimationDuration:0.45];
+            [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+            [aV setFrame:endFrame];
+            [UIView commitAnimations];
+        }
     }
 }
 
@@ -306,7 +352,7 @@
             }
             CGPoint p = [sender locationInView:self.view];
             CLLocationCoordinate2D cor = [self.mapView convertPoint:p toCoordinateFromView:self.mapView];
-            TaggedAnnotation *ann = [[TaggedAnnotation alloc] init];
+            PLLocationAnnotation *ann = [[PLLocationAnnotation alloc] initWithLat:cor.latitude lon:cor.longitude];
             ann.coordinate = cor;
             ann.title = @"waypoint";
             ann.tag = counter;
