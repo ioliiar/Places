@@ -18,13 +18,15 @@
 #import <CoreLocation/CLLocation.h>
 #import "RequestDispatcher.h"
 
-@interface RouteViewController ()<PlaceViewControllerDelegate, TableAlertViewDelegate, UIAlertViewDelegate, RequestDispatcherDelegate>
+@interface RouteViewController ()<TableAlertViewDelegate, UIAlertViewDelegate, RequestDispatcherDelegate>
 
 @property (nonatomic, retain) NSArray *dbList;
 
 @end
 
-@implementation RouteViewController
+@implementation RouteViewController {
+    BOOL saved;
+}
 
 @synthesize route;
 
@@ -46,6 +48,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.tableView.editing = YES;
+    saved = YES;
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(receivedAnnotaion:)
                                                  name:kPlaceChosen
@@ -139,6 +142,7 @@
         pl.tag  = [self.route.places count];
         if (pl.latitude != 0.0 && pl.longtitude != 0.0) {
         [self.route.places addObject:pl];
+        saved = NO;
         [[NSNotificationCenter defaultCenter] postNotificationName:kAddDBAnnot
                                                             object:nil
                                                           userInfo:[NSDictionary dictionaryWithObject:pl forKey:kAddDBAnnot]];
@@ -158,25 +162,47 @@
 
 #pragma mark BarButton Actions
 
-- (void)placeVC:(PlaceViewController *)placeVC didDismissedInMode:(PlaceMode)mode {
-    [self.route.places addObject:placeVC.place];
-    [self.tableView reloadData];
-}
-
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    switch (buttonIndex) {
-        case 0:
-            // cancelled
-            break;
-        case 1:
-            [self showListOnMap];
-            break;
-        case 2:
-            [self showDBList];
-            break;
-        default:
-            NSLog(@"Unknown button index");
-            break;
+    if (buttonIndex == 0) {
+        return;
+    }
+    if (alertView.tag  == AlertTagsName) {
+        if (![[alertView textFieldAtIndex:0].text isEqualToString:self.route.name]) {
+            self.route.name = [alertView textFieldAtIndex:0].text;
+            saved = NO;
+        }
+        if (saved || [self.route.places count] < 2) {
+            return;
+        }
+        if (![[DBHandler sharedDBHandler] saveRoute:self.route.places named:self.route.name]) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:LOC_ERROR
+                                                            message:LOC_TRY_LTR
+                                                           delegate:nil
+                                                  cancelButtonTitle:LOC_OK
+                                                  otherButtonTitles:nil];
+            [alert show];
+            [alert release];
+            saved = NO;
+        } else {
+            [self.navigationController popToRootViewControllerAnimated:YES];
+            saved = YES;
+        }
+        
+    } else {
+        switch (buttonIndex) {
+            case 0:
+                // cancelled
+                break;
+            case 1:
+                [self showListOnMap];
+                break;
+            case 2:
+                [self showDBList];
+                break;
+            default:
+                NSLog(@"Unknown button index");
+                break;
+        }
     }
 }
 
@@ -191,6 +217,7 @@
                                                        delegate:self
                                               cancelButtonTitle:LOC_CANCEL
                                               otherButtonTitles:@"From Map",@"Local place",nil];
+        alert.tag = AlertTagsNone;
         [alert show];
         [alert release];
         
@@ -200,14 +227,13 @@
     }
 }
 
-
-
 - (void)onMapClear:(NSNotification *)notification {
     [self.route.places removeAllObjects];
     [self.tableView reloadData];
 }
 
 - (void)receivedAnnotaion:(NSNotification *)notification {
+    saved = NO;
     TaggedAnnotation *ann = [notification.userInfo objectForKey:kAnnotation];
     PlaceEntity *pl = [[PlaceEntity alloc] init];
     pl.name = LOC_WAYPOINT;
@@ -223,7 +249,18 @@
 #pragma actions implementations
 
 - (IBAction)saveAction:(UIBarButtonItem *)sender {
-    NSLog(@"save");
+    if (saved || [self.route.places count] < 2) {
+        return;
+    }
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:LOC_PLACES
+                                                    message:@"Route Name"
+                                                   delegate:self
+                                          cancelButtonTitle:LOC_CANCEL
+                                          otherButtonTitles:LOC_OK ,nil];
+    alert.alertViewStyle = UIAlertViewStylePlainTextInput;
+    alert.tag = AlertTagsName;
+    [alert show];
+    [alert release];
 }
 
 - (IBAction)doneAction:(UIBarButtonItem *)sender {
@@ -304,16 +341,6 @@
     return cell;
 }
 
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    PlaceViewController *place = [[PlaceViewController alloc] init];
-    place.mode = PlaceModeChoose;
-    place.delegate = self;
-    place.place = [self.route.places objectAtIndex:indexPath.row];
-    [self.navigationController pushViewController:place animated:YES];
-    [place release];
-}
-
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath {
     PlaceEntity *source = [(PlaceEntity *)[self.route.places objectAtIndex:sourceIndexPath.row] retain];
     [self.route.places removeObject:source];
@@ -324,6 +351,7 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
+        saved = NO;
         int i = ((PlaceEntity *)[self.route.places objectAtIndex:indexPath.row]).tag;
         [self.route.places removeObjectAtIndex:indexPath.row];
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {

@@ -198,9 +198,6 @@
     for (TaggedAnnotation *ann in _annotations) {
         [self.mapView addAnnotation:ann];
     }
-//    if (self.detailItems) {
-//        //self.detailDescriptionLabel.text = [self.detailItem description];
-//    }
 }
 
 #pragma mark mapView delegate methods
@@ -466,6 +463,13 @@
     switch (direction) {
         case 0:
             if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
+                if ([self.mapView.annotations count] < 2) {
+                    TaggedAnnotation *ann  = [[TaggedAnnotation alloc] init];
+                    [ann setCoordinate:tapCoord];
+                    [self.mapView addAnnotation:ann];
+                    [ann release];
+                    
+                }
                 [self.delegate processPlaceComponent:component tapCoordinate:tapCoord];
             } else {
                 [self processPlaceComponent:component tapCoordinate:tapCoord];

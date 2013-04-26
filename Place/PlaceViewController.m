@@ -13,12 +13,14 @@
 #import "TextFieldCell.h"
 #import "TwoLabelCell.h"
 #import "TableAlertView.h"
-
 #import "CustomFooter.h"
 #import "CustomHeader.h"
 #import "CustomCellBackground.h"
+#import "FullScreenCaptureVC.h"
 
-@interface PlaceViewController ()<DatePickerDelegate, TableAlertViewDelegate, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+#import "DBHandler.h"
+
+@interface PlaceViewController ()<DatePickerDelegate, TableAlertViewDelegate, FullScreenVCDelegate,UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
 @property (nonatomic, retain) UIPopoverController *popover;
 @property (nonatomic, retain) DatePickerController *datePicker;
@@ -56,22 +58,13 @@
     } else {
         self.photoImageView.image = self.place.photo;
     }
-    
-    if (_mode == PlaceModeSurvey) {
         UIBarButtonItem *bar = [[UIBarButtonItem alloc] initWithTitle:LOC_DONE
                                                                 style:UIBarButtonItemStyleDone
                                                                target:self
                                                                action:@selector(done:)];
         self.navigationItem.rightBarButtonItem = bar;
         [bar release];
-    } else {
-        UIBarButtonItem *br = [[UIBarButtonItem alloc] initWithTitle:LOC_DONE
-                                                                style:UIBarButtonItemStyleDone
-                                                               target:self
-                                                               action:@selector(choose:)];
-        self.navigationItem.rightBarButtonItem = br;
-        [br release];
-    }
+
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(handleKeyboard:)
                                                  name:UIKeyboardDidShowNotification
@@ -143,12 +136,27 @@
     return ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad || orientation == UIDeviceOrientationPortrait);
 }
 
+- (BOOL)shouldAutorotate {
+    return YES;
+}
+
+#pragma mark FullScreenVC delegate methods
+
+- (void)fullScreenVCCancelledPicking {
+    NSLog(@"cancelled");
+}
+
+- (void)fullScreenVCFinishedPickingImage:(UIImage *)image {
+    photoPicked = YES;
+    self.photoImageView.image = image;
+}
+
 #pragma mark UIimagePicker methods
 
 - (void)photoTapped:(UITapGestureRecognizer*)sender {
     UIImagePickerController *picker = [[[UIImagePickerController alloc] init] autorelease];
     picker.delegate = self;
-    picker.contentSizeForViewInPopover = CGSizeMake(300, 400);
+    //picker.contentSizeForViewInPopover = CGSizeMake(300, 400);
     picker.modalPresentationStyle = UIModalPresentationFullScreen;
     BOOL hasCamera = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
     if (hasCamera) {
@@ -164,12 +172,21 @@
                          completion:nil];
         
     } else {
+        if (hasCamera) {
+            FullScreenCaptureVC *fullscreen = [[[FullScreenCaptureVC alloc] init] autorelease];
+            fullscreen.delegate = self;
+            [self presentViewController:fullscreen
+                               animated:YES
+                             completion:nil];
+            
+        } else {
         self.popover = nil;
         self.popover = [[[UIPopoverController alloc] initWithContentViewController:picker] autorelease];
-        
+        picker.wantsFullScreenLayout = YES;
         [self.popover presentPopoverFromBarButtonItem:self.navigationItem.rightBarButtonItem
                              permittedArrowDirections:UIPopoverArrowDirectionAny
                                              animated:YES];
+        }
         
     }
     
@@ -225,18 +242,6 @@
    
 }
 
-- (void)choose:(UIBarButtonItem *)sender {
-    if ([self validatePlace:self.place]) {
-        sender.enabled = NO;
-        if (photoPicked) {
-             self.place.photo = self.photoImageView.image;
-        }
-       
-        [self.delegate placeVC:self didDismissedInMode:_mode];
-        [self.navigationController popViewControllerAnimated:YES];
-    }
-}
-
 - (void)done:(UIBarButtonItem *)sender {
     if ([self validatePlace:self.place]) {
         sender.enabled = NO;
@@ -246,32 +251,11 @@
         if ([self.delegate respondsToSelector:@selector(placeVC:didDismissedInMode:)]) {
             [self.delegate placeVC:self didDismissedInMode:_mode];
         }
-        [self.navigationController popViewControllerAnimated:YES];
+        [self.navigationController popToRootViewControllerAnimated:YES];
     }
 }
 
-#pragma mark UITableView methods
-
--(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
-    return 50;
-}
-
-
-- (UIView *) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
-    return [[[CustomFooter alloc] init] autorelease];
-}
-
-- (UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
-    return [[[UIView alloc] init] autorelease];
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return DescriptionRowCount;
-}
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
-    return 1;
-}
+#pragma mark UITableViewCell methods
 
 - (TextFieldCell *)getTextFieldCell:(UITableView *)tableView {
     static NSString *CellIdentifier = @"TextFieldCell";
@@ -294,65 +278,102 @@
     return cell;
 }
 
+- (UITableViewCell *)cellForNameInTable:(UITableView *)tableView {
+    TextFieldCell *cell = [self getTextFieldCell:tableView];
+    cell.whatLabel.text = LOC_NAME;
+    cell.valueTextField.text = self.place.name;
+    cell.valueTextField.tag = DescriptionRowName;
+    [cell.valueTextField addTarget:self
+                            action:@selector(textFieldDidEndEditing:)
+                  forControlEvents:UIControlEventEditingChanged];
+    if (![cell.backgroundView isKindOfClass:[CustomCellBackground class]]) {
+        CustomCellBackground * backgroundCell = [[[CustomCellBackground alloc] init] autorelease];
+        cell.backgroundView = backgroundCell;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
+    return cell;
+
+}
+
+- (UITableViewCell *)cellForCommentInTable:(UITableView *)tableView {
+    TextFieldCell *cell = [self getTextFieldCell:tableView];
+    cell.whatLabel.text = LOC_COMMENT;
+    cell.valueTextField.text = self.place.comment;
+    cell.valueTextField.tag = DescriptionRowComment;
+    [cell.valueTextField addTarget:self
+                            action:@selector(textFieldDidEndEditing:)
+                  forControlEvents:UIControlEventEditingChanged];
+    if (![cell.backgroundView isKindOfClass:[CustomCellBackground class]]) {
+        CustomCellBackground * backgroundCell = [[[CustomCellBackground alloc] init] autorelease];
+        cell.backgroundView = backgroundCell;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
+    return cell;
+}
+
+- (UITableViewCell *)cellForCategoryInTable:(UITableView *)tableView {
+    TwoLabelCell *cell = [self getTwoLabelCell:tableView];
+    cell.whatLabel.text = LOC_CATEGORY;
+    cell.dateLabel.text = [self.categories objectAtIndex:_place.category - 1];
+    if (![cell.backgroundView isKindOfClass:[CustomCellBackground class]]) {
+        CustomCellBackground * backgroundCell = [[[CustomCellBackground alloc] init] autorelease];
+        cell.backgroundView = backgroundCell;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
+    return cell;
+}
+
+- (UITableViewCell *)cellForDateInTable:(UITableView *)tableView {
+    TwoLabelCell *cell = [self getTwoLabelCell:tableView];
+    if (self.place.dateVisited == nil) {
+        self.place.dateVisited =  [NSDate date];
+    }
+    cell.whatLabel.text = LOC_DATE_VISITED;
+    cell.dateLabel.text = [NSDateFormatter localizedStringFromDate:self.place.dateVisited
+                                                         dateStyle:NSDateFormatterMediumStyle
+                                                         timeStyle:NSDateFormatterShortStyle];
+    if (![cell.backgroundView isKindOfClass:[CustomCellBackground class]]) {
+        CustomCellBackground * backgroundCell = [[[CustomCellBackground alloc] init] autorelease];
+        cell.backgroundView = backgroundCell;
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
+    return cell;
+
+}
+
+#pragma mark UITableView methods
+
+-(CGFloat) tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    return 50;
+}
+
+- (UIView *) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
+    return [[[CustomFooter alloc] init] autorelease];
+}
+
+- (UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    return [[[UIView alloc] init] autorelease];
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return DescriptionRowCount;
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     switch (indexPath.row) {
-        case DescriptionRowName: {
-            TextFieldCell *cell = [self getTextFieldCell:tableView];
-            cell.whatLabel.text = LOC_NAME;
-            cell.valueTextField.text = self.place.name;
-            cell.valueTextField.tag = DescriptionRowName;
-            [cell.valueTextField addTarget:self
-                                    action:@selector(textFieldDidEndEditing:)
-                          forControlEvents:UIControlEventEditingChanged];
-            if (![cell.backgroundView isKindOfClass:[CustomCellBackground class]]) {
-                CustomCellBackground * backgroundCell = [[[CustomCellBackground alloc] init] autorelease];
-                cell.backgroundView = backgroundCell;
-                cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            }
-            return cell;
-        }
-        case DescriptionRowComment: {
-            TextFieldCell *cell = [self getTextFieldCell:tableView];
-            cell.whatLabel.text = LOC_COMMENT;
-            cell.valueTextField.text = self.place.comment;
-            cell.valueTextField.tag = DescriptionRowComment;
-            [cell.valueTextField addTarget:self
-                                    action:@selector(textFieldDidEndEditing:)
-                          forControlEvents:UIControlEventEditingChanged];
-            if (![cell.backgroundView isKindOfClass:[CustomCellBackground class]]) {
-                CustomCellBackground * backgroundCell = [[[CustomCellBackground alloc] init] autorelease];
-                cell.backgroundView = backgroundCell;
-                cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            }
-            return cell;
-        }
-        case DescriptionRowCategory: {
-            TwoLabelCell *cell = [self getTwoLabelCell:tableView];
-            cell.whatLabel.text = LOC_CATEGORY;
-            cell.dateLabel.text = [self.categories objectAtIndex:_place.category - 1];
-            if (![cell.backgroundView isKindOfClass:[CustomCellBackground class]]) {
-                CustomCellBackground * backgroundCell = [[[CustomCellBackground alloc] init] autorelease];
-                cell.backgroundView = backgroundCell;
-                cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            }
-            return cell;
-        }
-        case DescriptionRowDateVisited: {
-            TwoLabelCell *cell = [self getTwoLabelCell:tableView];
-            if (self.place.dateVisited == nil) {
-                self.place.dateVisited =  [NSDate date];
-            }
-            cell.whatLabel.text = LOC_DATE_VISITED;
-            cell.dateLabel.text = [NSDateFormatter localizedStringFromDate:self.place.dateVisited
-                                                                 dateStyle:NSDateFormatterMediumStyle
-                                                                 timeStyle:NSDateFormatterShortStyle];
-            if (![cell.backgroundView isKindOfClass:[CustomCellBackground class]]) {
-                CustomCellBackground * backgroundCell = [[[CustomCellBackground alloc] init] autorelease];
-                cell.backgroundView = backgroundCell;
-                cell.selectionStyle = UITableViewCellSelectionStyleNone;
-            }
-            return cell;
-        }
+        case DescriptionRowName:
+            return [self cellForNameInTable:tableView];
+        case DescriptionRowComment:
+            return [self cellForCommentInTable:tableView];
+        case DescriptionRowCategory:
+            return [self cellForCategoryInTable:tableView];
+        case DescriptionRowDateVisited:
+            return [self cellForDateInTable:tableView];
         default:
             NSLog(@"Unknown description cell");
             return nil;
@@ -363,7 +384,6 @@
     // Return NO if you do not want the specified item to be editable.
     return NO;
 }
-
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:NO];

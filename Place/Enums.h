@@ -73,4 +73,10 @@ typedef enum {
     PlaceModeCount
 } PlaceMode;
 
+typedef enum {
+    AlertTagsName = 2013,
+    AlertTagsNone = 0,
+    AlertTagsCount
+} AlertTags;
+
 #endif

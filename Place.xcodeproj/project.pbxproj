@@ -28,6 +28,10 @@
 		25235FD01727FED1009034E5 /* icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 25235FCF1727FED1009034E5 /* icon.png */; };
 		25235FD217280329009034E5 /* eye_color.png in Resources */ = {isa = PBXBuildFile; fileRef = 25235FD117280329009034E5 /* eye_color.png */; };
 		253CBFB61712CDBE00C3DA3B /* Places.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 253CBFB51712CDBE00C3DA3B /* Places.sqlite */; };
+		254458EE17293A2500A33001 /* FullScreenCaptureVC.m in Sources */ = {isa = PBXBuildFile; fileRef = 254458ED17293A2500A33001 /* FullScreenCaptureVC.m */; };
+		254458F017293A3A00A33001 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 254458EF17293A3A00A33001 /* AVFoundation.framework */; };
+		254458F217293ABE00A33001 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 254458F117293ABD00A33001 /* ImageIO.framework */; };
+		254458F417293D6600A33001 /* FullScreenCaptureVC.xib in Resources */ = {isa = PBXBuildFile; fileRef = 254458F317293D6600A33001 /* FullScreenCaptureVC.xib */; };
 		258726111716BC5800D0D15C /* TwoLabelCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 258726101716BC5800D0D15C /* TwoLabelCell.m */; };
 		258726131716BC6C00D0D15C /* TwoLabelCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 258726121716BC6C00D0D15C /* TwoLabelCell.xib */; };
 		2587261C1716C8F200D0D15C /* DatePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2587261A1716C8F100D0D15C /* DatePickerController.m */; };
@@ -58,6 +62,8 @@
 		25DA642B1709BB8900F04710 /* question-mark.png in Resources */ = {isa = PBXBuildFile; fileRef = 25DA642A1709BB8900F04710 /* question-mark.png */; };
 		25DA642D1709BD9B00F04710 /* question-mark~ipad.png in Resources */ = {isa = PBXBuildFile; fileRef = 25DA642C1709BD9B00F04710 /* question-mark~ipad.png */; };
 		25DE3A0417218F0F00CE2378 /* CustomCellBackground.m in Sources */ = {isa = PBXBuildFile; fileRef = 25DE3A0317218F0F00CE2378 /* CustomCellBackground.m */; };
+		25EA536C17296F9900D37460 /* SimpleMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 25EA536A17296F9900D37460 /* SimpleMapViewController.m */; };
+		25EA536D17296F9900D37460 /* SimpleMapViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 25EA536B17296F9900D37460 /* SimpleMapViewController.xib */; };
 		25F7874B17156EA900892CB4 /* 0.png in Resources */ = {isa = PBXBuildFile; fileRef = 25F7871317156EA900892CB4 /* 0.png */; };
 		25F7874C17156EA900892CB4 /* 1.png in Resources */ = {isa = PBXBuildFile; fileRef = 25F7871417156EA900892CB4 /* 1.png */; };
 		25F7874D17156EA900892CB4 /* 10.png in Resources */ = {isa = PBXBuildFile; fileRef = 25F7871517156EA900892CB4 /* 10.png */; };
@@ -148,6 +154,11 @@
 		25235FCF1727FED1009034E5 /* icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon.png; sourceTree = "<group>"; };
 		25235FD117280329009034E5 /* eye_color.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = eye_color.png; sourceTree = "<group>"; };
 		253CBFB51712CDBE00C3DA3B /* Places.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; path = Places.sqlite; sourceTree = "<group>"; };
+		254458EC17293A2500A33001 /* FullScreenCaptureVC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FullScreenCaptureVC.h; sourceTree = "<group>"; };
+		254458ED17293A2500A33001 /* FullScreenCaptureVC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FullScreenCaptureVC.m; sourceTree = "<group>"; };
+		254458EF17293A3A00A33001 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		254458F117293ABD00A33001 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
+		254458F317293D6600A33001 /* FullScreenCaptureVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FullScreenCaptureVC.xib; sourceTree = "<group>"; };
 		2587260F1716BC5800D0D15C /* TwoLabelCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwoLabelCell.h; sourceTree = "<group>"; };
 		258726101716BC5800D0D15C /* TwoLabelCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwoLabelCell.m; sourceTree = "<group>"; };
 		258726121716BC6C00D0D15C /* TwoLabelCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TwoLabelCell.xib; sourceTree = "<group>"; };
@@ -191,6 +202,9 @@
 		25DA642C1709BD9B00F04710 /* question-mark~ipad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "question-mark~ipad.png"; path = "Images/question-mark~ipad.png"; sourceTree = "<group>"; };
 		25DE3A0217218F0F00CE2378 /* CustomCellBackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomCellBackground.h; sourceTree = "<group>"; };
 		25DE3A0317218F0F00CE2378 /* CustomCellBackground.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomCellBackground.m; sourceTree = "<group>"; };
+		25EA536917296F9900D37460 /* SimpleMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleMapViewController.h; sourceTree = "<group>"; };
+		25EA536A17296F9900D37460 /* SimpleMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimpleMapViewController.m; sourceTree = "<group>"; };
+		25EA536B17296F9900D37460 /* SimpleMapViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SimpleMapViewController.xib; sourceTree = "<group>"; };
 		25F7871317156EA900892CB4 /* 0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 0.png; sourceTree = "<group>"; };
 		25F7871417156EA900892CB4 /* 1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1.png; sourceTree = "<group>"; };
 		25F7871517156EA900892CB4 /* 10.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 10.png; sourceTree = "<group>"; };
@@ -268,6 +282,8 @@
 				2598012217059C210025806D /* MapKit.framework in Frameworks */,
 				2587261F1716CF7300D0D15C /* QuartzCore.framework in Frameworks */,
 				2598012417059C2F0025806D /* CoreLocation.framework in Frameworks */,
+				254458F217293ABE00A33001 /* ImageIO.framework in Frameworks */,
+				254458F017293A3A00A33001 /* AVFoundation.framework in Frameworks */,
 				2506356F17048EAA00DBA7BA /* libsqlite3.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -294,6 +310,8 @@
 		250635351704821100DBA7BA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				254458EF17293A3A00A33001 /* AVFoundation.framework */,
+				254458F117293ABD00A33001 /* ImageIO.framework */,
 				2587261E1716CF7300D0D15C /* QuartzCore.framework */,
 				2598012317059C2F0025806D /* CoreLocation.framework */,
 				2598012117059C210025806D /* MapKit.framework */,
@@ -397,6 +415,9 @@
 				25DE3A0217218F0F00CE2378 /* CustomCellBackground.h */,
 				25DE3A0317218F0F00CE2378 /* CustomCellBackground.m */,
 				25CFBE541726C4EE003CEDBB /* TableAlertView.h */,
+				254458EC17293A2500A33001 /* FullScreenCaptureVC.h */,
+				254458F317293D6600A33001 /* FullScreenCaptureVC.xib */,
+				254458ED17293A2500A33001 /* FullScreenCaptureVC.m */,
 				25CFBE551726C4EF003CEDBB /* TableAlertView.m */,
 				25C637ED17217A6C00DE3FAE /* CustomFooter.h */,
 				25C637EE17217A6C00DE3FAE /* CustomFooter.m */,
@@ -445,6 +466,9 @@
 			isa = PBXGroup;
 			children = (
 				2506354E1704821300DBA7BA /* MasterViewController.h */,
+				25EA536917296F9900D37460 /* SimpleMapViewController.h */,
+				25EA536A17296F9900D37460 /* SimpleMapViewController.m */,
+				25EA536B17296F9900D37460 /* SimpleMapViewController.xib */,
 				2506354F1704821300DBA7BA /* MasterViewController.m */,
 				250635541704821300DBA7BA /* MasterViewController~iphone.xib */,
 				250635571704821300DBA7BA /* MasterViewController~ipad.xib */,
@@ -659,6 +683,8 @@
 				25CFBE53172699E0003CEDBB /* schedule.png in Resources */,
 				25235FD01727FED1009034E5 /* icon.png in Resources */,
 				25235FD217280329009034E5 /* eye_color.png in Resources */,
+				254458F417293D6600A33001 /* FullScreenCaptureVC.xib in Resources */,
+				25EA536D17296F9900D37460 /* SimpleMapViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -693,6 +719,8 @@
 				25DE3A0417218F0F00CE2378 /* CustomCellBackground.m in Sources */,
 				25CFBE48172677C8003CEDBB /* IOGhostPickerView.m in Sources */,
 				25CFBE561726C4EF003CEDBB /* TableAlertView.m in Sources */,
+				254458EE17293A2500A33001 /* FullScreenCaptureVC.m in Sources */,
+				25EA536C17296F9900D37460 /* SimpleMapViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

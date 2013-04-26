@@ -10,6 +10,7 @@
 #import "DetailViewController.h"
 #import "PlaceViewController.h"
 #import "RouteViewController.h"
+#import "SimpleMapViewController.h"
 
 #import "DBHandler.h"
 #import "RouteEntity.h"
@@ -30,11 +31,12 @@
 
 @end
 
-@implementation MasterViewController
+@implementation MasterViewController {
+    BOOL expandedPlace;
+    BOOL expandedRoute;
+    BOOL presentingVC;
+}
 
-@synthesize dbHandler;
-@synthesize routes;
-@synthesize places;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -50,6 +52,10 @@
 }
 
 - (void)dealloc {
+    [_filteredPlaces release];
+    [_filteredRoutes release];
+    [_places release];
+    [_routes release];
     [_backgroundTableView release];
     [_detailViewController release];
     [_mySearchBar release];
@@ -60,9 +66,9 @@
     [super viewDidLoad];
         
     if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone) {
-    UIBarButtonItem *rb = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction
+    UIBarButtonItem *rb = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd
                                                                         target:self
-                                                                        action:@selector(menuAction:)];
+                                                                        action:@selector(addAction:)];
     self.navigationItem.rightBarButtonItem = rb;
     [rb release];
     }
@@ -75,7 +81,10 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self getDBList];
+    expandedPlace = NO;
+    expandedRoute = NO;
+    presentingVC = NO;
+    [self.tableView reloadData];
     self.detailViewController.mode = PlaceModeSurvey;
     [self.detailViewController clearMap];
 }
@@ -86,6 +95,7 @@
 }
 
 - (void)viewDidUnload {
+    self.backgroundTableView = nil;
     self.backgroundTableView = nil;
     self.mySearchBar = nil;
     [super viewDidUnload];
@@ -101,67 +111,54 @@
     return (place.latitude != 0.0 && place.longtitude != 0.0);
 }
 
-- (void)getDBList {
-    dispatch_queue_t queue = dispatch_queue_create("BaseStart", nil);
+- (void)getDBPlaceList {
+    dispatch_queue_t queue = dispatch_queue_create("Place", nil);
     dispatch_async(queue, ^ {
         self.places = [self.dbHandler getAllPlaces];
-        self.routes = [self.dbHandler getRouteNamed:nil];
         _filteredPlaces = [[self.places mutableCopy] retain];
-        _filteredRoutes = [[self.routes mutableCopy] retain];
-        
         dispatch_sync(dispatch_get_main_queue(), ^ {
-            [self.tableView reloadData];
+            expandedPlace = YES;
+            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
         });
     });
+}
 
+- (void)getDBRouteList {
+    dispatch_queue_t queue = dispatch_queue_create("Place", nil);
+    dispatch_async(queue, ^ {
+        self.routes = [self.dbHandler getRouteNamed:nil];
+        _filteredRoutes = [[self.routes mutableCopy] retain];
+        dispatch_sync(dispatch_get_main_queue(), ^ {
+            expandedRoute = YES;
+            [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationNone];
+        });
+    });
+    
 }
 
 #pragma mark Menu Picker methods
 
-- (void)menuAction:(UIBarButtonItem*)sender {
-        UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil
-                                                           delegate:self
-                                                  cancelButtonTitle:nil
-                                             destructiveButtonTitle:LOC_CANCEL
-                                                  otherButtonTitles:LOC_ADD_PLACE, LOC_ADD_ROUTE, LOC_GOTO_MAP, nil];
-        sheet.actionSheetStyle = UIActionSheetStyleBlackTranslucent;
-        [sheet showInView:self.view];
-        [sheet release];
+- (void)addAction:(UIBarButtonItem*)sender {
+    dispatch_queue_t queue = dispatch_queue_create("REMOVE", nil);
+    dispatch_async(queue, ^(void) {
+        self.places = nil;
+        self.routes = nil;
+        [self.filteredPlaces removeAllObjects];
+        [self.filteredRoutes removeAllObjects];
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+        });
+    });
+    self.detailViewController = nil;
+    self.detailViewController = [[[DetailViewController alloc] init] autorelease];
+    [self.navigationController pushViewController:self.detailViewController animated:YES];
 }
 
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
-    buttonIndex--;
-    switch (buttonIndex) {
-        case MenuRowAddPlace: {
-            PlaceViewController *place = [[PlaceViewController alloc] init];
-            place.mode = PlaceModeSurvey;
-            place.delegate = self;
-            [self.navigationController pushViewController:place animated:YES];
-            [place release];
-        } break;
-        case MenuRowAddRoute: {
-            RouteViewController *route = [[RouteViewController alloc] init];
-            [self.navigationController pushViewController:route animated:YES];
-            [route release];
-        } break;
-        case MenuRowGoToMap: {
-            self.detailViewController = nil;
-            self.detailViewController = [[[DetailViewController alloc] init] autorelease];
-            [self.navigationController pushViewController:self.detailViewController animated:YES];
-        } break;
-        case -1:
-            NSLog(@"Cancelled");
-            break;
-        default:
-            NSLog(@"Unknown menu item");
-            break;
-    }
-
-}
 
 #pragma mark custom Delegate methods
 
 - (void)placeVC:(PlaceViewController *)placeVC didDismissedInMode:(PlaceMode)mode {
+    presentingVC = NO;
     if (mode != PlaceModeSurvey) {
         return;
     }
@@ -173,7 +170,7 @@
             success = [self.dbHandler insertPlace:placeVC.place];
         }
     if (success) {
-        [self getDBList];
+        [self getDBPlaceList];
     } else {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:LOC_ERROR
                                                         message:LOC_TRY_LTR
@@ -188,6 +185,10 @@
 #pragma mark GhostPicker processing methods
 
 - (void)processPlaceComponent:(NSInteger)component tapCoordinate:(CLLocationCoordinate2D)coordinate {
+    if (presentingVC) {
+        return;
+    }
+    presentingVC = YES;
     switch (component) {
         case 0:{
             PlaceViewController *place = [[PlaceViewController alloc] init];
@@ -206,7 +207,6 @@
             [self.navigationController pushViewController:place animated:YES];
             [place release];
         } break;
-
         default:
             NSLog(@"Unknown component %i", component);
             break;
@@ -214,8 +214,12 @@
 }
 
 - (void)processRouteComponent:(NSInteger)component startPoint:(CLLocationCoordinate2D)coordinate {
+    if (presentingVC) {
+        return;
+    }
     switch (component) {
         case 0: {
+             [self.detailViewController clearMap];
             RouteViewController *route = [[RouteViewController alloc] init];
             [self.navigationController pushViewController:route animated:YES];
             self.detailViewController.mode = PlaceModeChoose;
@@ -223,6 +227,7 @@
         }
             break;
         case 1: {
+             [self.detailViewController clearMap];
             RouteViewController *route = [[RouteViewController alloc] init];
             PlaceEntity *pl = [[PlaceEntity alloc] init];
             pl.name = LOC_WAYPOINT;
@@ -241,6 +246,35 @@
     }
     
 }
+
+#pragma mark Expand methods
+
+- (void)expandPlaces {
+    if (expandedPlace) {
+        expandedPlace = NO;
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
+        return;
+    }
+    if ([_filteredPlaces count] == 0) {
+        [self getDBPlaceList];
+    }
+    expandedPlace = YES;
+    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
+}
+
+- (void)expandRoutes {
+    if (expandedRoute) {
+        expandedRoute = NO;
+        [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationNone];
+        return;
+    }
+    if ([_filteredRoutes count] == 0) {
+        [self getDBRouteList];
+    }
+    expandedRoute = YES;
+    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationNone];
+}
+
 
 #pragma mark customized uitableView methods
 
@@ -281,6 +315,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath {
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
     switch (indexPath.section) {
         case 0: {
             PlaceEntity *pl = [self.filteredPlaces objectAtIndex:indexPath.row];
@@ -288,11 +323,31 @@
             [self.detailViewController addAnnotation:pl];
         }
             break;
-        case 1:
+        case 1://route
             break;
         default:
             NSLog(@"Unknown section");
             break;
+    }
+    } else {
+        switch (indexPath.section) {
+            case 0: {
+                PlaceEntity *pl = [self.filteredPlaces objectAtIndex:indexPath.row];
+                pl.tag = indexPath.row;
+                SimpleMapViewController *smvc = [[[SimpleMapViewController alloc] init] autorelease];
+                [smvc addAnnotation:pl];
+                [self.navigationController pushViewController:smvc
+                                                     animated:YES];
+            }
+                break;
+            case 1://route
+                break;
+            default:
+                NSLog(@"Unknown section");
+                break;
+        }
+
+        
     }
 }
 
@@ -303,13 +358,17 @@
     return 50;
 }
 
+-(CGFloat) tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section {
+    return 1;
+}
+
 - (UIView *) tableView:(UITableView *)tableView viewForFooterInSection:(NSInteger)section {
     return [[[CustomFooter alloc] init] autorelease];
 }
 
--(UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+- (UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     CustomHeader * head = [[[CustomHeader alloc] init] autorelease];
-    
+    UITapGestureRecognizer *recognizer = nil;
         head.lightColor = [UIColor colorWithRed:98.0/255.0
                                           green:211.0/255.0
                                            blue:247.0/255.0
@@ -321,17 +380,25 @@
                                          alpha:1.0];
     
     switch (section) {
-        case CategorySectionPlace:
+        case CategorySectionPlace: {
             head.titleLabel.text = LOC_PLACES;
+            recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                 action:@selector(expandPlaces)];
+        }
             break;
-        case CategorySectionRoute:
+        case CategorySectionRoute: {
             head.titleLabel.text = LOC_ROUTES;
+            recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                                 action:@selector(expandRoutes)];
+        }
+
             break;
         default:
             NSLog(@"Unknown header");
             break;
     }
-
+    [head addGestureRecognizer:recognizer];
+    [recognizer release];
     return head;
 }
 
@@ -343,10 +410,18 @@
     NSInteger counter;
     switch (section) {
         case CategorySectionPlace:
-            counter = [_filteredPlaces count];
+            if (expandedPlace) {
+                counter = [_filteredPlaces count];
+            } else {
+                counter = 0;
+            }
             break;
         case CategorySectionRoute:
-            counter = [_filteredRoutes count];
+            if (expandedRoute) {
+                counter = [_filteredRoutes count];
+            } else {
+                counter = 0;
+            }
             break;
         default:
             counter = 0;
@@ -367,10 +442,7 @@
         cell.backgroundView = backgroundCell;
     }
     
-    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
-        cell.accessoryView  = [self makeDetailDisclosureButtonForIndex:indexPath];
-    }
-    
+    cell.accessoryView  = [self makeDetailDisclosureButtonForIndex:indexPath];
     switch (indexPath.section) {
         case CategorySectionPlace:
             cell.textLabel.text = ((PlaceEntity *)[_filteredPlaces objectAtIndex:indexPath.row]).name;
@@ -411,22 +483,45 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        int i = ((PlaceEntity *)[_filteredPlaces objectAtIndex:indexPath.row]).Id;
-        if ([self.dbHandler deletePlaceWithId:i]) {
-            [self getDBList];
-        } else {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:LOC_ERROR
-                                                            message:LOC_TRY_LTR
-                                                           delegate:nil
-                                                  cancelButtonTitle:nil
-                                                  otherButtonTitles:@"OK", nil];
-            [alert show];
-            [alert release];
-
+        switch (indexPath.section) {
+            case 0: {
+                int i = ((PlaceEntity *)[_filteredPlaces objectAtIndex:indexPath.row]).Id;
+                if ([self.dbHandler deletePlaceWithId:i]) {
+                    [self getDBPlaceList];
+                } else {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:LOC_ERROR
+                                                                    message:LOC_TRY_LTR
+                                                                   delegate:nil
+                                                          cancelButtonTitle:nil
+                                                          otherButtonTitles:@"OK", nil];
+                    [alert show];
+                    [alert release];
+                    
+                }
+            }
+                break;
+            case 1: {
+                NSString *nm = ((RouteEntity *)[_filteredRoutes objectAtIndex:indexPath.row]).name;
+                if ([self.dbHandler deleteRouteWithName:nm]) {
+                    [self getDBRouteList];
+                } else {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:LOC_ERROR
+                                                                    message:LOC_TRY_LTR
+                                                                   delegate:nil
+                                                          cancelButtonTitle:nil
+                                                          otherButtonTitles:@"OK", nil];
+                    [alert show];
+                    [alert release];
+                    
+                }
+            }
+                break;
+            default:
+                NSLog(@"Unknown section %i",indexPath.section);
+                break;
         }
     }
 }
-
 
 #pragma mark UISearchBar delegate methods
 
@@ -439,25 +534,31 @@
     }
     
     [_filteredRoutes removeAllObjects];
-    for (int i = 0; i < [_filteredRoutes count]; i++) {
-        RouteEntity *route = [_filteredRoutes objectAtIndex:i];
-        if ([word rangeOfString:route.name options:NSCaseInsensitiveSearch].location != NSNotFound) {
+    for (int i = 0; i < [_routes count]; i++) {
+        RouteEntity *route = [_routes objectAtIndex:i];
+        if ([route.name rangeOfString:word options:NSCaseInsensitiveSearch].location != NSNotFound) {
             [self.filteredRoutes addObject:route];
         }
     }
     
         
     [_filteredPlaces removeAllObjects];
-    for (int j = 0; j < [places count]; j++) {
-        PlaceEntity *pl = [places objectAtIndex:j];
+    for (int j = 0; j < [_places count]; j++) {
+        PlaceEntity *pl = [_places objectAtIndex:j];
         if ([pl.name  rangeOfString:word options:NSCaseInsensitiveSearch].location != NSNotFound) {
             [self.filteredPlaces addObject:pl];
         }
     }
+    expandedPlace = YES;
+    expandedRoute = YES;
     [self.tableView reloadData];
 }
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
+    if ([_routes count] == 0 && [_places count] == 0) {
+        [self getDBPlaceList];
+        [self getDBRouteList];
+    }
     searchBar.showsCancelButton = YES;
 }
 

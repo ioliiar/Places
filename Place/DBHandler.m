@@ -211,7 +211,6 @@ static DBHandler *sharedInstance = nil;
             char *cRoute = (char *)sqlite3_column_text(statement, 8);
             place.route = (cRoute) ? [NSString stringWithUTF8String:cRoute] : @"";
             
-
             [placesArray addObject:place];
             [place release];
             [getImageData release];
@@ -260,7 +259,6 @@ static DBHandler *sharedInstance = nil;
 }
 
 - (BOOL)updatePlace:(PlaceEntity *)place{
-    
     const char *sql = "UPDATE Place Set Name = ?, Comment = ?, Image = ?, Visited = ?, Latitude = ?, Longitude = ?, Category = ?,Route = ?    Where PlaceId = ?";
     sqlite3_stmt *statement;
    
@@ -304,10 +302,9 @@ static DBHandler *sharedInstance = nil;
 
 
 // Route table
-
 - (NSArray*)getRouteNamed:(NSString*)name {
     char *sql;
-    NSString *tmp=[[NSString alloc]init];
+    NSString *tmp = @"";
     NSMutableArray *routesArray = [[NSMutableArray alloc] init];
     
     if (name) {
@@ -332,32 +329,32 @@ static DBHandler *sharedInstance = nil;
             
             if (![route.name isEqual:tmp]) {
                 [routesArray addObject:route];
-                tmp=[route.name copy];
-                [route release];
+                tmp = route.name;
+                
              }
+                [route release];
         
         }
     sqlite3_finalize(statement);
     }
     else{
         
-        NSLog(@"Problem with Databse? :%i",sqlResult);
+        NSLog(@"Problem with Database? :%i",sqlResult);
+        printf("%s",sqlite3_errmsg(database));
     }
     NSArray *result = [routesArray copy];
     [routesArray release];
-    [tmp release];
 
     return [result autorelease];
 
 }
 
 - (BOOL)saveRoute:(NSArray*)place named:(NSString*)name {
-
     sqlite3_stmt *statement;
    
     const char* sql2 = "INSERT INTO Place (Name,Comment,Image,Visited,Latitude,Longitude,Category,Route) Values (?,?,?,?,?,?,?,?)";
     
-    for (int i=0; i<place.count; i++) {
+    for (int i = 0; i < [place count]; i++) {
         
         if (sqlite3_prepare_v2(database, sql2, -1, &statement, NULL)==SQLITE_OK) {
           
@@ -390,7 +387,6 @@ static DBHandler *sharedInstance = nil;
 }
 
 - (BOOL)updateRoute:(RouteEntity *)route {
-    
     const char *sql = "UPDATE Place Set Route = ? Where PlaceId = ?";
     
     sqlite3_stmt *statement;
@@ -408,8 +404,7 @@ static DBHandler *sharedInstance = nil;
     return YES;
 }
 
-- (BOOL)deleteRouteWithId:(NSString *)name {
- 
+- (BOOL)deleteRouteWithName:(NSString *)name {
     NSString *sSql = [NSString stringWithFormat: @"DELETE FROM Place where Route ='%@'",name];
     const char *sql = [sSql UTF8String];
     sqlite3_stmt *statement;

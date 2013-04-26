@@ -14,6 +14,14 @@
 @synthesize name;
 @synthesize places;
 
+- (id)init {
+    self = [super init];
+    if (self) {
+        self.places = [[[NSMutableArray alloc] initWithCapacity:8] autorelease];
+    }
+    return self;
+}
+
 - (void)dealloc {
     [places release];
     [name release];
