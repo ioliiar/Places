@@ -23,7 +23,9 @@
 - (PlaceEntity *)getPlaceById:(NSInteger)Ident;
 
 // Route table
-- (NSArray*)getRouteNamed:(NSString*)name;
+
+- (NSArray *)getAllRoutes;
+- (RouteEntity *)getRouteNamed:(NSString*)name;
 - (BOOL)saveRoute:(NSArray*)place named:(NSString*)name;
 - (BOOL)updateRoute:(RouteEntity *)route;
 - (BOOL)deleteRouteWithId:(NSString *)name;
