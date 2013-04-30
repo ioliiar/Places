@@ -402,12 +402,14 @@
     switch (component) {
         case 0: {
             RouteViewController *route = [[RouteViewController alloc] init];
+            route.newRoute = YES;
             [self.navigationController pushViewController:route animated:YES];
             [route release];
         }
             break;
         case 1: {
             RouteViewController *route = [[RouteViewController alloc] init];
+            route.newRoute = YES;
             PlaceEntity *pl = [[PlaceEntity alloc] init];
             pl.name = LOC_WAYPOINT;
             pl.latitude = coordinate.latitude;

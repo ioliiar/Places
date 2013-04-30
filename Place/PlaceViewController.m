@@ -162,13 +162,10 @@
             transform = CGAffineTransformTranslate(transform, 0, -imageSize.height);
             break;
         case UIImageOrientationDown: //EXIF = 3
-            transform= CGAffineTransformIdentity;
             transform = CGAffineTransformMakeScale(-1.0, 1.0);
             transform = CGAffineTransformTranslate(transform, -imageSize.width, 0);
             break;
         case UIImageOrientationLeft: //EXIF = 6
-            
-            transform = CGAffineTransformIdentity;
             transform  = CGAffineTransformMakeRotation(M_PI /2.0);
             transform= CGAffineTransformTranslate(transform, 0, -imageSize.height);
             transform = CGAffineTransformScale(transform, -1.0, 1.0);

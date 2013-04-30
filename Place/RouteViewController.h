@@ -8,6 +8,13 @@
 
 #import <UIKit/UIKit.h>
 @class RouteEntity;
+@class RouteViewController;
+
+@protocol RouteViewControllerDelegate <NSObject>
+
+- (void)routeViewControlerDidFinished;
+
+@end
 
 @interface RouteViewController : UIViewController<UITableViewDataSource, UITableViewDelegate>
 
@@ -15,6 +22,8 @@
 @property (retain, nonatomic) IBOutlet UITableView *tableView;
 @property (retain, nonatomic) IBOutlet UIBarButtonItem *saveBtn;
 @property (retain, nonatomic) IBOutlet UIBarButtonItem *doneBtn;
+@property (assign, nonatomic) BOOL newRoute;
+@property (assign, nonatomic) id <RouteViewControllerDelegate> delegate;
 
 - (IBAction)saveAction:(UIBarButtonItem *)sender;
 - (IBAction)doneAction:(UIBarButtonItem *)sender;

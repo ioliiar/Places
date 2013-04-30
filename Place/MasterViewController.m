@@ -20,11 +20,10 @@
 #import "CustomFooter.h"
 #import "CustomCellBackground.h"
 
-@interface MasterViewController ()<UIActionSheetDelegate, UISearchBarDelegate,PlaceViewControllerDelegate, DetailViewControllerDelegate>
+@interface MasterViewController ()<UIActionSheetDelegate, UISearchBarDelegate,PlaceViewControllerDelegate, RouteViewControllerDelegate, DetailViewControllerDelegate>
 
 @property (nonatomic, copy) NSArray *routes;
 @property (nonatomic, copy) NSArray *places;
-@property (nonatomic, retain) DBHandler *dbHandler;
 @property (nonatomic, retain) NSMutableArray *filteredPlaces;
 @property (nonatomic, retain) NSMutableArray *filteredRoutes;
 @property (nonatomic, retain) CustomCellBackground * backgroundTableView;
@@ -42,7 +41,6 @@
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
         self.title = LOC_MY_PLACES;
-        self.dbHandler = [[[DBHandler alloc] init] autorelease];
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
             self.clearsSelectionOnViewWillAppear = YES;
             self.contentSizeForViewInPopover = CGSizeMake(320.0, 600.0);
@@ -114,7 +112,7 @@
 - (void)getDBPlaceList {
     dispatch_queue_t queue = dispatch_queue_create("Place", nil);
     dispatch_async(queue, ^ {
-        self.places = [self.dbHandler getAllPlaces];
+        self.places = [[DBHandler sharedDBHandler] getAllPlaces];
         _filteredPlaces = [[self.places mutableCopy] retain];
         dispatch_sync(dispatch_get_main_queue(), ^ {
             expandedPlace = YES;
@@ -126,7 +124,7 @@
 - (void)getDBRouteList {
     dispatch_queue_t queue = dispatch_queue_create("Place", nil);
     dispatch_async(queue, ^ {
-        self.routes = [self.dbHandler getRouteNamed:nil];
+        self.routes = [[DBHandler sharedDBHandler] getAllRoutes];
         _filteredRoutes = [[self.routes mutableCopy] retain];
         dispatch_sync(dispatch_get_main_queue(), ^ {
             expandedRoute = YES;
@@ -164,10 +162,10 @@
     }
     BOOL success;
         if (placeVC.place.Id) {
-            success = [self.dbHandler updatePlace:placeVC.place];
+            success = [[DBHandler sharedDBHandler] updatePlace:placeVC.place];
             
         } else {
-            success = [self.dbHandler insertPlace:placeVC.place];
+            success = [[DBHandler sharedDBHandler] insertPlace:placeVC.place];
         }
     if (success) {
         [self getDBPlaceList];
@@ -180,6 +178,10 @@
         [alert show];
         [alert release];
     }
+}
+
+- (void)routeViewControlerDidFinished {
+    [self getDBRouteList];
 }
 
 #pragma mark GhostPicker processing methods
@@ -221,6 +223,8 @@
         case 0: {
              [self.detailViewController clearMap];
             RouteViewController *route = [[RouteViewController alloc] init];
+            route.delegate = self;
+            route.newRoute = YES;
             [self.navigationController pushViewController:route animated:YES];
             self.detailViewController.mode = PlaceModeChoose;
             [route release];
@@ -229,6 +233,8 @@
         case 1: {
              [self.detailViewController clearMap];
             RouteViewController *route = [[RouteViewController alloc] init];
+            route.delegate = self;
+            route.newRoute = YES;
             PlaceEntity *pl = [[PlaceEntity alloc] init];
             pl.name = LOC_WAYPOINT;
             pl.latitude = coordinate.latitude;
@@ -448,7 +454,7 @@
             cell.textLabel.text = ((PlaceEntity *)[_filteredPlaces objectAtIndex:indexPath.row]).name;
             break;
         case CategorySectionRoute:
-            cell.textLabel.text = ((RouteEntity *)[_filteredRoutes objectAtIndex:indexPath.row]).name;
+            cell.textLabel.text = [_filteredRoutes objectAtIndex:indexPath.row];
             break;
         default:
             NSLog(@"Unknown Place - Route");
@@ -469,7 +475,11 @@
             break;
         case CategorySectionRoute: {
             RouteViewController *rt = [[RouteViewController alloc] init];
-            rt.route = [self.filteredRoutes objectAtIndex:indexPath.row];
+            rt.newRoute = NO;
+            rt.delegate = self;
+            rt.route.name =[self.filteredRoutes objectAtIndex:indexPath.row];
+            rt.route = [[DBHandler sharedDBHandler] getRouteNamed:rt.route.name];
+            self.detailViewController.mode = PlaceModeChoose;
             [self.navigationController pushViewController:rt animated:YES];
             [rt release];
         }
@@ -486,7 +496,7 @@
         switch (indexPath.section) {
             case 0: {
                 int i = ((PlaceEntity *)[_filteredPlaces objectAtIndex:indexPath.row]).Id;
-                if ([self.dbHandler deletePlaceWithId:i]) {
+                if ([[DBHandler sharedDBHandler] deletePlaceWithId:i]) {
                     [self getDBPlaceList];
                 } else {
                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:LOC_ERROR
@@ -501,8 +511,8 @@
             }
                 break;
             case 1: {
-                NSString *nm = ((RouteEntity *)[_filteredRoutes objectAtIndex:indexPath.row]).name;
-                if ([self.dbHandler deleteRouteWithName:nm]) {
+                NSString *nm = [_filteredRoutes objectAtIndex:indexPath.row];
+                if ([[DBHandler sharedDBHandler] deleteRouteWithName:nm]) {
                     [self getDBRouteList];
                 } else {
                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:LOC_ERROR
@@ -535,8 +545,8 @@
     
     [_filteredRoutes removeAllObjects];
     for (int i = 0; i < [_routes count]; i++) {
-        RouteEntity *route = [_routes objectAtIndex:i];
-        if ([route.name rangeOfString:word options:NSCaseInsensitiveSearch].location != NSNotFound) {
+        NSString *route = [_routes objectAtIndex:i];
+        if ([route rangeOfString:word options:NSCaseInsensitiveSearch].location != NSNotFound) {
             [self.filteredRoutes addObject:route];
         }
     }

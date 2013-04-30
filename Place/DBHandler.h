@@ -15,19 +15,18 @@
 + (DBHandler *)sharedDBHandler;
 
 //Places table
-- (NSArray*)getPlacesByName:(NSString*)name;  // nil means all
-- (NSArray*)getLastVisitedPlacesNamed:(NSString*)name; // nil means all
+- (NSArray *)getAllPlaces;
+- (NSArray *)getLastVisitedPlacesNamed:(NSString*)name; // nil means all
 - (BOOL)insertPlace:(PlaceEntity*)place;
 - (BOOL)updatePlace:(PlaceEntity *)place;
 - (BOOL)deletePlaceWithId:(NSInteger)Ident;
 - (PlaceEntity *)getPlaceById:(NSInteger)Ident;
 
 // Route table
-
 - (NSArray *)getAllRoutes;
 - (RouteEntity *)getRouteNamed:(NSString*)name;
 - (BOOL)saveRoute:(NSArray*)place named:(NSString*)name;
-- (BOOL)updateRoute:(RouteEntity *)route;
-- (BOOL)deleteRouteWithId:(NSString *)name;
+- (BOOL)updateRoute:(RouteEntity *)route oldName:(NSString *)name;
+- (BOOL)deleteRouteWithName:(NSString *)name;
 
 @end

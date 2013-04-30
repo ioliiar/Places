@@ -21,6 +21,7 @@
 @interface RouteViewController ()<TableAlertViewDelegate, UIAlertViewDelegate, RequestDispatcherDelegate>
 
 @property (nonatomic, retain) NSArray *dbList;
+@property (nonatomic, copy) NSString *oldName;
 
 @end
 
@@ -28,7 +29,6 @@
     BOOL saved;
 }
 
-@synthesize route;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -49,6 +49,7 @@
     [super viewDidLoad];
     self.tableView.editing = YES;
     saved = YES;
+    self.title = self.route.name;
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(receivedAnnotaion:)
                                                  name:kPlaceChosen
@@ -79,14 +80,15 @@
 
 - (void)viewDidUnload {
     self.tableView = nil;
-    [self setSaveBtn:nil];
-    [self setDoneBtn:nil];
+    self.saveBtn = nil;
+    self.doneBtn = nil;
     [super viewDidUnload];
 }
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [route release];
+    [_oldName release];
+    [_route release];
     [_dbList release];
     [_tableView release];
     [_saveBtn release];
@@ -160,52 +162,6 @@
     // else "Selection cancelled";
 }
 
-#pragma mark BarButton Actions
-
-- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
-    if (buttonIndex == 0) {
-        return;
-    }
-    if (alertView.tag  == AlertTagsName) {
-        if (![[alertView textFieldAtIndex:0].text isEqualToString:self.route.name]) {
-            self.route.name = [alertView textFieldAtIndex:0].text;
-            saved = NO;
-        }
-        if (saved || [self.route.places count] < 2) {
-            return;
-        }
-        if (![[DBHandler sharedDBHandler] saveRoute:self.route.places named:self.route.name]) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:LOC_ERROR
-                                                            message:LOC_TRY_LTR
-                                                           delegate:nil
-                                                  cancelButtonTitle:LOC_OK
-                                                  otherButtonTitles:nil];
-            [alert show];
-            [alert release];
-            saved = NO;
-        } else {
-            [self.navigationController popToRootViewControllerAnimated:YES];
-            saved = YES;
-        }
-        
-    } else {
-        switch (buttonIndex) {
-            case 0:
-                // cancelled
-                break;
-            case 1:
-                [self showListOnMap];
-                break;
-            case 2:
-                [self showDBList];
-                break;
-            default:
-                NSLog(@"Unknown button index");
-                break;
-        }
-    }
-}
-
 #pragma mark Map  methods
 
 - (void)addPlace:(UIBarButtonItem *)sender {
@@ -246,7 +202,82 @@
     [self.tableView reloadData];
 }
 
+#pragma mark alertView delegate method
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 0) {
+        return;
+    }
+    if (alertView.tag  == AlertTagsName) {
+        if (![[alertView textFieldAtIndex:0].text isEqualToString:self.route.name]) {
+            _oldName = self.route.name;
+            self.route.name = [alertView textFieldAtIndex:0].text;
+            saved = NO;
+        }
+        if (saved || [self.route.places count] < 2) {
+            return;
+        }
+        if (_newRoute) {
+            [self insertRoute];
+        } else {
+            [self updateRouteNamed:_oldName];
+        }
+    } else {
+        switch (buttonIndex) {
+            case 0:
+                // cancelled
+                break;
+            case 1:
+                [self showListOnMap];
+                break;
+            case 2:
+                [self showDBList];
+                break;
+            default:
+                NSLog(@"Unknown button index");
+                break;
+        }
+    }
+}
+
+
 #pragma actions implementations
+
+- (void)updateRouteNamed:(NSString *)oldName {
+    if (![[DBHandler sharedDBHandler] updateRoute:self.route oldName:oldName]) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:LOC_ERROR
+                                                        message:LOC_TRY_LTR
+                                                       delegate:nil
+                                              cancelButtonTitle:LOC_OK
+                                              otherButtonTitles:nil];
+        [alert show];
+        [alert release];
+        saved = NO;
+    } else {
+        [self.delegate routeViewControlerDidFinished];
+        [self.navigationController popToRootViewControllerAnimated:YES];
+        saved = YES;
+    }
+
+}
+
+- (void)insertRoute {
+    if (![[DBHandler sharedDBHandler] saveRoute:self.route.places named:self.route.name]) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:LOC_ERROR
+                                                        message:LOC_TRY_LTR
+                                                       delegate:nil
+                                              cancelButtonTitle:LOC_OK
+                                              otherButtonTitles:nil];
+        [alert show];
+        [alert release];
+        saved = NO;
+    } else {
+        [self.delegate routeViewControlerDidFinished];
+        [self.navigationController popToRootViewControllerAnimated:YES];
+        saved = YES;
+        _newRoute = NO;
+    }
+}
 
 - (IBAction)saveAction:(UIBarButtonItem *)sender {
     if (saved || [self.route.places count] < 2) {
@@ -259,6 +290,7 @@
                                           otherButtonTitles:LOC_OK ,nil];
     alert.alertViewStyle = UIAlertViewStylePlainTextInput;
     alert.tag = AlertTagsName;
+    [alert textFieldAtIndex:0].text = self.route.name;
     [alert show];
     [alert release];
 }
@@ -345,6 +377,7 @@
     PlaceEntity *source = [(PlaceEntity *)[self.route.places objectAtIndex:sourceIndexPath.row] retain];
     [self.route.places removeObject:source];
     [self.route.places insertObject:source atIndex:destinationIndexPath.row];
+    saved = NO;
     [source release];
     [tableView reloadData];
 }
