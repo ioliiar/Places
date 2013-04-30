@@ -209,11 +209,12 @@
         return;
     }
     if (alertView.tag  == AlertTagsName) {
+        _oldName = self.route.name;
         if (![[alertView textFieldAtIndex:0].text isEqualToString:self.route.name]) {
-            _oldName = self.route.name;
             self.route.name = [alertView textFieldAtIndex:0].text;
             saved = NO;
         }
+        
         if (saved || [self.route.places count] < 2) {
             return;
         }

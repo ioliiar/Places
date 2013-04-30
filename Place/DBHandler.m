@@ -450,7 +450,7 @@ static DBHandler *sharedInstance = nil;
     }
     else{
         
-        NSLog(@"Problem with Databse?call 911 now:%i",sqlResult);
+        NSLog(@"Problem with Database? call 911 now:%i",sqlResult);
     }
     
     return [route autorelease] ;
@@ -488,7 +488,6 @@ static DBHandler *sharedInstance = nil;
         return NO;
     }
     sqlite3_reset(statement);
-    [self reindexDatabase];
     return YES;
 }
 
