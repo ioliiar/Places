@@ -10,6 +10,8 @@
 
 #import <AVFoundation/AVFoundation.h>
 #import <ImageIO/CGImageProperties.h>
+#import <CoreVideo/CoreVideo.h>
+#import <Accelerate/Accelerate.h>
 
 @interface FullScreenCaptureVC ()
 
@@ -78,50 +80,50 @@
             break;
         }
     }
-   
+    
     [self.stillImageOutput captureStillImageAsynchronouslyFromConnection:videoConnection completionHandler: ^(CMSampleBufferRef imageSampleBuffer, NSError *error) {
         
-         NSData *imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageSampleBuffer];
-         UIImage *image = [[[UIImage alloc] initWithData:imageData] autorelease];
+        NSData *imageData = [AVCaptureStillImageOutput jpegStillImageNSDataRepresentation:imageSampleBuffer];
+        UIImage *image = [[[UIImage alloc] initWithData:imageData] autorelease];
         UIImage *im;
         switch ([UIApplication sharedApplication].statusBarOrientation) {
             case UIInterfaceOrientationLandscapeLeft: {
-               im = [UIImage imageWithCGImage:image.CGImage
-                                      scale:[UIScreen mainScreen].scale
-                                orientation:UIImageOrientationDown];
-
+                im = [UIImage imageWithCGImage:image.CGImage
+                                         scale:[UIScreen mainScreen].scale
+                                   orientation:UIImageOrientationDown];
+                
             }
                 break;
             case UIInterfaceOrientationLandscapeRight: {
                 im = [UIImage imageWithCGImage:image.CGImage
                                          scale:[UIScreen mainScreen].scale
                                    orientation:UIImageOrientationUp];
-
+                
             }
                 break;
             case UIInterfaceOrientationPortrait: {
                 im = [UIImage imageWithCGImage:image.CGImage
                                          scale:[UIScreen mainScreen].scale
                                    orientation:UIImageOrientationRight];
-
+                
             }
                 break;
             case UIInterfaceOrientationPortraitUpsideDown: {
                 im = [UIImage imageWithCGImage:image.CGImage
                                          scale:[UIScreen mainScreen].scale
                                    orientation:UIImageOrientationLeft];
-
+                
             }
                 break;
             default:
                 NSLog(@"Unknown orienation");
                 break;
         }
-
+        
         [self.delegate fullScreenVCFinishedPickingImage:im];
         [self dismissViewControllerAnimated:YES
                                  completion:nil];
-     }];
+    }];
 }
 
 
@@ -134,4 +136,5 @@
     self.toolbar = nil;
     [super viewDidUnload];
 }
-    @end
+
+@end

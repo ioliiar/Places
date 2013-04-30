@@ -159,6 +159,8 @@
 		254458EF17293A3A00A33001 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		254458F117293ABD00A33001 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		254458F317293D6600A33001 /* FullScreenCaptureVC.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FullScreenCaptureVC.xib; sourceTree = "<group>"; };
+		25630CC2172E987400D58415 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		25630CC4172E987A00D58415 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		2587260F1716BC5800D0D15C /* TwoLabelCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwoLabelCell.h; sourceTree = "<group>"; };
 		258726101716BC5800D0D15C /* TwoLabelCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwoLabelCell.m; sourceTree = "<group>"; };
 		258726121716BC6C00D0D15C /* TwoLabelCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TwoLabelCell.xib; sourceTree = "<group>"; };
@@ -310,6 +312,8 @@
 		250635351704821100DBA7BA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				25630CC4172E987A00D58415 /* Accelerate.framework */,
+				25630CC2172E987400D58415 /* CoreVideo.framework */,
 				254458EF17293A3A00A33001 /* AVFoundation.framework */,
 				254458F117293ABD00A33001 /* ImageIO.framework */,
 				2587261E1716CF7300D0D15C /* QuartzCore.framework */,

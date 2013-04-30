@@ -148,7 +148,52 @@
 
 - (void)fullScreenVCFinishedPickingImage:(UIImage *)image {
     photoPicked = YES;
-    self.photoImageView.image = image;
+    self.photoImageView.image = [self rotateImage:image];
+}
+
+- (UIImage *) rotateImage: (UIImage *)image {
+    CGSize imageSize = image.size;
+    CGFloat scaleRatio = imageSize.height / imageSize.width;
+    UIImageOrientation orient = image.imageOrientation;
+    CGAffineTransform transform;
+    switch(orient) {
+        case UIImageOrientationUp: //EXIF = 1
+            transform = CGAffineTransformMakeScale(1.0, -1.0);
+            transform = CGAffineTransformTranslate(transform, 0, -imageSize.height);
+            break;
+        case UIImageOrientationDown: //EXIF = 3
+            transform= CGAffineTransformIdentity;
+            transform = CGAffineTransformMakeScale(-1.0, 1.0);
+            transform = CGAffineTransformTranslate(transform, -imageSize.width, 0);
+            break;
+        case UIImageOrientationLeft: //EXIF = 6
+            
+            transform = CGAffineTransformIdentity;
+            transform  = CGAffineTransformMakeRotation(M_PI /2.0);
+            transform= CGAffineTransformTranslate(transform, 0, -imageSize.height);
+            transform = CGAffineTransformScale(transform, -1.0, 1.0);
+            transform= CGAffineTransformTranslate(transform, -imageSize.width,0);
+            transform = CGAffineTransformTranslate(transform,-55.0,0);
+            imageSize.width *= scaleRatio;
+            
+            break;
+        case UIImageOrientationRight: //EXIF = 8
+            transform = CGAffineTransformMakeScale(-1.0, 1.0);
+            transform = CGAffineTransformRotate(transform, M_PI / 2.0);
+            imageSize.width *= scaleRatio;
+            break;
+            
+        default:
+            NSAssert(NO, @"Invalid image orientation");
+    }
+    UIGraphicsBeginImageContext(imageSize);
+    
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextConcatCTM(context, transform);
+    CGContextDrawImage(UIGraphicsGetCurrentContext(), CGRectMake(0, 0, imageSize.width, imageSize.height), image.CGImage);
+    UIImage *imageCopy = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return imageCopy;
 }
 
 #pragma mark UIimagePicker methods
