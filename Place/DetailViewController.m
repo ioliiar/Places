@@ -178,7 +178,7 @@
         CLLocationCoordinate2D cor;
         cor.latitude = pl.latitude;
         cor.longitude = pl.longtitude;
-        ann.tag = j;
+        ann.tag = pl.tag;
         [ann setCoordinate:cor];
         [arr addObject:ann];
         [ann release];
@@ -310,7 +310,6 @@
 
 - (void)handleLongPress:(UILongPressGestureRecognizer *)sender {
     if (sender.state == UIGestureRecognizerStateBegan) {
-        static int counter = 0;
         if (_mode == PlaceModeChoose) {
             int i = [self.mapView.annotations count];
             if (i > 8) {
@@ -321,8 +320,7 @@
             TaggedAnnotation *ann = [[TaggedAnnotation alloc] init];
             ann.coordinate = cor;
             ann.title = @"waypoint";
-            ann.tag = counter;
-            counter++;
+            ann.tag = [NSDate timeIntervalSinceReferenceDate];
             [self.mapView addAnnotation:ann];
             [[NSNotificationCenter defaultCenter] postNotificationName:kPlaceChosen
                                                                 object:nil

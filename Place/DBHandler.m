@@ -122,6 +122,7 @@ static DBHandler *sharedInstance = nil;
 }
 
 #pragma mark DB Queries
+#pragma mark Place table
 
 - (PlaceEntity *)getPlaceById:(NSInteger)Ident {
     char *sql = "SELECT * FROM Place WHERE Place.PlaceId =?";
@@ -170,6 +171,7 @@ static DBHandler *sharedInstance = nil;
     
     char *cRoute = (char *)sqlite3_column_text(statement, 8);
     place.route = (cRoute) ? [NSString stringWithUTF8String:cRoute] : @"";
+    place.tag = sqlite3_column_int(statement, 9);
     
     [getImageData release];
     sqlite3_finalize(statement);
@@ -216,7 +218,7 @@ static DBHandler *sharedInstance = nil;
             
             char *cRoute = (char *)sqlite3_column_text(statement, 8);
             place.route = (cRoute) ? [NSString stringWithUTF8String:cRoute] : @"";
-            
+            place.tag = sqlite3_column_int(statement, 9);
             
             [placesArray addObject:place];
             [place release];
@@ -234,7 +236,6 @@ static DBHandler *sharedInstance = nil;
 }
 
 - (NSArray*)getLastVisitedPlacesNamed:(NSString*)name {
-    
     char *sql;
     NSMutableArray *placesArray = [[NSMutableArray alloc] init];
     if (name) {
@@ -296,7 +297,7 @@ static DBHandler *sharedInstance = nil;
 }
 
 - (BOOL)insertPlace:(PlaceEntity*)place {
-    const char* sql = "INSERT INTO Place (Name,Comment,Image,Visited,Latitude,Longitude,Category,Route) Values (?,?,?,?,?,?,?,?)";
+    const char* sql = "INSERT INTO Place (Name,Comment,Image,Visited,Latitude,Longitude,Category,Route,Tag) Values (?,?,?,?,?,?,?,?,?)";
     
     sqlite3_stmt *statement;
     
@@ -305,7 +306,7 @@ static DBHandler *sharedInstance = nil;
         sqlite3_bind_text(statement,1,[place.name UTF8String],-1,SQLITE_TRANSIENT);
         sqlite3_bind_text(statement,2,[place.comment UTF8String],-1,SQLITE_TRANSIENT);
         
-        NSData *imageData=UIImagePNGRepresentation(place.photo);
+        NSData *imageData = UIImagePNGRepresentation(place.photo);
         sqlite3_bind_blob(statement, 3, [imageData bytes], [imageData length], NULL);
         
         sqlite3_bind_double(statement, 4, [place.dateVisited timeIntervalSince1970]);
@@ -313,6 +314,7 @@ static DBHandler *sharedInstance = nil;
         sqlite3_bind_double(statement,6,place.longtitude);
         sqlite3_bind_int(statement, 7, place.category);
         sqlite3_bind_text(statement, 8, [place.route UTF8String], -1, SQLITE_TRANSIENT);
+        sqlite3_bind_int(statement, 9, place.tag);
         
     }
     
@@ -328,8 +330,7 @@ static DBHandler *sharedInstance = nil;
 }
 
 - (BOOL)updatePlace:(PlaceEntity *)place{
-    
-    const char *sql = "UPDATE Place Set Name = ?, Comment = ?, Image = ?, Visited = ?, Latitude = ?, Longitude = ?, Category = ?,Route = ?    Where PlaceId = ?";
+    const char *sql = "UPDATE Place Set Name = ?, Comment = ?, Image = ?, Visited = ?, Latitude = ?, Longitude = ?, Category = ?,Route = ?, Tag = ? Where PlaceId = ?";
     sqlite3_stmt *statement;
     
     if(sqlite3_prepare_v2(database, sql, -1, &statement, NULL) == SQLITE_OK){
@@ -342,7 +343,8 @@ static DBHandler *sharedInstance = nil;
         sqlite3_bind_double(statement,6,place.longtitude);
         sqlite3_bind_int(statement, 7, place.category);
         sqlite3_bind_text(statement,8,[place.route UTF8String],-1,SQLITE_TRANSIENT);
-        sqlite3_bind_int(statement, 9, place.Id);
+        sqlite3_bind_int(statement, 9, place.tag);
+        sqlite3_bind_int(statement, 10, place.Id);
     }
     if (sqlite3_step(statement) != SQLITE_DONE) {
         NSLog(@"Update has not been successuly completed ");
@@ -370,7 +372,7 @@ static DBHandler *sharedInstance = nil;
     return YES;
 }
 
-// Route table
+#pragma mark Route table
 
 - (NSArray *)getAllRoutes{
     NSMutableArray *allRoutes = [[NSMutableArray alloc]init];
@@ -422,7 +424,7 @@ static DBHandler *sharedInstance = nil;
                 continue;
             }
             route.Id = sqlite3_column_int(statement, 0);
-            place.Id=sqlite3_column_int(statement, 0);
+            place.Id = sqlite3_column_int(statement, 0);
             
             char *pName = (char *)sqlite3_column_text(statement, 1);
             place.name = (pName) ? [NSString stringWithUTF8String:pName] : @"";
@@ -440,7 +442,8 @@ static DBHandler *sharedInstance = nil;
             
             char *cRoute = (char *)sqlite3_column_text(statement, 8);
             place.route = (cRoute) ? [NSString stringWithUTF8String:cRoute] : @"";
-                       
+            place.tag = sqlite3_column_int(statement, 9);
+            
             [route.places addObject:place];
             [place release];
             

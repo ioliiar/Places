@@ -124,6 +124,7 @@
     for (PlaceEntity *pl in self.route.places) {
         TaggedAnnotation *ann = [[TaggedAnnotation alloc] init];
         ann.title = pl.name;
+        ann.tag = pl.tag;
         CLLocationCoordinate2D loc;
         loc.longitude = pl.longtitude;
         loc.latitude = pl.latitude;
@@ -141,7 +142,8 @@
 -(void)didSelectRowAtIndex:(NSInteger)row withContext:(id)context{
     if(row >= 0){
         PlaceEntity *pl = [self.dbList objectAtIndex:row];
-        pl.tag  = [self.route.places count];
+        pl.tag  = [NSDate timeIntervalSinceReferenceDate];
+        
         if (pl.latitude != 0.0 && pl.longtitude != 0.0) {
         [self.route.places addObject:pl];
         saved = NO;
