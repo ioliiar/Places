@@ -514,30 +514,21 @@ static DBHandler *sharedInstance = nil;
 
 - (BOOL)updateRoute:(RouteEntity *)route {
     
-    const char *sql = "UPDATE Place Set Name = ?, Comment = ?, Image = ?, Visited = ?, Latitude = ?, Longitude = ?, Category = ?,Route = ?    Where PlaceId = ?";
+    const char *sql = "UPDATE Place Set Route = ? Where PlaceId = ?";
     sqlite3_stmt *statement;
     
     if(sqlite3_prepare_v2(database, sql, -1, &statement, NULL) == SQLITE_OK){
         
-        for (int i=0; i<route.places.count; i++) {
+        for (int i=0; i<[route.places count]; i++) {
             
-            PlaceEntity *place=[[PlaceEntity alloc]init];
-            place=[route.places objectAtIndex:i];
+            PlaceEntity *pl=[[PlaceEntity alloc]init];
+            pl=[route.places objectAtIndex:i];
             
-            sqlite3_bind_text(statement,1,[place.name UTF8String],-1,SQLITE_TRANSIENT);
-            sqlite3_bind_text(statement,2,[place.comment UTF8String],-1,SQLITE_TRANSIENT);
-            
-            NSData *imageData=UIImagePNGRepresentation(place.photo);
-            sqlite3_bind_blob(statement, 3, [imageData bytes], [imageData length], NULL);
-            
-            sqlite3_bind_double(statement, 4, [place.dateVisited timeIntervalSince1970]);
-            sqlite3_bind_double(statement,5,place.latitude);
-            sqlite3_bind_double(statement,6,place.longtitude);
-            sqlite3_bind_int(statement, 7, place.category);
-            sqlite3_bind_text(statement,8,[route.name UTF8String],-1,SQLITE_TRANSIENT);
-            sqlite3_bind_int(statement, 9, place.Id);
-            
-            [place release];
+            if(sqlite3_prepare_v2(database, sql, -1, &statement, NULL) == SQLITE_OK){
+                sqlite3_bind_text(statement, 1, [route.name UTF8String], -1, SQLITE_TRANSIENT);
+                [self updatePlace:pl];
+                [pl release];
+            }
         }
         
     }
