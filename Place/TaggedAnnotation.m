@@ -4,7 +4,7 @@
 //
 //  Created by Iurii Oliiar on 4/16/13.
 //  Copyright (c) 2013 Iurii Oliiar. All rights reserved.
-//
+// some change
 
 #import "TaggedAnnotation.h"
 
