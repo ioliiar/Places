@@ -18,9 +18,9 @@
 @interface WeaherView : UIView
 
 @property (nonatomic, assign) id <WeaherViewDelegate> delegate;
-
+@property (nonatomic) BOOL isVisible;
 - (id) initWithPlaceName:(NSString*)aName weatherIcon:(UIImage*) aIcon tempetatureC:(NSInteger) temp;
 - (void)showOnView:(UIView *)superview;
-
+- (void)hide;
 
 @end

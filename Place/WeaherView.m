@@ -11,7 +11,6 @@
 
 @interface WeaherView ()
 
-@property (nonatomic) BOOL isVisible;
 
 @end
 

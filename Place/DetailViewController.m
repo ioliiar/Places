@@ -26,6 +26,7 @@
 @property (retain, nonatomic) UISearchBar *searchBar;
 @property (retain, nonatomic) IOGhostPickerView *pickerView;
 @property (retain, nonatomic) UILongPressGestureRecognizer *longPress;
+@property (retain, nonatomic) WeaherView *weatherView;
 
 @end
 
@@ -462,7 +463,7 @@
 
     if (view) {
         
-        [view release];
+        self.weatherView = nil;
     }
 
 }
@@ -508,24 +509,30 @@
         
                 dispatch_async(dispatch_get_main_queue(), ^{
                     
+                    if (self.weatherView) {
+                        
+                        [self.weatherView hide];
+                        self.weatherView = nil;
+                        
+                    }
                     
                     NSLog(@"temp = %d cond = %d", temp, cond);
                     if (temp == 0 && cond == 0) {
                         
-                        WeaherView *weatherView = [[WeaherView alloc] initWithPlaceName:@"No weather was found" weatherIcon:[UIImage imageNamed:@"no_found.png"] tempetatureC:0];
-                        [weatherView showOnView:self.mapView];
+                        self.weatherView = [[WeaherView alloc] initWithPlaceName:@"No weather was found" weatherIcon:[UIImage imageNamed:@"no_found.png"] tempetatureC:0];
+                        [self.weatherView showOnView:self.mapView];
                         
                     } else {
                         
                         if (yahooWeatherParser.currentCity!= NULL && ![yahooWeatherParser.currentCity isKindOfClass:[NSNull class]] && yahooWeatherParser.currentCity!=nil)  {
                             
-                            WeaherView *weatherView = [[WeaherView alloc] initWithPlaceName:yahooWeatherParser.currentCity weatherIcon:weatherImage tempetatureC:temp];
-                            [weatherView showOnView:self.mapView];
+                            self.weatherView = [[WeaherView alloc] initWithPlaceName:yahooWeatherParser.currentCity weatherIcon:weatherImage tempetatureC:temp];
+                            [self.weatherView showOnView:self.mapView];
                             
                         } else {
                     
-                        WeaherView *weatherView = [[WeaherView alloc] initWithPlaceName:@"No city was found" weatherIcon:weatherImage tempetatureC:temp];
-                        [weatherView showOnView:self.mapView];
+                        self.weatherView = [[WeaherView alloc] initWithPlaceName:@"No city was found" weatherIcon:weatherImage tempetatureC:temp];
+                        [self.weatherView showOnView:self.mapView];
                         }
                     }
 
