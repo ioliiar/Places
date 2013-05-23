@@ -14,7 +14,7 @@
 
 @property (nonatomic, strong) Weather *currentWeather;
 @property (nonatomic, strong) NSMutableArray *weatherArray;
-
+@property (nonatomic, copy) NSString *currentCity;
 - (id)initWithCoordinate:(CLLocationCoordinate2D)coordinate weatherUnit:(WeatherUnit)unit;
 - (void)parse:(NSString *)locationId;
 

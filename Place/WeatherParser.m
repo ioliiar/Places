@@ -20,7 +20,7 @@
 #define kYahooWeatherJSONKeyResults       @"Results"
 #define kYahooWeatherJSONKeyWoeid         @"woeid"
 
-
+#define URLCOORTOWOEID http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20geo.placefinder%20where%20text%3D%22%f%2C-122.025092%22%20and%20gflags%3D%22R%22&format=json
 
 @interface WeatherParser ()
 
@@ -55,17 +55,32 @@
         
         NSError *error = nil;
         
-        NSString *urlStr = [NSString stringWithFormat:@"http://where.yahooapis.com/geocode?location=%f,%f&flags=J&gflags=R&appid=zHgnBS4m",coordinate.latitude,coordinate.longitude];
+        NSString *urlStr = @"http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20geo.placefinder%20where%20text%3D%22LATITUDE%2CLONGETUDE%22%20and%20gflags%3D%22R%22&format=json";
+        urlStr = [urlStr stringByReplacingOccurrencesOfString:@"LATITUDE" withString:[NSString stringWithFormat:@"%f",coordinate.latitude]];
+        urlStr = [urlStr stringByReplacingOccurrencesOfString:@"LONGETUDE" withString:[NSString stringWithFormat:@"%f",coordinate.longitude]];
         NSData *content = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlStr]];
+        
         
         NSDictionary *dic = [NSJSONSerialization
                              JSONObjectWithData:content
                              options:kNilOptions
                              error:&error];
         
-        WOEID = [[[[[dic objectForKey:kYahooWeatherJSONKeyResultSet] objectForKey:kYahooWeatherJSONKeyResults] objectAtIndex:0] objectForKey:kYahooWeatherJSONKeyWoeid] integerValue];
+        NSLog(@"DIC======%@", dic);
         
-        [self parse:[self locationId]];
+        NSString *woeidString = nil;
+        
+        if(dic != nil) {
+            
+            woeidString = [[[[dic objectForKey:@"query"] objectForKey:@"results"] objectForKey:@"Result"] objectForKey:@"woeid"];
+            self.currentCity = [[[[dic objectForKey:@"query"] objectForKey:@"results"] objectForKey:@"Result"] objectForKey:@"city"];
+            
+            if (woeidString != NULL && ![woeidString isKindOfClass:[NSNull class]] && woeidString!=nil) {
+                
+                WOEID = [woeidString integerValue];
+                [self parse:[self locationId]];
+            }
+        }
         
     }
     

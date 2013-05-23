@@ -27,7 +27,7 @@
 - (void)fetchWeatherWithCoordinate:(CLLocationCoordinate2D)coordinate weatherUnit:(WeatherUnit)unit{
     
     self.yahooWeatherParser = [[[WeatherParser alloc] initWithCoordinate:coordinate weatherUnit:WeatherUnitCelcius] autorelease];
-
+   
 }
 
 - (void) dealloc {

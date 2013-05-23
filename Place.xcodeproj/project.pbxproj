@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		12E67ADF174D4674009F880F /* WeaherView.m in Sources */ = {isa = PBXBuildFile; fileRef = 12E67ADE174D4674009F880F /* WeaherView.m */; };
+		12E67AE4174D7926009F880F /* no_found.png in Resources */ = {isa = PBXBuildFile; fileRef = 12E67AE3174D7926009F880F /* no_found.png */; };
 		250635371704821100DBA7BA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 250635361704821100DBA7BA /* UIKit.framework */; };
 		250635391704821100DBA7BA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 250635381704821100DBA7BA /* Foundation.framework */; };
 		2506353B1704821100DBA7BA /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2506353A1704821100DBA7BA /* CoreGraphics.framework */; };
@@ -123,6 +125,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		12E67ADD174D4674009F880F /* WeaherView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeaherView.h; sourceTree = "<group>"; };
+		12E67ADE174D4674009F880F /* WeaherView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeaherView.m; sourceTree = "<group>"; };
+		12E67AE3174D7926009F880F /* no_found.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = no_found.png; sourceTree = "<group>"; };
 		250635331704821100DBA7BA /* Place.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Place.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		250635361704821100DBA7BA /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		250635381704821100DBA7BA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -501,6 +506,9 @@
 				25F7874617156EA900892CB4 /* WeatherManager.m */,
 				25F7874717156EA900892CB4 /* WeatherParser.h */,
 				25F7874817156EA900892CB4 /* WeatherParser.m */,
+				12E67ADD174D4674009F880F /* WeaherView.h */,
+				12E67ADE174D4674009F880F /* WeaherView.m */,
+				12E67AE3174D7926009F880F /* no_found.png */,
 			);
 			name = Weather;
 			sourceTree = "<group>";
@@ -689,6 +697,7 @@
 				25235FD217280329009034E5 /* eye_color.png in Resources */,
 				254458F417293D6600A33001 /* FullScreenCaptureVC.xib in Resources */,
 				25EA536D17296F9900D37460 /* SimpleMapViewController.xib in Resources */,
+				12E67AE4174D7926009F880F /* no_found.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -725,6 +734,7 @@
 				25CFBE561726C4EF003CEDBB /* TableAlertView.m in Sources */,
 				254458EE17293A2500A33001 /* FullScreenCaptureVC.m in Sources */,
 				25EA536C17296F9900D37460 /* SimpleMapViewController.m in Sources */,
+				12E67ADF174D4674009F880F /* WeaherView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
