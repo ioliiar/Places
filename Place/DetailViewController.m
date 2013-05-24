@@ -213,7 +213,7 @@
     {
         MKAnnotationView *annotationView = [[[MKAnnotationView alloc] initWithAnnotation:annotation
                                                                          reuseIdentifier:AnnotationIdentifier] autorelease];
-        annotationView.canShowCallout = YES;
+
         annotationView.image = [UIImage imageNamed:@"DrawingPin1"];
         UIButton* rightButton = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
        // [rightButton addTarget:self action:@selector(doSomething:) forControlEvents:UIControlEventTouchUpInside];
@@ -246,7 +246,7 @@
     }
 }
 
-#pragma mark annotation + PlaceEntity
+#pragma mark add PlaceEntity annotation and RouteEntity overlay
 
 - (void)addAnnotation:(PlaceEntity *)place {
     for (int i = 0; i < [self.mapView.annotations count]; i++) {
@@ -267,7 +267,17 @@
     ann.title = place.name;
     ann.tag = place.tag;
     [self.mapView addAnnotation:ann];
+    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(ann.coordinate, 50000.0, 50000.0);
+    [self.mapView setRegion:region animated:YES];   
     [ann release];
+}
+
+- (void)addRouteOverlay:(RouteEntity *)route {
+    RequestDispatcher *dispatcher = [[RequestDispatcher alloc] init];
+    dispatcher.delegate = self;
+    [dispatcher requestRoute:route.places options:nil];
+    [dispatcher release];
+
 }
 
 #pragma mark - Split view
@@ -560,6 +570,26 @@
     return [iv autorelease];
 }
 
+#pragma mark Requset Dispatcher delegate method
+
+- (void)request:(RequestDispatcher *)request didFinishedWithResponse:(Response *)response {
+    if(response.code == ResponseCodeError) {
+        NSError *error = [response.responseInfo objectForKey:kError];
+        NSLog(@"%@", [error localizedDescription]);
+        return;
+    }
+    
+    if (request.type == RequestTypeRoute) {
+        NSArray *encPoints = [response.responseInfo objectForKey:kDirection];
+        [self drawAllPoints:encPoints];
+        return;
+    }
+    
+    CLLocation *loc =[response.responseInfo objectForKey:kLocation];
+    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(loc.coordinate, 50000.0, 50000.0);
+    [self.mapView setRegion:region animated:YES];
+}
+
 #pragma mark searchBar delegate methods
 
 - (void)filterRegion:(NSString *)word {
@@ -571,19 +601,6 @@
     [dispatcher requestPlacemarkNamed:word];
     [dispatcher release];
 }
-
-- (void)request:(RequestDispatcher *)request didFinishedWithResponse:(Response *)response {
-    if(response.code == ResponseCodeError) {
-        NSError *error = [response.responseInfo objectForKey:kError];
-        NSLog(@"%@", [error localizedDescription]);
-        return;
-    }
-    
-    CLLocation *loc =[response.responseInfo objectForKey:kLocation];
-    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(loc.coordinate, 50000.0, 50000.0);
-    [self.mapView setRegion:region animated:YES];
-}
-
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
     [searchBar resignFirstResponder];

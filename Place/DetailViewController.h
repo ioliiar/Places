@@ -12,6 +12,7 @@
 
 @class DetailViewController;
 @class PlaceEntity;
+@class RouteEntity;
 
 @protocol DetailViewControllerDelegate <NSObject>
 
@@ -30,6 +31,7 @@
 
 
 - (void)addAnnotation:(PlaceEntity *)place;
+- (void)addRouteOverlay:(RouteEntity *)route;
 - (void)clearMap;
 
 @end

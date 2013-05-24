@@ -329,7 +329,10 @@
             [self.detailViewController addAnnotation:pl];
         }
             break;
-        case 1://route
+        case 1: {
+            RouteEntity *route = [[DBHandler sharedDBHandler] getRouteNamed:[self.filteredRoutes objectAtIndex:indexPath.row]];
+            [self.detailViewController addRouteOverlay:route];
+        }
             break;
         default:
             NSLog(@"Unknown section");
@@ -346,7 +349,9 @@
                                                      animated:YES];
             }
                 break;
-            case 1://route
+            case 1:
+                [self.tableView.delegate tableView:self.tableView
+                         didSelectRowAtIndexPath:indexPath];
                 break;
             default:
                 NSLog(@"Unknown section");
