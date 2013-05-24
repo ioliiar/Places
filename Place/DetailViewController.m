@@ -13,16 +13,20 @@
 
 #import "TaggedAnnotation.h"
 #import "IOGhostPickerView.h"
-
+#import "WeaherView.h"
+#import "WeatherParser.h"
+#import "Weather.h"
 #import "RouteEntity.h"
 #import "RequestDispatcher.h"
 #import "DBHandler.h"
 
-@interface DetailViewController ()<UISearchBarDelegate, RequestDispatcherDelegate, MKMapViewDelegate, IOGhostPickerDataSource, IOGhostPickerDelegate, PlaceViewControllerDelegate>
+
+@interface DetailViewController ()<UISearchBarDelegate, RequestDispatcherDelegate, MKMapViewDelegate, IOGhostPickerDataSource, IOGhostPickerDelegate, PlaceViewControllerDelegate, WeaherViewDelegate>
 @property (retain, nonatomic) UIPopoverController *masterPopoverController;
 @property (retain, nonatomic) UISearchBar *searchBar;
 @property (retain, nonatomic) IOGhostPickerView *pickerView;
 @property (retain, nonatomic) UILongPressGestureRecognizer *longPress;
+@property (retain, nonatomic) WeaherView *weatherView;
 
 @end
 
@@ -463,6 +467,16 @@
     return nil;
 }
 
+#pragma mark Weather delegate 
+
+- (void) weatherViewDidHide:(WeaherView *)view {
+
+    if (view) {
+        
+        self.weatherView = nil;
+    }
+
+}
 
 #pragma mark IOGhostPickerDelegate method
 
@@ -492,6 +506,52 @@
                 [self processRouteComponent:component startPoint:tapCoord];
             }
             break;
+        case 2: {
+    
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                
+                
+                WeatherParser *yahooWeatherParser = [[[WeatherParser alloc] initWithCoordinate:tapCoord weatherUnit:WeatherUnitCelcius] autorelease];
+                
+                NSInteger temp = yahooWeatherParser.currentWeather.temperature;
+                WeatherCondition cond = yahooWeatherParser.currentWeather.condition;
+                UIImage *weatherImage = [UIImage imageNamed:[NSString stringWithFormat:@"%u.png",cond]];
+        
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    
+                    if (self.weatherView) {
+                        
+                        [self.weatherView hide];
+                        self.weatherView = nil;
+                        
+                    }
+                    
+                    NSLog(@"temp = %d cond = %d", temp, cond);
+                    if (temp == 0 && cond == 0) {
+                        
+                        self.weatherView = [[WeaherView alloc] initWithPlaceName:@"No weather was found" weatherIcon:[UIImage imageNamed:@"no_found.png"] tempetatureC:0];
+                        [self.weatherView showOnView:self.mapView];
+                        
+                    } else {
+                        
+                        if (yahooWeatherParser.currentCity!= NULL && ![yahooWeatherParser.currentCity isKindOfClass:[NSNull class]] && yahooWeatherParser.currentCity!=nil)  {
+                            
+                            self.weatherView = [[WeaherView alloc] initWithPlaceName:yahooWeatherParser.currentCity weatherIcon:weatherImage tempetatureC:temp];
+                            [self.weatherView showOnView:self.mapView];
+                            
+                        } else {
+                    
+                        self.weatherView = [[WeaherView alloc] initWithPlaceName:@"No city was found" weatherIcon:weatherImage tempetatureC:temp];
+                        [self.weatherView showOnView:self.mapView];
+                        }
+                    }
+
+                });
+                
+            });
+            
+        }
+            break;
         default:
             NSLog(@"Unknown direction");
             break;
@@ -520,7 +580,7 @@
 #pragma mark IOGhostPickerDataSource methods
 
 - (NSUInteger)numberOfDirectionInGhostPicker {
-    return 2;
+    return 3;
 }
 
 - (NSUInteger)numberOfComponentsInDirection:(NSInteger)direction {
@@ -528,6 +588,8 @@
         case 0:
             return 2;
         case 1:
+            return 2;
+        case 2:
             return 2;
         default:
             NSLog(@"unknown component");
@@ -546,6 +608,8 @@
         case 1:// add route
             iv.image = [UIImage imageNamed:@"direction"];
             break;
+        case 2: //add weather
+            iv.image = [UIImage imageNamed:@"23"];
         default:
             NSLog(@"Unknown direction");
             break;
@@ -561,6 +625,9 @@
             iv.image  = [self imageForPlaceComponent:component];
             break;
         case 1:
+            iv.image  = [self imageForRouteComponent:component];
+            break;
+        case 2:
             iv.image  = [self imageForRouteComponent:component];
             break;
         default:
