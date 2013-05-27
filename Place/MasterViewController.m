@@ -82,6 +82,8 @@
     expandedPlace = NO;
     expandedRoute = NO;
     presentingVC = NO;
+    self.detailViewController.navigationItem.rightBarButtonItem.enabled = YES;
+    self.detailViewController.pickerBlocked = NO;
     [self.tableView reloadData];
     self.detailViewController.mode = PlaceModeSurvey;
     [self.detailViewController clearMap];
@@ -174,7 +176,7 @@
                                                         message:LOC_TRY_LTR
                                                        delegate:nil
                                               cancelButtonTitle:nil
-                                              otherButtonTitles:@"OK", nil];
+                                              otherButtonTitles:LOC_OK, nil];
         [alert show];
         [alert release];
     }

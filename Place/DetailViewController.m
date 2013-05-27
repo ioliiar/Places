@@ -341,6 +341,10 @@
                                                               userInfo:[NSDictionary dictionaryWithObject:ann forKey:kAnnotation]];
             [ann release];
         } else {
+            if (_pickerBlocked) {
+                return;
+            }
+            self.pickerBlocked = YES;
             CGPoint point = [sender locationInView:self.view];
             tapCoord = [self.mapView convertPoint:point toCoordinateFromView:self.view];
             CGFloat circleHalfSize = kGhostPickerRadius+ kGhostPickerLineWidth + kGhostPickerImageSize + allowableOversight/2;
@@ -487,7 +491,8 @@
     switch (direction) {
         case 0:
             if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
-                if ([self.mapView.annotations count] < 2) {
+                if ([self.mapView.annotations count] < 2 && component == 1) {
+                    self.navigationItem.rightBarButtonItem.enabled = NO;
                     TaggedAnnotation *ann  = [[TaggedAnnotation alloc] init];
                     [ann setCoordinate:tapCoord];
                     [self.mapView addAnnotation:ann];

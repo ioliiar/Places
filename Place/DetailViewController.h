@@ -22,7 +22,7 @@
 @end
 
 @interface DetailViewController : UIViewController <UISplitViewControllerDelegate>
-
+@property (assign, nonatomic) BOOL pickerBlocked;
 @property (assign, nonatomic) PlaceMode mode;
 @property (assign, nonatomic) id <DetailViewControllerDelegate> delegate;
 @property (retain, nonatomic) NSArray *detailItems;
