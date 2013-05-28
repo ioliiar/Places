@@ -571,6 +571,7 @@
     [self.longPress removeTarget:_pickerView action:@selector(methodForPressRecognizer:)];
     [self.longPress addTarget:self action:@selector(handleLongPress:)];
     self.longPress.minimumPressDuration = 0.5f;
+    self.pickerBlocked = NO;
     [ghostPicker removeFromSuperview];
 }
 
