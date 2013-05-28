@@ -347,8 +347,16 @@
                 pl.tag = indexPath.row;
                 SimpleMapViewController *smvc = [[[SimpleMapViewController alloc] init] autorelease];
                 [smvc addAnnotation:pl];
-                [self.navigationController pushViewController:smvc
-                                                     animated:YES];
+               
+                [UIView  beginAnimations:nil context:nil];
+                [UIView setAnimationCurve: UIViewAnimationCurveEaseInOut];
+                [UIView setAnimationDuration:0.75];
+                [self.navigationController pushViewController: smvc
+                                                     animated:NO];
+                [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromRight
+                                       forView:self.navigationController.view
+                                         cache:NO];
+                [UIView commitAnimations];
             }
                 break;
             case 1:
@@ -543,6 +551,7 @@
 #pragma mark UISearchBar delegate methods
 
 - (void)filterUsingText:(NSString *)word {
+    word = [word lowercaseString];
     if ([word isEqualToString:@""]) {
         _filteredPlaces = [[self.places mutableCopy] retain];
         _filteredRoutes = [[self.routes mutableCopy] retain];
@@ -552,8 +561,8 @@
     
     [_filteredRoutes removeAllObjects];
     for (int i = 0; i < [_routes count]; i++) {
-        NSString *route = [_routes objectAtIndex:i];
-        if ([route rangeOfString:word options:NSCaseInsensitiveSearch].location != NSNotFound) {
+        NSString *route = [[_routes objectAtIndex:i] lowercaseString];
+        if ([route hasPrefix:word]/*[route rangeOfString:word options:NSCaseInsensitiveSearch].location != NSNotFound*/) {
             [self.filteredRoutes addObject:route];
         }
     }
@@ -562,7 +571,7 @@
     [_filteredPlaces removeAllObjects];
     for (int j = 0; j < [_places count]; j++) {
         PlaceEntity *pl = [_places objectAtIndex:j];
-        if ([pl.name  rangeOfString:word options:NSCaseInsensitiveSearch].location != NSNotFound) {
+        if ([[pl.name lowercaseString] hasPrefix: word] /*[pl.name  rangeOfString:word options:NSCaseInsensitiveSearch].location != NSNotFound*/) {
             [self.filteredPlaces addObject:pl];
         }
     }

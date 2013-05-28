@@ -118,6 +118,7 @@
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    _pickerBlocked = NO;
     if (_mode == PlaceModeSurvey) {
         [self clearMap];
     } else

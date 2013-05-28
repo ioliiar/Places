@@ -20,7 +20,7 @@
 
 #import "DBHandler.h"
 
-@interface PlaceViewController ()<DatePickerDelegate, TableAlertViewDelegate, FullScreenVCDelegate,UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface PlaceViewController ()<DatePickerDelegate, TableAlertViewDelegate, FullScreenVCDelegate,UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UIPopoverControllerDelegate>
 
 @property (nonatomic, retain) UIPopoverController *popover;
 @property (nonatomic, retain) DatePickerController *datePicker;
@@ -198,7 +198,6 @@
 - (void)photoTapped:(UITapGestureRecognizer*)sender {
     UIImagePickerController *picker = [[[UIImagePickerController alloc] init] autorelease];
     picker.delegate = self;
-    //picker.contentSizeForViewInPopover = CGSizeMake(300, 400);
     picker.modalPresentationStyle = UIModalPresentationFullScreen;
     BOOL hasCamera = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera];
     if (hasCamera) {
@@ -207,7 +206,7 @@
     } else {
         picker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
     }
-        
+    
     if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone) {
         [self presentViewController:picker
                            animated:YES
@@ -222,26 +221,34 @@
                              completion:nil];
             
         } else {
-        self.popover = nil;
-        self.popover = [[[UIPopoverController alloc] initWithContentViewController:picker] autorelease];
-        picker.wantsFullScreenLayout = YES;
-        [self.popover presentPopoverFromBarButtonItem:self.navigationItem.rightBarButtonItem
-                             permittedArrowDirections:UIPopoverArrowDirectionAny
-                                             animated:YES];
+            self.popover = nil;
+            self.popover = [[[UIPopoverController alloc] initWithContentViewController:picker] autorelease];
+            picker.wantsFullScreenLayout = YES;
+            self.navigationItem.hidesBackButton = YES;
+            [self.popover presentPopoverFromBarButtonItem:self.navigationItem.rightBarButtonItem
+                                 permittedArrowDirections:UIPopoverArrowDirectionAny
+                                                 animated:YES];
+            self.popover.delegate = self;
         }
         
     }
     
 }
 
+
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
     photoPicked = YES;
+    self.navigationItem.hidesBackButton = NO;
     if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) {
         [self.popover dismissPopoverAnimated:YES];
     } else {
         [picker dismissViewControllerAnimated:YES completion:nil];
     }
     self.photoImageView.image = [info objectForKey:UIImagePickerControllerOriginalImage];
+}
+
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController {
+     self.navigationItem.hidesBackButton = NO;
 }
 
 #pragma mark Keyboard method
@@ -258,7 +265,7 @@
     CGFloat height = 0.0f;
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
         height = keyboardRect.size.height; //we support only portrait orientation for iPhone
-    } else if (UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {// there is no need to adjust view in portrait mode
+    } else if (UIInterfaceOrientationIsLandscape([[UIApplication sharedApplication] statusBarOrientation])) {
         height = keyboardRect.size.width;
     }
     
@@ -275,7 +282,6 @@
     [UIView commitAnimations];
     
 }
-
 
 #pragma mark UIBarbuttonItem methods
 
@@ -405,7 +411,6 @@
     return 1;
 }
 
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     switch (indexPath.row) {
         case DescriptionRowName:
@@ -444,12 +449,19 @@
         }
             break;
         case DescriptionRowDateVisited: {
-            self.datePicker.view.frame = [self frameForDatePickerSwapAxis:NO];
+            
             self.datePicker.datePicker.date = self.place.dateVisited;
+            CGRect rc = [self frameForDatePickerSwapAxis:NO];
+            rc.origin = CGPointMake(0, self.view.frame.size.height);
+            self.datePicker.view.frame = rc;
             self.datePicker.delegate = self;
             datePickerVisible = YES;
             [tableView endEditing:YES];
             [self.view addSubview:_datePicker.view];
+            [UIView beginAnimations:nil context:NULL];
+            [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+            self.datePicker.view.frame = [self frameForDatePickerSwapAxis:NO];
+            [UIView commitAnimations];
             
         }
             break;

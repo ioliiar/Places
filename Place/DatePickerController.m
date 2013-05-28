@@ -40,11 +40,23 @@
 
 - (void)cancel:(UIBarButtonItem *)sender {
     [self.delegate datePickerCancelled];
-    [self.view removeFromSuperview];
+    CGRect rc = self.view.frame;
+    rc.origin = CGPointMake(rc.origin.x,rc.origin.y + rc.size.height);
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+    self.view.frame = rc;
+    [UIView commitAnimations];
+    [self.view performSelector:@selector(removeFromSuperview) withObject:nil afterDelay:.5];
 }
 
 - (void)done:(UIBarButtonItem *)sender {
-    [self.view removeFromSuperview];
+    CGRect rc = self.view.frame;
+    rc.origin = CGPointMake(rc.origin.x,rc.origin.y + rc.size.height);
+    [UIView beginAnimations:nil context:NULL];
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+    self.view.frame = rc;
+    [UIView commitAnimations];
+    [self.view performSelector:@selector(removeFromSuperview) withObject:nil afterDelay:.5];
     [self.delegate datePickerDidChooseDate:self.datePicker.date];
 }
 
