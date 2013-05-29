@@ -27,6 +27,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self.mapView addAnnotation:self.annotation];
+    self.mapView.mapType = [[NSUserDefaults standardUserDefaults] integerForKey:kMapType];
 }
 
 - (void)didReceiveMemoryWarning
@@ -72,6 +73,10 @@
 
 - (void)optionMapVC:(OptionMapViewController *)ovc didSelectmapType:(MKMapType)type {
     self.mapView.mapType = type;
+    NSUserDefaults *mapUserPreferences = [NSUserDefaults standardUserDefaults];
+    [mapUserPreferences setInteger:type
+                            forKey:kMapType];
+    [mapUserPreferences synchronize];
 }
 
 @end

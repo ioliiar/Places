@@ -75,7 +75,7 @@
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         _searchBar.placeholder = @"External";
     }
-    
+    self.mapView.mapType = [[NSUserDefaults standardUserDefaults] integerForKey:kMapType];
     self.navigationItem.titleView = self.searchBar;
     
     self.longPress = [[[UILongPressGestureRecognizer alloc] initWithTarget:self
@@ -698,6 +698,11 @@
 
 - (IBAction)mapTypeChanged:(UISegmentedControl *)sender {
     self.mapView.mapType = sender.selectedSegmentIndex;
+    NSUserDefaults *mapUserPreferences = [NSUserDefaults standardUserDefaults];
+    [mapUserPreferences setInteger:sender.selectedSegmentIndex
+                            forKey:kMapType];
+    [mapUserPreferences synchronize];
+    
 }
 
 - (IBAction)showMapOptions:(UIButton *)sender {
@@ -714,6 +719,10 @@
 
 - (void)optionMapVC:(OptionMapViewController *)ovc didSelectmapType:(MKMapType)type {
     self.mapView.mapType = type;
+    NSUserDefaults *mapUserPreferences = [NSUserDefaults standardUserDefaults];
+    [mapUserPreferences setInteger:type
+                            forKey:kMapType];
+    [mapUserPreferences synchronize];
 }
 
 
