@@ -10,6 +10,7 @@
 #import "DetailViewController.h"
 #import "PlaceViewController.h"
 #import "RouteViewController.h"
+#import "OptionMapViewController.h"
 
 #import "TaggedAnnotation.h"
 #import "IOGhostPickerView.h"
@@ -21,8 +22,9 @@
 #import "DBHandler.h"
 
 
-@interface DetailViewController ()<UISearchBarDelegate, RequestDispatcherDelegate, MKMapViewDelegate, IOGhostPickerDataSource, IOGhostPickerDelegate, PlaceViewControllerDelegate, WeaherViewDelegate>
+@interface DetailViewController ()<UISearchBarDelegate, RequestDispatcherDelegate, MKMapViewDelegate, IOGhostPickerDataSource, IOGhostPickerDelegate, PlaceViewControllerDelegate, WeaherViewDelegate, OptionMapControllerDelegate>
 @property (retain, nonatomic) UIPopoverController *masterPopoverController;
+@property (retain, nonatomic) OptionMapViewController *optionVC;
 @property (retain, nonatomic) UISearchBar *searchBar;
 @property (retain, nonatomic) IOGhostPickerView *pickerView;
 @property (retain, nonatomic) UILongPressGestureRecognizer *longPress;
@@ -58,7 +60,9 @@
     [_annotations release];
     [_detailItems release];
     [_masterPopoverController release];
+    [_optionVC release];
     [_mapView release];
+    [_segmentedControl release];
     [super dealloc];
 }
 
@@ -127,9 +131,11 @@
 
 - (void)viewDidUnload {
     self.masterPopoverController = nil;
+    self.optionVC = nil;
     self.mapView = nil;
     self.searchBar = nil;
     self.pickerView = nil;
+    self.segmentedControl = nil;
     [super viewDidUnload];
 }
 
@@ -685,6 +691,29 @@
 - (void)searchBarCancelButtonClicked:(UISearchBar *) searchBar {
     [searchBar resignFirstResponder];
     searchBar.text = @"";
+}
+
+
+#pragma mark MapType method
+
+- (IBAction)mapTypeChanged:(UISegmentedControl *)sender {
+    self.mapView.mapType = sender.selectedSegmentIndex;
+}
+
+- (IBAction)showMapOptions:(UIButton *)sender {
+    if (_optionVC == nil) {
+        self.optionVC = [[[OptionMapViewController alloc] init] autorelease];
+    }
+    self.optionVC.mapType = self.mapView.mapType;
+    self.optionVC.delegate = self;
+    self.optionVC.modalTransitionStyle = UIModalTransitionStylePartialCurl;
+    [self presentViewController:self.optionVC
+                       animated:YES
+                     completion:nil];
+}
+
+- (void)optionMapVC:(OptionMapViewController *)ovc didSelectmapType:(MKMapType)type {
+    self.mapView.mapType = type;
 }
 
 

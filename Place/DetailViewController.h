@@ -28,8 +28,11 @@
 @property (retain, nonatomic) NSArray *detailItems;
 @property (copy,   nonatomic) NSArray *annotations;
 @property (retain, nonatomic) IBOutlet MKMapView *mapView;
+@property (retain, nonatomic) IBOutlet UISegmentedControl *segmentedControl;
 
+- (IBAction)mapTypeChanged:(UISegmentedControl *)sender;
 
+- (IBAction)showMapOptions:(UIButton *)sender;
 - (void)addAnnotation:(PlaceEntity *)place;
 - (void)addRouteOverlay:(RouteEntity *)route;
 - (void)clearMap;

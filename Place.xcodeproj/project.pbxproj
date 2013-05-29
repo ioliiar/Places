@@ -45,6 +45,9 @@
 		2598012C1705AF160025806D /* PlaceViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2598012A1705AF160025806D /* PlaceViewController.m */; };
 		2598012D1705AF160025806D /* PlaceViewController~ipad.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2598012B1705AF160025806D /* PlaceViewController~ipad.xib */; };
 		259801311705AF920025806D /* PlaceViewController~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 259801301705AF920025806D /* PlaceViewController~iphone.xib */; };
+		259C7562175629B500928435 /* PageCurl.png in Resources */ = {isa = PBXBuildFile; fileRef = 259C7561175629B500928435 /* PageCurl.png */; };
+		259C756617562A0200928435 /* OptionMapViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 259C756417562A0200928435 /* OptionMapViewController.m */; };
+		259C756717562A0200928435 /* OptionMapViewController~iphone.xib in Resources */ = {isa = PBXBuildFile; fileRef = 259C756517562A0200928435 /* OptionMapViewController~iphone.xib */; };
 		25C637F117217A6C00DE3FAE /* CustomFooter.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C637EE17217A6C00DE3FAE /* CustomFooter.m */; };
 		25C637F217217A6C00DE3FAE /* CustomHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C637F017217A6C00DE3FAE /* CustomHeader.m */; };
 		25C637F517217C1500DE3FAE /* CustomMath.m in Sources */ = {isa = PBXBuildFile; fileRef = 25C637F417217C1500DE3FAE /* CustomMath.m */; };
@@ -181,6 +184,10 @@
 		2598012A1705AF160025806D /* PlaceViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PlaceViewController.m; sourceTree = "<group>"; };
 		2598012B1705AF160025806D /* PlaceViewController~ipad.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "PlaceViewController~ipad.xib"; sourceTree = "<group>"; };
 		259801301705AF920025806D /* PlaceViewController~iphone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "PlaceViewController~iphone.xib"; sourceTree = "<group>"; };
+		259C7561175629B500928435 /* PageCurl.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PageCurl.png; sourceTree = "<group>"; };
+		259C756317562A0200928435 /* OptionMapViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OptionMapViewController.h; sourceTree = "<group>"; };
+		259C756417562A0200928435 /* OptionMapViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OptionMapViewController.m; sourceTree = "<group>"; };
+		259C756517562A0200928435 /* OptionMapViewController~iphone.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = "OptionMapViewController~iphone.xib"; sourceTree = "<group>"; };
 		25C637ED17217A6C00DE3FAE /* CustomFooter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomFooter.h; sourceTree = "<group>"; };
 		25C637EE17217A6C00DE3FAE /* CustomFooter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomFooter.m; sourceTree = "<group>"; };
 		25C637EF17217A6C00DE3FAE /* CustomHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomHeader.h; sourceTree = "<group>"; };
@@ -461,6 +468,7 @@
 				25CFBE4A1726833E003CEDBB /* direction.png */,
 				25235FD117280329009034E5 /* eye_color.png */,
 				25CFBE4B1726833E003CEDBB /* DrawingPin.png */,
+				259C7561175629B500928435 /* PageCurl.png */,
 				25CFBE4E172687CF003CEDBB /* DrawingPin1.png */,
 				25CFBE5017269738003CEDBB /* earth.png */,
 				25CFBE45172677C8003CEDBB /* tmp_apple.logo.png */,
@@ -477,6 +485,9 @@
 				2506354E1704821300DBA7BA /* MasterViewController.h */,
 				25EA536917296F9900D37460 /* SimpleMapViewController.h */,
 				25EA536A17296F9900D37460 /* SimpleMapViewController.m */,
+				259C756317562A0200928435 /* OptionMapViewController.h */,
+				259C756417562A0200928435 /* OptionMapViewController.m */,
+				259C756517562A0200928435 /* OptionMapViewController~iphone.xib */,
 				25EA536B17296F9900D37460 /* SimpleMapViewController.xib */,
 				2506354F1704821300DBA7BA /* MasterViewController.m */,
 				250635541704821300DBA7BA /* MasterViewController~iphone.xib */,
@@ -698,6 +709,8 @@
 				254458F417293D6600A33001 /* FullScreenCaptureVC.xib in Resources */,
 				25EA536D17296F9900D37460 /* SimpleMapViewController.xib in Resources */,
 				12E67AE4174D7926009F880F /* no_found.png in Resources */,
+				259C7562175629B500928435 /* PageCurl.png in Resources */,
+				259C756717562A0200928435 /* OptionMapViewController~iphone.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -735,6 +748,7 @@
 				254458EE17293A2500A33001 /* FullScreenCaptureVC.m in Sources */,
 				25EA536C17296F9900D37460 /* SimpleMapViewController.m in Sources */,
 				12E67ADF174D4674009F880F /* WeaherView.m in Sources */,
+				259C756617562A0200928435 /* OptionMapViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -45,6 +45,11 @@
                                                          green:189.0/255.0
                                                           blue:243.0/255.0
                                                          alpha:1.0]];
+    [[UISegmentedControl appearance] setTintColor:[UIColor colorWithRed:0.0/255.0
+                                                         green:189.0/255.0
+                                                          blue:243.0/255.0
+                                                         alpha:1.0]];
+
     [[UISearchBar appearance] setTintColor:[UIColor colorWithRed:0.0/255.0
                                                            green:189.0/255.0
                                                             blue:243.0/255.0

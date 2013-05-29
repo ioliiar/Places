@@ -16,5 +16,6 @@
 @property (retain, nonatomic) IBOutlet MKMapView *mapView;
 
 - (void)addAnnotation:(PlaceEntity *)place;
+- (IBAction)showMapOptions:(UIButton *)sender;
 
 @end
