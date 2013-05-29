@@ -73,8 +73,6 @@ static DBHandler *sharedInstance = nil;
 }
 
 - (void)dealloc {
-    
-    
     [_writableDBPath release];
     [self closeDB];
     [super dealloc];

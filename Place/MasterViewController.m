@@ -151,7 +151,7 @@
     });
     self.detailViewController = nil;
     self.detailViewController = [[[DetailViewController alloc] init] autorelease];
-    [self.navigationController pushViewController:self.detailViewController animated:YES];
+   [self.navigationController pushViewController:self.detailViewController animated:YES];
 }
 
 
@@ -495,8 +495,16 @@
             rt.route.name =[self.filteredRoutes objectAtIndex:indexPath.row];
             rt.route = [[DBHandler sharedDBHandler] getRouteNamed:rt.route.name];
             self.detailViewController.mode = PlaceModeChoose;
-            [self.navigationController pushViewController:rt animated:YES];
+            [UIView  beginAnimations:nil context:nil];
+            [UIView setAnimationCurve: UIViewAnimationCurveEaseInOut];
+            [UIView setAnimationDuration:0.75];
+            [self.navigationController pushViewController:rt animated:NO];
+            [UIView setAnimationTransition:UIViewAnimationTransitionCurlUp
+                                   forView:self.navigationController.view
+                                     cache:NO];
+            [UIView commitAnimations];
             [rt release];
+
         }
             break;
         default:
