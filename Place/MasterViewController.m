@@ -124,7 +124,7 @@
 }
 
 - (void)getDBRouteList {
-    dispatch_queue_t queue = dispatch_queue_create("Place", nil);
+    dispatch_queue_t queue = dispatch_queue_create("Route", nil);
     dispatch_async(queue, ^ {
         self.routes = [[DBHandler sharedDBHandler] getAllRoutes];
         _filteredRoutes = [[self.routes mutableCopy] retain];
@@ -589,10 +589,13 @@
 }
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
-    if ([_routes count] == 0 && [_places count] == 0) {
-        [self getDBPlaceList];
+    if ([_routes count] == 0) {
         [self getDBRouteList];
     }
+    if ( [_places count] == 0) {
+         [self getDBPlaceList];
+    }
+    
     searchBar.showsCancelButton = YES;
 }
 

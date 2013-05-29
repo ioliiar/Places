@@ -617,6 +617,7 @@
             break;
         case 2: //add weather
             iv.image = [UIImage imageNamed:@"23"];
+            break;
         default:
             NSLog(@"Unknown direction");
             break;
