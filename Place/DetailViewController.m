@@ -72,10 +72,13 @@
     self.searchBar.delegate = self;
     self.searchBar.frame = CGRectMake(0, 0, 550, 44);
     _searchBar.placeholder = @"External Search";
+    self.mapView.mapType = [[NSUserDefaults standardUserDefaults] integerForKey:kMapType];
     if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone) {
         _searchBar.placeholder = @"External";
+    } else {
+        self.segmentedControl.selectedSegmentIndex = self.mapView.mapType;
     }
-    self.mapView.mapType = [[NSUserDefaults standardUserDefaults] integerForKey:kMapType];
+    
     self.navigationItem.titleView = self.searchBar;
     
     self.longPress = [[[UILongPressGestureRecognizer alloc] initWithTarget:self
