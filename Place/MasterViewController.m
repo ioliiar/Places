@@ -87,8 +87,13 @@
     [self.tableView reloadData];
     self.detailViewController.mode = PlaceModeSurvey;
     [self.detailViewController clearMap];
+    self.title = @" Places ";
 }
 
+-(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:YES];
+    self.title=nil;
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -619,5 +624,6 @@
     [self.tableView reloadData];
 
 }
+
 
 @end
