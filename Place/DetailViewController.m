@@ -543,19 +543,19 @@
                     NSLog(@"temp = %d cond = %d", temp, cond);
                     if (temp == 0 && cond == 0) {
                         
-                        self.weatherView = [[WeaherView alloc] initWithPlaceName:@"No weather was found" weatherIcon:[UIImage imageNamed:@"no_found.png"] tempetatureC:0];
+                        self.weatherView = [[[WeaherView alloc] initWithPlaceName:@"No weather was found" weatherIcon:[UIImage imageNamed:@"no_found.png"] tempetatureC:0] autorelease];
                         [self.weatherView showOnView:self.mapView];
                         
                     } else {
                         
                         if (yahooWeatherParser.currentCity!= NULL && ![yahooWeatherParser.currentCity isKindOfClass:[NSNull class]] && yahooWeatherParser.currentCity!=nil)  {
                             
-                            self.weatherView = [[WeaherView alloc] initWithPlaceName:yahooWeatherParser.currentCity weatherIcon:weatherImage tempetatureC:temp];
+                            self.weatherView = [[[WeaherView alloc] initWithPlaceName:yahooWeatherParser.currentCity weatherIcon:weatherImage tempetatureC:temp] autorelease];
                             [self.weatherView showOnView:self.mapView];
                             
                         } else {
                     
-                        self.weatherView = [[WeaherView alloc] initWithPlaceName:@"No city was found" weatherIcon:weatherImage tempetatureC:temp];
+                        self.weatherView = [[[WeaherView alloc] initWithPlaceName:@"No city was found" weatherIcon:weatherImage tempetatureC:temp] autorelease];
                         [self.weatherView showOnView:self.mapView];
                         }
                     }

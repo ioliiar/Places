@@ -43,12 +43,14 @@
         title.textColor = [UIColor whiteColor];
         title.text = aName;
         [self addSubview:title];
+        [title release];
         
         UIImageView* iconWeatherImage = [[UIImageView alloc] initWithFrame:CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width - 20, self.frame.size.height - 40)];
         iconWeatherImage.center = CGPointMake(self.frame.size.width/2 - 5, self.frame.size.height/2);
         iconWeatherImage.image = aIcon;
         iconWeatherImage.alpha = 1.f;
         [self addSubview:iconWeatherImage];
+        [iconWeatherImage release];
         
         UILabel *tempLabel = [[UILabel alloc] initWithFrame:CGRectMake(self.frame.origin.x, self.frame.origin.y, 50, 20)];
         tempLabel.backgroundColor = [UIColor clearColor];
@@ -57,7 +59,7 @@
         tempLabel.textColor = [UIColor whiteColor];
         tempLabel.text = [NSString stringWithFormat:@"%d °C", temp];
         [self addSubview:tempLabel];
-        
+        [tempLabel release];
         
         CGSize screenSize = [UIScreen mainScreen].bounds.size;
         [self setCenter:CGPointMake(screenSize.width + self.frame.size.width/2, self.frame.size.height/2 + 10)];
