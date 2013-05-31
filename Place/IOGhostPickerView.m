@@ -96,7 +96,7 @@
 - (void)layoutSubMenuItemsRadialForDirection:(NSInteger)direction alpha:(CGFloat)alpha {
     int count = [self.menuItems count];
     int itemsCount = [self.submenuItems count];
-    double betta = M_PI / 5;
+    double betta = M_PI / 3;
     double q = betta * (itemsCount - 1);
     double from = 2 * M_PI / count * direction - q / 2;
     double to = 2 * M_PI / count * direction + q / 2;

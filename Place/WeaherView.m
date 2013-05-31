@@ -119,7 +119,7 @@
         
         self.isVisible = NO;
         
-        if([self.delegate respondsToSelector:@selector(modalUIViewDidHide:)]) {
+        if([self.delegate respondsToSelector:@selector(weatherViewDidHide:)]) {
             [self.delegate weatherViewDidHide:self];
         }
     }
