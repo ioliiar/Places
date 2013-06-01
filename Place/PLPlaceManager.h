@@ -8,12 +8,21 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
+@class PLPlaceManager;
+
+@protocol PLPlaceManagerDelegate <NSObject>
+
+- (void) plaseManagerDidFinishWihError:(NSError*) aError;
+- (void) plaseManagerDidFinishWithPlaces:(NSArray*) aPlaceEntities;
+
+@end
 
 @interface PLPlaceManager : NSObject
 
 + (PLPlaceManager *)sharedPlaceManager;
-- (NSArray *) sendRequestWithType:(NSString *)placeType
+- (void) sendRequestWithType:(NSString *)placeType
                       coordinates:(CLLocationCoordinate2D) coordinates
                            radius:(NSInteger) radius;
+@property (nonatomic, assign) id <PLPlaceManagerDelegate> delegate;
 
 @end

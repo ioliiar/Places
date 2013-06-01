@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1234D548175A8B8800F2429C /* google_places_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1234D547175A8B8800F2429C /* google_places_icon.png */; };
 		12E67ADF174D4674009F880F /* WeaherView.m in Sources */ = {isa = PBXBuildFile; fileRef = 12E67ADE174D4674009F880F /* WeaherView.m */; };
 		12E67AE4174D7926009F880F /* no_found.png in Resources */ = {isa = PBXBuildFile; fileRef = 12E67AE3174D7926009F880F /* no_found.png */; };
 		250635371704821100DBA7BA /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 250635361704821100DBA7BA /* UIKit.framework */; };
@@ -128,6 +129,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1234D547175A8B8800F2429C /* google_places_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = google_places_icon.png; sourceTree = "<group>"; };
 		12E67ADD174D4674009F880F /* WeaherView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeaherView.h; sourceTree = "<group>"; };
 		12E67ADE174D4674009F880F /* WeaherView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeaherView.m; sourceTree = "<group>"; };
 		12E67AE3174D7926009F880F /* no_found.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = no_found.png; sourceTree = "<group>"; };
@@ -421,6 +423,7 @@
 				C524400B171D527700FF0F59 /* Places.plist */,
 				C524400E171D52BC00FF0F59 /* PLPlaceManager.h */,
 				C524400F171D52BC00FF0F59 /* PLPlaceManager.m */,
+				1234D547175A8B8800F2429C /* google_places_icon.png */,
 			);
 			name = Place_Model;
 			sourceTree = "<group>";
@@ -711,6 +714,7 @@
 				12E67AE4174D7926009F880F /* no_found.png in Resources */,
 				259C7562175629B500928435 /* PageCurl.png in Resources */,
 				259C756717562A0200928435 /* OptionMapViewController~iphone.xib in Resources */,
+				1234D548175A8B8800F2429C /* google_places_icon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
