@@ -21,6 +21,7 @@
 #define LOC_SEARCH          NSLocalizedStringWithDefaultValue(@"LOC_SEARCH",        nil, [NSBundle mainBundle], @"Search", @"Search")
 #define LOC_ADD_PLACE       NSLocalizedStringWithDefaultValue(@"LOC_ADD_PLACE",     nil, [NSBundle mainBundle], @"Add Place", @"Add Place")
 #define LOC_PLACES          NSLocalizedStringWithDefaultValue(@"LOC_PLACES",        nil, [NSBundle mainBundle], @"Places", @"Places")
+#define LOC_PLACE           NSLocalizedStringWithDefaultValue(@"LOC_PLACE",         nil, [NSBundle mainBundle], @"Place", @"Place")
 #define LOC_ADD_ROUTE       NSLocalizedStringWithDefaultValue(@"LOC_ADD_ROUTE",     nil, [NSBundle mainBundle], @"Add Route", @"Add Route")
 #define LOC_ROUTES          NSLocalizedStringWithDefaultValue(@"LOC_ROUTES",        nil, [NSBundle mainBundle], @"Routes", @"Routes")
 #define LOC_ROUTE           NSLocalizedStringWithDefaultValue(@"LOC_ROUTE",         nil, [NSBundle mainBundle], @"Route", @"Route")

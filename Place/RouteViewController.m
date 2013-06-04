@@ -33,8 +33,7 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        self.contentSizeForViewInPopover = CGSizeMake(320.0, 320.0);
-        self.title = LOC_ROUTE;
+       
         self.route = [[[RouteEntity alloc] init] autorelease];
         self.route.places = [NSMutableArray arrayWithCapacity:8];
     }
@@ -50,6 +49,17 @@
     self.tableView.editing = YES;
     saved = YES;
     self.title = self.route.name;
+    
+    if (!self.title) {
+        self.title = LOC_ROUTE;
+        UIBarButtonItem *cnl = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                                                             target:self
+                                                                             action:@selector(cancel:)];
+        
+        self.navigationItem.leftBarButtonItem = cnl;
+        [cnl release];
+    }
+
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(receivedAnnotaion:)
                                                  name:kPlaceChosen
@@ -66,12 +76,17 @@
     
     self.navigationItem.rightBarButtonItem = bar;
     [bar release];
-    
+
     [[NSNotificationCenter defaultCenter] postNotificationName:kRouteFromMap
                                                         object:nil
                                                       userInfo:[NSDictionary dictionaryWithObject:self.route.places forKey:kRouteFromMap]];
     
     
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    self.contentSizeForViewInPopover = CGSizeMake(320.0, ([self.route.places count] + 1.5) * self.tableView.rowHeight);
 }
 
 - (void)didReceiveMemoryWarning {
@@ -146,6 +161,7 @@
         
         if (pl.latitude != 0.0 && pl.longtitude != 0.0) {
         [self.route.places addObject:pl];
+        self.contentSizeForViewInPopover = CGSizeMake(320.0, ([self.route.places count] + 1) * self.tableView.rowHeight);
         saved = NO;
         [[NSNotificationCenter defaultCenter] postNotificationName:kAddDBAnnot
                                                             object:nil
@@ -308,6 +324,10 @@
     }
 }
 
+- (void)cancel:(UIBarButtonItem *)sender {
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 - (void)request:(RequestDispatcher *)request didFinishedWithResponse:(Response *)response {
     if (request.type  == RequestTypeRoute && response.code == ResponseCodeError) {
         NSString *status =[response.responseInfo objectForKey:kError];
@@ -391,6 +411,7 @@
         int i = ((PlaceEntity *)[self.route.places objectAtIndex:indexPath.row]).tag;
         [self.route.places removeObjectAtIndex:indexPath.row];
         if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad) {
+            self.contentSizeForViewInPopover = CGSizeMake(320.0, ([self.route.places count] + 1) * self.tableView.rowHeight);
             [[NSNotificationCenter defaultCenter] postNotificationName:kUpdateMap
                                                                 object:nil
                                                               userInfo:[NSDictionary dictionaryWithObject:[NSNumber numberWithInt:i] forKey:kAnnotation]];

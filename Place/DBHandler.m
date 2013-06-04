@@ -458,6 +458,9 @@ static DBHandler *sharedInstance = nil;
 }
 
 - (BOOL)saveRoute:(NSArray*)place named:(NSString*)name {
+    if ([[self getRouteNamed:name].places count] != 0) {
+        [self deleteRouteWithName:name];
+    }
     for (int i = 0; i < [place count]; i++) {
         PlaceEntity *pl = [place objectAtIndex:i];
         pl.route = name;

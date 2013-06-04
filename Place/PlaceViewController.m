@@ -36,7 +36,6 @@
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        self.title = LOC_PLACES;
         self.place = [[[PlaceEntity alloc] init] autorelease];
         self.place.category = 1;
         NSString *filePath = [[NSBundle mainBundle] pathForResource:@"Places" ofType:@"plist"];
@@ -46,12 +45,30 @@
     return self;
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    self.contentSizeForViewInPopover = CGSizeMake(320.0, 600.0);
+
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.datePicker = [[[DatePickerController alloc] init] autorelease];
     UITapGestureRecognizer *recognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(photoTapped:)];
     [self.photoImageView addGestureRecognizer:recognizer];
     [recognizer release];
+    
+    self.title = self.place.name;
+    
+    if (!self.title) {
+        self.title = LOC_PLACE;
+        UIBarButtonItem *cnl = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel
+                                                                             target:self
+                                                                             action:@selector(cancel:)];
+        
+        self.navigationItem.leftBarButtonItem = cnl;
+        [cnl release];
+    }
     
     if (!self.place.photo) {
         self.photoImageView.image = [UIImage imageNamed:@"question-mark"];
@@ -103,7 +120,9 @@
 
 - (void)orientationChanged:(NSNotification *)notification {
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad  && datePickerVisible) {
-        self.datePicker.view.frame = [self frameForDatePickerSwapAxis:YES];
+        [self.datePicker.view removeFromSuperview];
+        datePickerVisible = NO;
+        //self.datePicker.view.frame = [self frameForDatePickerSwapAxis:YES];
     }
 }
 
@@ -111,7 +130,7 @@
     CGRect rect;
     rect.origin = self.view.frame.origin;
     rect.size = CGSizeMake(320, 260);
-    rect.origin.y = self.view.frame.size.height - 260;
+    rect.origin.y = self.view.frame.size.height - self.datePicker.view.frame.size.height;
     if (swap) {
         switch ([[UIDevice currentDevice] orientation]) {
             case UIDeviceOrientationLandscapeLeft:
@@ -303,6 +322,10 @@
     }
 }
 
+- (void)cancel:(UIBarButtonItem *)sender {
+    [self.navigationController popViewControllerAnimated:YES];
+}
+
 #pragma mark UITableViewCell methods
 
 - (TextFieldCell *)getTextFieldCell:(UITableView *)tableView {
@@ -449,7 +472,6 @@
         }
             break;
         case DescriptionRowDateVisited: {
-            
             self.datePicker.datePicker.date = self.place.dateVisited;
             CGRect rc = [self frameForDatePickerSwapAxis:NO];
             rc.origin = CGPointMake(0, self.view.frame.size.height);

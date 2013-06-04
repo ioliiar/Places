@@ -38,7 +38,7 @@
 					<object class="IBUISegmentedControl" id="1067121213">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">256</int>
-						<string key="NSFrame">{{24, 385}, {273, 44}}</string>
+						<string key="NSFrame">{{20, 385}, {281, 44}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
 						<string key="NSReuseIdentifierKey">_NS:9</string>
@@ -48,8 +48,8 @@
 						<int key="IBSelectedSegmentIndex">0</int>
 						<array key="IBSegmentTitles">
 							<string>Standard</string>
-							<string>Hybrid</string>
 							<string>Satellite</string>
+							<string>Hybrid</string>
 						</array>
 						<array class="NSMutableArray" key="IBSegmentWidths">
 							<real value="0.0"/>

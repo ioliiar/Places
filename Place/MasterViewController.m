@@ -495,6 +495,7 @@
             rt.route.name =[self.filteredRoutes objectAtIndex:indexPath.row];
             rt.route = [[DBHandler sharedDBHandler] getRouteNamed:rt.route.name];
             self.detailViewController.mode = PlaceModeChoose;
+            [self.detailViewController clearMap];
             [UIView  beginAnimations:nil context:nil];
             [UIView setAnimationCurve: UIViewAnimationCurveEaseInOut];
             [UIView setAnimationDuration:0.75];
