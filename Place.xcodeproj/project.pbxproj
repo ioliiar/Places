@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1203480F175D271A0089A586 /* ColorAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = 1203480E175D271A0089A586 /* ColorAlert.m */; };
 		1234D548175A8B8800F2429C /* google_places_icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 1234D547175A8B8800F2429C /* google_places_icon.png */; };
 		12E67ADF174D4674009F880F /* WeaherView.m in Sources */ = {isa = PBXBuildFile; fileRef = 12E67ADE174D4674009F880F /* WeaherView.m */; };
 		12E67AE4174D7926009F880F /* no_found.png in Resources */ = {isa = PBXBuildFile; fileRef = 12E67AE3174D7926009F880F /* no_found.png */; };
@@ -129,6 +130,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1203480D175D271A0089A586 /* ColorAlert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ColorAlert.h; sourceTree = "<group>"; };
+		1203480E175D271A0089A586 /* ColorAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ColorAlert.m; sourceTree = "<group>"; };
 		1234D547175A8B8800F2429C /* google_places_icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = google_places_icon.png; sourceTree = "<group>"; };
 		12E67ADD174D4674009F880F /* WeaherView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeaherView.h; sourceTree = "<group>"; };
 		12E67ADE174D4674009F880F /* WeaherView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeaherView.m; sourceTree = "<group>"; };
@@ -429,6 +432,8 @@
 		25C637EC17217A3200DE3FAE /* CustomViews */ = {
 			isa = PBXGroup;
 			children = (
+				1203480D175D271A0089A586 /* ColorAlert.h */,
+				1203480E175D271A0089A586 /* ColorAlert.m */,
 				25DE3A0217218F0F00CE2378 /* CustomCellBackground.h */,
 				25DE3A0317218F0F00CE2378 /* CustomCellBackground.m */,
 				25CFBE541726C4EE003CEDBB /* TableAlertView.h */,
@@ -751,6 +756,7 @@
 				25EA536C17296F9900D37460 /* SimpleMapViewController.m in Sources */,
 				12E67ADF174D4674009F880F /* WeaherView.m in Sources */,
 				259C756617562A0200928435 /* OptionMapViewController.m in Sources */,
+				1203480F175D271A0089A586 /* ColorAlert.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
