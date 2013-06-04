@@ -154,7 +154,7 @@
 
 }
 
--(void)didSelectRowAtIndex:(NSInteger)row withContext:(id)context{
+- (void)didSelectRowAtIndex:(NSInteger)row withContext:(id)context{
     if(row >= 0){
         PlaceEntity *pl = [self.dbList objectAtIndex:row];
         pl.tag  = [NSDate timeIntervalSinceReferenceDate];

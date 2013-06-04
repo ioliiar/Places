@@ -14,6 +14,7 @@
 //Place.PlaceId,Place.Name,Place.Comment,Place.Photo,Place.Visited,Place.Latitude,Place.Longtitude,Place.Category
 
 #define SQLITE_ENABLE_MEMORY_MANAGEMENT
+#define SQLITE_THREADSAFE 1
 
 @interface DBHandler ()
 
@@ -281,11 +282,11 @@ static DBHandler *sharedInstance = nil;
             [place release];
             [getImageData release];
         }
-        sqlite3_finalize(statement);
+       
     } else {
         NSLog(@"Problem with database %d",sqlResult);
     }
-    
+    sqlite3_finalize(statement);
     NSArray *result = [placesArray copy];
     [placesArray release];
     
@@ -366,7 +367,7 @@ static DBHandler *sharedInstance = nil;
         return NO;
         
     }
-    sqlite3_reset(deleteStmt);
+    sqlite3_finalize(deleteStmt);//sqlite3_reset(deleteStmt);
     return YES;
 }
 
@@ -390,6 +391,7 @@ static DBHandler *sharedInstance = nil;
         printf("%s",sqlite3_errmsg(database));
         NSLog(@"Problem with Databsae? call 911 now :%i",sqlResult);
     }
+    sqlite3_finalize(statement);
     NSArray *result = [allRoutes copy];
     [allRoutes release];
     
@@ -447,13 +449,13 @@ static DBHandler *sharedInstance = nil;
             
         }
         
-        sqlite3_finalize(statement);
+        
     }
     else{
         
         NSLog(@"Problem with Database? call 911 now:%i",sqlResult);
     }
-    
+    sqlite3_finalize(statement);
     return [route autorelease] ;
 }
 
