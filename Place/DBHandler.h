@@ -29,4 +29,8 @@
 - (BOOL)updateRoute:(RouteEntity *)route oldName:(NSString *)name;
 - (BOOL)deleteRouteWithName:(NSString *)name;
 
+// DB access methods
+- (void)openDB;
+- (void)closeDB;
+
 @end
