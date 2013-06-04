@@ -20,9 +20,10 @@
 #import "RouteEntity.h"
 #import "RequestDispatcher.h"
 #import "DBHandler.h"
+#import "PLPlaceManager.h"
 
 
-@interface DetailViewController ()<UISearchBarDelegate, RequestDispatcherDelegate, MKMapViewDelegate, IOGhostPickerDataSource, IOGhostPickerDelegate, PlaceViewControllerDelegate, WeaherViewDelegate, OptionMapControllerDelegate>
+@interface DetailViewController ()<UISearchBarDelegate, RequestDispatcherDelegate, MKMapViewDelegate, IOGhostPickerDataSource, IOGhostPickerDelegate, PlaceViewControllerDelegate, WeaherViewDelegate, OptionMapControllerDelegate, PLPlaceManagerDelegate>
 @property (retain, nonatomic) UIPopoverController *masterPopoverController;
 @property (retain, nonatomic) OptionMapViewController *optionVC;
 @property (retain, nonatomic) UISearchBar *searchBar;
@@ -566,6 +567,13 @@
             
         }
             break;
+        case 3:{
+            _pickerBlocked = NO;
+            PLPlaceManager *placeManager = [PLPlaceManager sharedPlaceManager];
+            [placeManager sendRequestWithType:@"food" coordinates:tapCoord radius:500];
+
+            }
+            break;
         default:
             NSLog(@"Unknown direction");
             break;
@@ -595,7 +603,7 @@
 #pragma mark IOGhostPickerDataSource methods
 
 - (NSUInteger)numberOfDirectionInGhostPicker {
-    return 3;
+    return 4;
 }
 
 - (NSUInteger)numberOfComponentsInDirection:(NSInteger)direction {
@@ -605,6 +613,8 @@
         case 1:
             return 2;
         case 2:
+            return 2;
+        case 3:
             return 2;
         default:
             NSLog(@"unknown component");
@@ -624,7 +634,10 @@
             iv.image = [UIImage imageNamed:@"direction"];
             break;
         case 2: //add weather
-            iv.image = [UIImage imageNamed:@"23"];
+            iv.image = [UIImage imageNamed:@"34"];
+            break;
+        case 3:
+            iv.image = [UIImage imageNamed:@"google_places_icon"];
             break;
         default:
             NSLog(@"Unknown direction");
@@ -644,6 +657,9 @@
             iv.image  = [self imageForRouteComponent:component];
             break;
         case 2:
+            iv.image  = [self imageForRouteComponent:component];
+            break;
+        case 3:
             iv.image  = [self imageForRouteComponent:component];
             break;
         default:
@@ -726,6 +742,18 @@
                             forKey:kMapType];
     [mapUserPreferences synchronize];
 }
+#pragma mark PLPlaceManager delegate
 
+-(void) plaseManagerDidFinishWithPlaces:(NSArray *)aPlaceEntities {
+
+    
+    
+}
+
+-(void) plaseManagerDidFinishWihError:(NSError *)aError {
+
+
+
+}
 
 @end

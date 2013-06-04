@@ -8,7 +8,7 @@
 
 #import "PLPlaceManager.h"
 #import "PlaceEntity.h"
-#define kGOOGLE_API_KEY @"AIzaSyByOnnt4IwFM40GgIoUcR-KpYDcatOjl-8"
+#define kGOOGLE_API_KEY @"AIzaSyCdGd2IONvkd1--Bo8NXqyg9mgRkhDgOZ0"
 
 @implementation PLPlaceManager
 
@@ -24,18 +24,29 @@
     }
 }
 
-- (NSArray *) sendRequestWithType:(NSString *)placeType
+- (void) sendRequestWithType:(NSString *)placeType
                       coordinates:(CLLocationCoordinate2D) coordinates
                            radius:(NSInteger) radius {
     
-     NSString *url = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/search/json?location=%f,%f&radius=%@&types=%@&sensor=true&key=%@", coordinates.latitude,coordinates.longitude, [NSString stringWithFormat:@"%i", radius], placeType, kGOOGLE_API_KEY];
+     NSString *urlString = [NSString stringWithFormat:@"https://maps.googleapis.com/maps/api/place/search/json?location=%f,%f&radius=%@&types=%@&sensor=true&key=%@", coordinates.latitude,coordinates.longitude, [NSString stringWithFormat:@"%i", radius], placeType, kGOOGLE_API_KEY];
+ 
+    NSURL *url = [NSURL URLWithString:urlString];
+    NSURLRequest *urlRequest = [NSURLRequest requestWithURL:url];
+    //[urlRequest setTimeoutInterval:30.0f];
+    //[urlRequest setHTTPMethod:@"GET"];
+    NSOperationQueue *queue = [[NSOperationQueue alloc] init];
     
-    NSURL *googleRequestURL=[NSURL URLWithString:url];
-
-    NSData* data = [NSData dataWithContentsOfURL: googleRequestURL];
-    NSArray *places = [self fetchedData:data];
+    [NSURLConnection sendAsynchronousRequest:urlRequest queue:queue completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+        
+        if (error) {
+            [self.delegate plaseManagerDidFinishWihError:error];
+        } else {
+        
+           
+            [self.delegate plaseManagerDidFinishWithPlaces:[self fetchedData:data]];
+        }
     
-    return places;
+    }];
 }
 
 -(NSArray *)fetchedData:(NSData *)responseData {
@@ -44,6 +55,8 @@
                           JSONObjectWithData:responseData
                           options:kNilOptions
                           error:&error];
+    
+    NSLog(@"JSON = %@", json);
     
     
     NSArray* places = [json objectForKey:@"results"];
@@ -97,13 +110,10 @@
         placeEntity.name = name;
         placeEntity.category = intType;
         
-      
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             
-          UIImage *loadedImage = [UIImage imageWithData: [NSData dataWithContentsOfURL:urlToPhoto]];
-          placeEntity.photo = loadedImage;
-            
-        });
+        UIImage *loadedImage = [UIImage imageWithData: [NSData dataWithContentsOfURL:urlToPhoto]];
+        placeEntity.photo = loadedImage;
+
         
         [places addObject:placeEntity];
         [placeEntity release];
